@@ -203,6 +203,33 @@
       contoh: { level: 3, seed: 6 }, cobaMaks: 3,
       kenapa: 'Sampel acak yang cukup besar cenderung memiliki proporsi mendekati populasi, sehingga proporsi sampel dapat dipakai untuk memperkirakan populasi.'
     },
+    'XI-1': {
+      konsep: [
+        { judul: 'Fungsi komposisi', teks: '(f ∘ g)(x) = f(g(x)): kerjakan g dulu, hasilnya dimasukkan ke f. Pada umumnya (f ∘ g) tidak sama dengan (g ∘ f).\nContoh f(x) = 2x + 3, g(x) = 3x + 1: (f ∘ g)(x) = 2(3x + 1) + 3 = 6x + 5.' },
+        { judul: 'Fungsi invers', teks: 'f⁻¹ membalik kerja f. Untuk f(x) = px + q: tulis y = px + q, cari x = (y − q)/p, lalu ganti y dengan x: f⁻¹(x) = (x − q)/p.\nf⁻¹(k) adalah x yang membuat f(x) = k.' },
+        { judul: 'Invers pecahan dan komposisi', teks: 'Untuk f(x) = (ax + b)/(x + d): dari y(x + d) = ax + b diperoleh x = (b − dy)/(y − a).\n(f ∘ g)⁻¹(k): cari rumus (f ∘ g)(x) lalu selesaikan untuk x, atau balik urutan langkah satu per satu.' }
+      ],
+      contoh: { level: 3, seed: 4 }, cobaMaks: 3,
+      kenapa: 'Invers membatalkan fungsi: f⁻¹(f(x)) = x. Karena itu mencari f⁻¹(k) sama dengan menjawab "x berapa yang menghasilkan k?".'
+    },
+    'XI-2': {
+      konsep: [
+        { judul: 'Persamaan lingkaran', teks: 'Pusat O(0, 0), jari-jari r: x² + y² = r².\nPusat (a, b): (x − a)² + (y − b)² = r². Perhatikan tanda: pusat (2, −3) menghasilkan (x − 2)² + (y + 3)².' },
+        { judul: 'Posisi titik dan bentuk umum', teks: 'Hitung jarak kuadrat titik ke pusat lalu bandingkan dengan r²: lebih kecil → di dalam, sama → pada lingkaran, lebih besar → di luar.\nBentuk umum x² + y² + Ax + By + C = 0: pusat (−A/2, −B/2), r² = (A/2)² + (B/2)² − C.' },
+        { judul: 'Garis singgung', teks: 'Garis singgung lingkaran x² + y² = r² di titik (x₁, y₁) pada lingkaran: x₁x + y₁y = r². Garis singgung tegak lurus jari-jari di titik singgung, jadi panjang singgung dari titik luar = √(d² − r²).' }
+      ],
+      contoh: { level: 3, seed: 6 }, cobaMaks: 3,
+      kenapa: 'Persamaan lingkaran adalah rumus jarak: setiap titik (x, y) pada lingkaran berjarak r dari pusat, dan jarak kuadrat itu persis (x − a)² + (y − b)².'
+    },
+    'XI-3': {
+      konsep: [
+        { judul: 'Diagram pencar dan korelasi', teks: 'Diagram pencar menunjukkan hubungan dua data. Titik naik dari kiri ke kanan: korelasi positif. Turun: korelasi negatif. Tersebar acak: hampir tidak ada korelasi.' },
+        { judul: 'Garis regresi linear', teks: 'Regresi y = a + bx dengan b = (nΣxy − ΣxΣy) / (nΣx² − (Σx)²) dan a = ȳ − b·x̄.\nGaris ini dipakai memperkirakan y untuk nilai x tertentu.' },
+        { judul: 'Koefisien korelasi', teks: 'Nilai r antara −1 dan 1. r mendekati 1: positif kuat; mendekati −1: negatif kuat; mendekati 0: lemah. Korelasi tidak selalu berarti sebab-akibat.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Garis regresi dipilih agar jumlah kuadrat jarak vertikal titik-titik ke garis sekecil mungkin, sehingga garis itu mewakili kecenderungan data.'
+    },
     H1: {
       konsep: [
         { judul: 'Pecah per tempat', teks: 'Pisahkan puluhan dan satuan. 48 + 37 = (40 + 30) + (8 + 7) = 70 + 15 = 85.\nKerjakan dari bagian besar dulu supaya mudah dicek.' },
