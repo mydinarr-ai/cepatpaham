@@ -10,7 +10,10 @@ Dokumen ini untuk sesi Claude Code berikutnya. Baca juga `spesifikasi-aplikasi-h
 | `js/inti.js` | Konfigurasi (`CP.KONFIG`), acak ber-seed, matematika pecahan, format angka Indonesia, pemeriksa jawaban, mesin adaptif, registri, profil, penyimpanan, laporan orang tua, cadangan. |
 | `js/peta.js` | **Registri semua bab semua kelas** (status `segera`). Judul bab diubah di sini. |
 | `js/materi.js` | Materi mode Belajar per modul (`CP.MATERI`). |
-| `js/sekolah.js` | Generator Materi Sekolah yang sudah aktif (VII-1..3, X-1..2). |
+| `js/sekolah.js` | Tahap 1: VII-1..3, X-1..2. |
+| `js/kelas7b.js` | Tahap 2 Kelas VII: VII-4 (aljabar), VII-5 (kesebangunan), VII-6 (data). Juga mengekspor `CP.alj` dan `CP.gbr` untuk dipakai file lain. |
+| `js/kelas10b.js` | Tahap 2 Kelas X: X-3 (trigonometri), X-4 (SPL), X-5 (kuadrat), X-6 (data), X-7 (peluang). |
+| `js/gambar.js` | Penggambar SVG umum (`CP.gambarUmum`): persegi panjang, segitiga, parabola, diagram batang/lingkaran/kotak-garis dibuat dari daftar elemen (`CP.H`). Gambar balok H3 tetap di `cerita.js`. |
 | `js/hitung.js` | Hitung Cepat H1, H2, H4, H5, H6. |
 | `js/cerita.js` | H3 Soal Cerita Model Bar + penggambar SVG balok + templat cerita. |
 | `sw.js` | Service worker (cache bernomor versi). |
@@ -18,7 +21,7 @@ Dokumen ini untuk sesi Claude Code berikutnya. Baca juga `spesifikasi-aplikasi-h
 | `uji.js` | Pengujian otomatis. Jalankan: `node uji.js` (cepat: `BANYAK=100 node uji.js`). |
 | `serve.js` | Server lokal untuk mencoba: `node serve.js` lalu buka `http://localhost:5173`. |
 
-Urutan muat skrip di `index.html` dan `uji.js` harus tetap: `inti` → `peta` → `materi` → `sekolah` → `hitung` → `cerita`. File modul baru ditambahkan **setelah** `cerita.js` (atau di dalam file kelasnya) dan didaftarkan di tiga tempat: tag `<script>` di `index.html`, daftar `ASET` di `sw.js`, dan baris `muat(...)` di `uji.js`.
+Urutan muat skrip di `index.html` dan `uji.js` harus tetap: `inti` → `peta` → `materi` → `sekolah` → `hitung` → `cerita` → `gambar` → `kelas7b` → `kelas10b`. File modul baru (mis. `kelas8.js` untuk Tahap 3) ditambahkan **setelah** `kelas10b.js` dan didaftarkan di tiga tempat: tag `<script>` di `index.html`, daftar `ASET` di `sw.js`, dan baris `muat(...)` di `uji.js`.
 
 ## 2. Cara mengaktifkan satu bab (langkah demi langkah)
 
@@ -53,9 +56,10 @@ Aturan penting:
 - Pilihan ganda: opsi salah harus berasal dari **kesalahan umum siswa**. Setiap opsi punya `kunci` (nilai) yang berbeda; `uji.js` memeriksa keempat nilai berbeda.
 - **Langkah penyelesaian** harus dihitung lewat jalur berbeda dari rumus jawaban (`uji.js` membandingkan nilai `v` langkah terakhir dengan jawaban).
 - Negatif hanya boleh muncul bila `izin.minus` true. Pembagian bilangan bulat wajib habis dan didaftarkan di `dibagi`.
+- Pilihan ganda berbentuk teks aljabar memakai `CP.alj` (`rend`, `kunciAlj`, `opsiAlj`); `kunci` = koefisien kanonik sehingga dua opsi setara tidak muncul bersamaan.
 - Jangan menyalin soal dari buku/ujian. Jangan memakai nama merek (Kumon, Sakamoto, Sempoa).
 3. **Materi Belajar**: tambah entri `CP.MATERI['VII-4']` di `js/materi.js` (`konsep[]`, `contoh:{level,seed}`, `cobaMaks`, `kenapa`). Contoh dibuat dari generator dengan seed tetap, jadi langkahnya pasti benar.
-4. **Bab bertanda [gambar]**: tambahkan `gambar: {...}` pada soal dan fungsi penggambar di `CP.gambarSVG` (lihat `cerita.js`). Gambar dibuat dari data soal, bukan file gambar.
+4. **Bab bertanda [gambar]**: tambahkan `gambar: {tipe:'gambar', tinggi, el:[...]}` pada soal, disusun dengan pembantu `CP.H` (`H.r`, `H.p`, `H.l`, `H.t`, `H.o`, `H.d`; lihat contoh di `kelas7b.js` dan `kelas10b.js`). `uji.js` memeriksa SVG tidak memuat NaN/undefined. Periksa juga teks tidak terpotong (mis. lewat `getBBox()` di browser).
 5. **Tambahkan kasus tetap** (contoh di tabel spesifikasi) ke bagian 2 `uji.js`, lalu jalankan `node uji.js` sampai **GAGAL: 0**. Ubah juga angka yang sengaja dikunci di `uji.js` (jumlah modul aktif, `level.length`).
 6. **Naikkan versi**: `CACHE` di `sw.js` (mis. `cepatpaham-v1.1.0`) dan `K.versiApp`/`CP.KONFIG.versiApp` di `js/inti.js`. Jika **format data** berubah, naikkan `versiData` dan tulis langkah migrasi di `CP.migrasi` supaya progres lama tidak hilang.
 7. **Terbitkan** (bagian 5) di alamat yang sama.

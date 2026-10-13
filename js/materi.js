@@ -50,6 +50,78 @@
       contoh: { level: 4, seed: 3 }, cobaMaks: 3,
       kenapa: 'Rumus Sₙ bekerja karena suku pertama dan terakhir, suku kedua dan kedua dari belakang, dan seterusnya selalu berjumlah sama; ada n/2 pasangan.'
     },
+    'VII-4': {
+      konsep: [
+        { judul: 'Variabel, suku, koefisien', teks: 'Bentuk aljabar memakai huruf (variabel) untuk bilangan yang belum diketahui. Pada 3x + 5: 3 adalah koefisien, x variabel, 5 konstanta.\nMenghitung nilai: ganti variabel dengan bilangan. Jika x = 4, maka 3x + 5 = 3 × 4 + 5 = 17.' },
+        { judul: 'Suku sejenis dan perkalian', teks: 'Suku sejenis punya variabel yang sama dan boleh dijumlahkan: 3x + 5y − x + 2y = 2x + 7y.\nSifat distributif: 3(2x − 4) = 6x − 12.\nDua kurung: (x + 3)(x + 4) = x² + 4x + 3x + 12 = x² + 7x + 12.' },
+        { judul: 'Persamaan dan pertidaksamaan', teks: 'Persamaan: lakukan hal yang sama di kedua ruas. 3x + 5 = 20 → 3x = 15 → x = 5.\nPertidaksamaan diselesaikan sama, tetapi jika dikali atau dibagi bilangan negatif, tanda dibalik: −2x < 6 → x > −3.' }
+      ],
+      contoh: { level: 4, seed: 3 }, cobaMaks: 3,
+      kenapa: 'Persamaan seperti timbangan seimbang: jika kedua sisi ditambah, dikurangi, atau dikali hal yang sama, timbangan tetap seimbang. Dikali bilangan negatif membalik urutan, itu sebabnya tanda pertidaksamaan dibalik.'
+    },
+    'VII-5': {
+      konsep: [
+        { judul: 'Bangun sebangun', teks: 'Dua bangun sebangun jika bentuknya sama (sudut-sudut bersesuaian sama besar) dan sisi-sisi bersesuaian berbanding sama.\nContoh: persegi panjang 4 × 6 sebangun dengan 6 × 9, faktor skala 6/4 = 9/6 = 3/2.' },
+        { judul: 'Segitiga sebangun', teks: 'Pada segitiga sebangun, perbandingan sisi bersesuaian sama.\nBenda tegak dan bayangannya pada waktu yang sama membentuk segitiga yang sebangun, jadi tinggi : bayangan sama.\nJika DE sejajar BC pada segitiga ABC, maka AD/AB = DE/BC.' },
+        { judul: 'Keliling dan luas', teks: 'Jika perbandingan sisi k, maka perbandingan keliling juga k, sedangkan perbandingan luas k².\nContoh sisi 2 : 3 → luas 4 : 9.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Memperbesar gambar dengan faktor k memperpanjang semua sisi k kali, sehingga keliling ikut k kali. Luas adalah panjang kali lebar, jadi bertambah k × k = k² kali.'
+    },
+    'VII-6': {
+      konsep: [
+        { judul: 'Membaca diagram', teks: 'Diagram batang menunjukkan nilai tiap kategori lewat tinggi batang. Diagram lingkaran menunjukkan bagian dari keseluruhan lewat sudut juring (total 360°).\nBanyak data pada juring = sudut ÷ 360 × total.' },
+        { judul: 'Mean, median, modus', teks: 'Mean = jumlah data ÷ banyak data.\nMedian = nilai tengah setelah data diurutkan (jika genap, rata-rata dua nilai tengah).\nModus = nilai yang paling sering muncul.' },
+        { judul: 'Rata-rata dari tabel dan gabungan', teks: 'Tabel frekuensi: rata-rata = jumlah (nilai × frekuensi) ÷ jumlah frekuensi.\nRata-rata gabungan = jumlah seluruh nilai ÷ banyak seluruh data, bukan rata-rata dari dua rata-rata.' }
+      ],
+      contoh: { level: 4, seed: 2 }, cobaMaks: 3,
+      kenapa: 'Rata-rata gabungan memperhitungkan banyak data tiap kelompok (bobot). Kelompok yang lebih banyak anggotanya lebih besar pengaruhnya pada rata-rata gabungan.'
+    },
+    'X-3': {
+      konsep: [
+        { judul: 'Sinus, kosinus, tangen', teks: 'Pada segitiga siku-siku dengan sudut lancip α:\nsin α = depan / miring, cos α = samping / miring, tan α = depan / samping.\nSisi miring adalah sisi di depan sudut siku-siku.' },
+        { judul: 'Sudut istimewa', teks: 'sin 30° = 1/2, sin 45° = √2/2, sin 60° = √3/2.\ncos 30° = √3/2, cos 45° = √2/2, cos 60° = 1/2.\ntan 30° = √3/3, tan 45° = 1, tan 60° = √3.' },
+        { judul: 'Sudut elevasi', teks: 'Sudut elevasi adalah sudut antara garis pandang ke atas dan garis mendatar.\nTinggi = jarak × tan sudut elevasi. Tripel Pythagoras 3-4-5, 5-12-13, 8-15-17 membantu mencari sisi ketiga.' }
+      ],
+      contoh: { level: 3, seed: 4 }, cobaMaks: 3,
+      kenapa: 'Perbandingan sisi pada segitiga siku-siku hanya bergantung pada besar sudut, bukan ukuran segitiganya, karena segitiga dengan sudut yang sama selalu sebangun.'
+    },
+    'X-4': {
+      konsep: [
+        { judul: 'Sistem dua persamaan', teks: 'Cari x dan y yang memenuhi dua persamaan sekaligus.\nEliminasi: samakan koefisien salah satu variabel lalu kurangkan atau jumlahkan persamaan agar variabel itu hilang. Substitusi hasilnya ke persamaan lain.' },
+        { judul: 'Soal cerita', teks: 'Beri nama pada hal yang dicari, misalnya x = harga 1 pensil dan y = harga 1 buku. Tulis dua persamaan dari dua kalimat, lalu selesaikan.' },
+        { judul: 'Pertidaksamaan dan daerah layak', teks: 'Titik memenuhi ax + by ≤ c jika setelah disubstitusi hasilnya ≤ c. Daerah yang memenuhi beberapa pertidaksamaan sekaligus disebut daerah penyelesaian. Nilai maksimum bentuk objektif terjadi di titik pojok daerah itu.' }
+      ],
+      contoh: { level: 2, seed: 8 }, cobaMaks: 3,
+      kenapa: 'Eliminasi bekerja karena menjumlahkan atau mengurangkan dua persamaan yang benar menghasilkan persamaan yang juga benar, dan kita pilih operasi yang menghilangkan satu variabel.'
+    },
+    'X-5': {
+      konsep: [
+        { judul: 'Akar dengan pemfaktoran', teks: 'Persamaan x² − 7x + 12 = 0: cari dua bilangan yang berjumlah 7 dan berhasil kali 12, yaitu 3 dan 4. Maka (x − 3)(x − 4) = 0, x = 3 atau x = 4.\nJika a bukan 1, bagi seluruh persamaan dengan a.' },
+        { judul: 'Diskriminan', teks: 'Untuk ax² + bx + c = 0, diskriminan D = b² − 4ac.\nD > 0: dua akar berbeda. D = 0: satu akar kembar. D < 0: tidak ada akar real.' },
+        { judul: 'Grafik parabola', teks: 'Sumbu simetri x = −b / (2a). Titik puncak (x, f(x)) pada sumbu itu.\nJika a > 0 terbuka ke atas (puncak adalah nilai minimum). Jika a < 0 terbuka ke bawah (puncak adalah nilai maksimum).' }
+      ],
+      contoh: { level: 4, seed: 6 }, cobaMaks: 3,
+      kenapa: 'Hasil kali dua bilangan sama dengan nol hanya jika salah satunya nol. Karena itu (x − 3)(x − 4) = 0 berarti x − 3 = 0 atau x − 4 = 0.'
+    },
+    'X-6': {
+      konsep: [
+        { judul: 'Histogram dan data berkelompok', teks: 'Data dikelompokkan dalam kelas, misalnya 41-50, 51-60. Tinggi batang histogram adalah frekuensi kelas.\nRata-rata data berkelompok memakai titik tengah kelas: jumlah (f × titik tengah) ÷ jumlah f.' },
+        { judul: 'Kuartil', teks: 'Urutkan data. Q2 = median. Q1 = median setengah bawah, Q3 = median setengah atas (jika banyak data ganjil, data tengah tidak ikut).\nJangkauan = maks − min. Jangkauan antarkuartil = Q3 − Q1.' },
+        { judul: 'Diagram kotak garis dan ragam', teks: 'Diagram kotak garis menampilkan min, Q1, median, Q3, maks.\nRagam = rata-rata kuadrat selisih data terhadap rata-rata: Σ(x − rata-rata)² ÷ n.' }
+      ],
+      contoh: { level: 4, seed: 7 }, cobaMaks: 3,
+      kenapa: 'Titik tengah mewakili semua data dalam satu kelas. Karena data asli di dalam kelas tidak diketahui, rata-rata berkelompok adalah pendekatan terbaik.'
+    },
+    'X-7': {
+      konsep: [
+        { judul: 'Peluang kejadian', teks: 'Peluang = banyak kejadian yang diinginkan ÷ banyak semua kemungkinan (ruang sampel).\nPeluang bernilai 0 sampai 1. Peluang kejadian tidak terjadi = 1 − peluang terjadi.' },
+        { judul: 'Aturan perkalian dan frekuensi harapan', teks: 'Jika ada 3 baju dan 2 celana, ada 3 × 2 = 6 cara berpakaian. Dua dadu: 6 × 6 = 36 pasangan.\nFrekuensi harapan = banyak percobaan × peluang.' },
+        { judul: 'Gabungan dan dua pengambilan', teks: 'P(A atau B) = P(A) + P(B) − P(A dan B). Jika saling lepas, P(A dan B) = 0.\nDua pengambilan: dengan pengembalian, jumlah benda tetap; tanpa pengembalian, jumlah benda berkurang satu.' }
+      ],
+      contoh: { level: 4, seed: 9 }, cobaMaks: 3,
+      kenapa: 'Pada P(A atau B), kejadian yang ada di A dan di B terhitung dua kali bila hanya dijumlahkan, jadi harus dikurangi sekali.'
+    },
     H1: {
       konsep: [
         { judul: 'Pecah per tempat', teks: 'Pisahkan puluhan dan satuan. 48 + 37 = (40 + 30) + (8 + 7) = 70 + 15 = 85.\nKerjakan dari bagian besar dulu supaya mudah dicek.' },

@@ -5,7 +5,7 @@ const path = require('path');
 const muat = (f) => require(path.join(__dirname, 'js', f));
 muat('inti.js'); muat('peta.js');
 if (fs.existsSync(path.join(__dirname, 'js', 'materi.js'))) muat('materi.js');
-muat('sekolah.js'); muat('hitung.js'); muat('cerita.js');
+muat('sekolah.js'); muat('hitung.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js');
 const CP = globalThis.CP;
 
 let lulus = 0, gagal = 0;
@@ -165,6 +165,60 @@ contoh('H4', 6, { a: 48, b: 42 }, '2016', '48x42');
 contoh('H5', 1, { d: [5, 2, 3] }, '5753', '523x11');
 contoh('H5', 2, { d: [2, 1, 3] }, '2556', '213x12');
 contoh('H5', 3, { n: 468 }, '2340', '468x5');
+
+/* ---- Tahap 2: contoh tetap ---- */
+const AN = ['Ani', 'Budi'];
+contoh('VII-4', 1, { jenis: 'tambah', a: 4, x: 3, b: 5 }, '17', '4x+5, x=3');
+contoh('VII-4', 2, { t: [{ c: 3, v: 'x' }, { c: 5, v: 'y' }, { c: -1, v: 'x' }, { c: 2, v: 'y' }], s: 1 }, '2x + 7y', '3x+5y-x+2y');
+contoh('VII-4', 3, { jenis: 'dist', a: 3, b: 2, cc: -4, s: 1 }, '6x − 12', '3(2x-4)');
+contoh('VII-4', 3, { jenis: 'kuadrat', p: 3, q: 4, s: 1 }, 'x² + 7x + 12', '(x+3)(x+4)');
+contoh('VII-4', 4, { jenis: 'dasar', a: 3, b: 5, x: 5 }, '5', '3x+5=20');
+contoh('VII-4', 5, { a: 3, b: -5, t: 5, rel: '>', s: 1 }, 'x > 5', '3x-5>10');
+contoh('VII-4', 6, { k: 0, a: 2, b: 6, x: 5, nama: 'Dina' }, '5', 'cerita tabungan');
+contoh('VII-4', 6, { k: 1, a: 3, b: 4, x: 5, nama: 'Dina' }, '5', 'cerita vokasi', 'vokasi');
+contoh('VII-5', 1, { p: 3, q: 2, m1: 2, m2: 3, arah: 'besar' }, '9', '4x6 ~ 6x?');
+contoh('VII-5', 2, { t: [4, 5, 6], k: 2, tanya: 2, arah: 'besar' }, '12', 'segitiga 4,5,6 ~ 8,10,12');
+contoh('VII-5', 3, { i: 2, j: 3, m: 1, n: 4, tanya: 'tinggi', k: 0 }, '8', 'tiang dan bayangan');
+contoh('VII-5', 4, { a: 2, b: 3, n: 2, jenis: 'de' }, '4', 'DE // BC');
+contoh('VII-5', 5, { p: 3, q: 2, m: 10, jenis: 'luas' }, '90', 'luas 40 -> 90');
+contoh('VII-5', 6, { p: 5, q: 2, m1: 2, m2: 3, arah: 'besar', k: 0 }, '15', 'foto diperbesar');
+contoh('VII-6', 1, { jenis: 'nilai', vals: [20, 35, 50, 25], i: 2, j: 0, sk: 0 }, '50', 'diagram batang');
+contoh('VII-6', 2, { mu: 80, data: [70, 80, 90], k: 0 }, '80', 'mean');
+contoh('VII-6', 3, { jenis: 'median', data: [5, 9, 7, 6], k: 0 }, '6,5', 'median genap');
+contoh('VII-6', 3, { jenis: 'modus', data: [5, 6, 6, 7], k: 0 }, '6', 'modus');
+contoh('VII-6', 4, { jenis: 'banyak', N: 120, cnt: [30, 40, 20, 30], i: 1, sk: 0 }, '40', 'diagram lingkaran');
+contoh('VII-6', 5, { awal: 6, f: [2, 6, 2], sk: 0 }, '7', 'rata-rata frekuensi');
+contoh('VII-6', 6, { jenis: 'baru', n: 4, m: 80, d: 2, sk: 0 }, '90', 'rata-rata baru');
+contoh('X-3', 1, { t: [3, 4, 5], m: 1, fn: 'sin' }, '3/5', 'sin A 3-4-5');
+contoh('X-3', 2, { fn: 'sin', sd: 30, s: 1 }, '1 / 2', 'sin 30');
+contoh('X-3', 2, { fn: 'tan', sd: 60, s: 2 }, '√3', 'tan 60');
+contoh('X-3', 3, { jenis: 'sin30', c: 10, d: 5 }, '5', 'sin 30 sisi');
+contoh('X-3', 4, { t: [5, 12, 13], f1: 'sin', f2: 'cos' }, '12/13', 'sin 5/13 -> cos');
+contoh('X-3', 5, { jenis: 'elevasi45', c: 10, d: 20, k: 0, u: 2, pair: [3, 4] }, '20', 'elevasi 45');
+contoh('X-3', 6, { i: 0, j: 1, op: '+' }, '1', 'sin30+cos60');
+contoh('X-4', 1, { x: 7, y: 3, tanya: 'x' }, '7', 'x+y=10, x-y=4');
+contoh('X-4', 2, { x: 3, y: 1, a1: 2, b1: 1, a2: 1, b2: -1, tanya: 'x' }, '3', '2x+y=7, x-y=2');
+contoh('X-4', 3, { x: 3, y: 2, a1: 2, b1: 3, a2: 4, b2: 1, k: 0, tanya: 'y', nama: 'Ani' }, '2000', 'harga');
+contoh('X-4', 6, { V: [[0, 0], [4, 0], [2, 2], [0, 3]], a: 2, b: 3, k: 0, nm: 0 }, '10', 'nilai maksimum');
+contoh('X-5', 1, { p: 3, q: 4, tanya: 'besar' }, '4', 'x2-7x+12');
+contoh('X-5', 2, { a: 2, p: 2, q: 3, tanya: 'besar' }, '3', '2x2-10x+12');
+contoh('X-5', 3, { a: 1, b: -6, cc: 5 }, '16', 'diskriminan');
+contoh('X-5', 4, { a: 1, h: 3, k: -4, jenis: 'yp' }, '-4', 'puncak y');
+contoh('X-5', 4, { a: 1, h: 3, k: -4, jenis: 'xp' }, '3', 'puncak x');
+contoh('X-5', 5, { p: 2, q: 3, s: 1 }, 'f(x) = x² − 5x + 6', 'fungsi dari akar');
+contoh('X-5', 6, { jenis: 'bola', A: 2, B: 5, K: 20, C: 3 }, '20', 'tinggi maksimum');
+contoh('X-6', 1, { jenis: 'frek', awal: 41, f: [4, 6, 8, 5, 2], i: 2 }, '8', 'histogram');
+contoh('X-6', 2, { awal: 41, f: [2, 2, 2, 2], k: 4 }, '60,5', 'mean berkelompok');
+contoh('X-6', 3, { awal: 41, f: [3, 6, 10, 4, 2], m: 2, d1: 4, d2: 6 }, '64,5', 'modus berkelompok');
+contoh('X-6', 4, { jenis: 'q1', data: [12, 15, 18, 20, 25, 28, 30] }, '15', 'Q1');
+contoh('X-6', 5, { mi: 10, q1: 20, q2: 30, q3: 45, ma: 60, jenis: 'iqr' }, '25', 'IQR');
+contoh('X-6', 6, { jenis: 'gabung3', n: [10, 20, 10], m: [70, 80, 90] }, '80', 'gabungan');
+contoh('X-7', 1, { jenis: 'dadu', k: 0, m: [2, 3, 4] }, '1/2', 'dadu genap');
+contoh('X-7', 2, { jenis: 'dadu2', n: 3, a: 2, b: 2, cc: 2 }, '36', '2 dadu');
+contoh('X-7', 3, { jenis: 'harapan', n: 200, pr: 30, q: 4, pp: 1 }, '60', 'frekuensi harapan');
+contoh('X-7', 4, { jenis: 'dadu', k: 0 }, '2/3', 'genap atau >4');
+contoh('X-7', 5, { jenis: 'dua dadu', j: 7, m: 2, b: 2, h: 1 }, '1/6', 'jumlah 7');
+contoh('X-7', 6, { jenis: 'satu', N: 20, cc: 5, pr: 10, n: 100, k: 0 }, '3/4', 'peluang tidak cacat');
 // H3 tampil bentuk SVG
 const sH3 = CP.peta.H3.bangun(1, { t: 0, n: NN, a: 36, b: 48 });
 cek(CP.peta.H3.gambar(sH3).indexOf('<svg') === 0, 'gambar H3 contoh');
@@ -251,11 +305,12 @@ cek(CP.modulUntukProfil({ jenjang: 'SMP', kelas: 'VII', tl: false }).sekolah.len
 const BAB_SEGERA = CP.REG.filter((m) => m.status === 'segera');
 BAB_SEGERA.forEach((m) => { cek(typeof m.generator !== 'function', 'bab segera tidak boleh punya generator: ' + m.id); });
 cek(['VII-1', 'VII-2', 'VII-3', 'X-1', 'X-2', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 1 aktif');
-cek(CP.REG.filter((m) => m.status === 'aktif').length === 11, 'tepat 11 modul aktif');
+cek(CP.REG.filter((m) => m.status === 'aktif').length === 19, 'tepat 19 modul aktif (Tahap 1 + Tahap 2)');
+cek(['VII-4', 'VII-5', 'VII-6', 'X-3', 'X-4', 'X-5', 'X-6', 'X-7'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 2 aktif');
 cek(CP.REG.filter((m) => m.status === 'aktif').every((m) => m.level.length === 6 || (m.id === 'H5' && m.level.length === 4)), 'level tiap modul');
-cek(CP.peta['VII-4'].status === 'segera' && CP.peta['XI-TL-3'].judul === 'Matriks', 'bab segera terdaftar dengan judul');
+cek(CP.peta['VIII-1'].status === 'segera' && CP.peta['XI-TL-3'].judul === 'Matriks', 'bab segera terdaftar dengan judul');
 cek(CP.peta['XII-TL-2'].judul === 'Limit' && CP.peta['IX-2'].perluGambar === true, 'detail registri');
-try { CP.peta['VII-4'].generator(1); cek(false, 'bab segera dapat dilatih'); } catch (e) { cek(true, ''); }
+try { CP.peta['VIII-1'].generator(1); cek(false, 'bab segera dapat dilatih'); } catch (e) { cek(true, ''); }
 cek(CP.targetModul(CP.peta.H1, 1) === 10 && CP.targetModul(CP.peta.H1, 6) === 30 && CP.targetModul(CP.peta['VII-1'], 1) === 30 && CP.targetModul(CP.peta['VII-1'], 6) === 90, 'target waktu awal');
 
 /* ---------- 6. Profil dan naik kelas ---------- */
