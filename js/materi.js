@@ -122,6 +122,51 @@
       contoh: { level: 4, seed: 9 }, cobaMaks: 3,
       kenapa: 'Pada P(A atau B), kejadian yang ada di A dan di B terhitung dua kali bila hanya dijumlahkan, jadi harus dikurangi sekali.'
     },
+    'VIII-1': {
+      konsep: [
+        { judul: 'Menjumlah dan mengurang', teks: 'Hapus kurung lebih dulu. Kurung yang didahului tanda minus membalik tanda semua suku di dalamnya.\n(3x + 2y − 5) − (x − 4y + 7) = 3x + 2y − 5 − x + 4y − 7 = 2x + 6y − 12.' },
+        { judul: 'Perkalian dan pembagian', teks: 'Perkalian dua kurung: kalikan tiap suku dengan tiap suku. (2x + 3)(x − 4) = 2x² − 8x + 3x − 12 = 2x² − 5x − 12.\nPembagian suku: bagi koefisien, kurangkan pangkat variabel yang sama. 12x³y² ÷ 4xy = 3x²y.' },
+        { judul: 'Faktorisasi', teks: 'Faktor persekutuan: 6x + 9 = 3(2x + 3).\nx² + 7x + 10: cari dua bilangan berjumlah 7 dan berhasil kali 10 (2 dan 5) → (x + 2)(x + 5).\nSelisih kuadrat: x² − 9 = (x − 3)(x + 3).' }
+      ],
+      contoh: { level: 2, seed: 3 }, cobaMaks: 3,
+      kenapa: 'Faktorisasi adalah kebalikan dari perkalian. Jika kita jabarkan (x + 2)(x + 5), kita kembali ke x² + 7x + 10, sehingga hasil faktorisasi selalu bisa dicek.'
+    },
+    'VIII-2': {
+      konsep: [
+        { judul: 'Substitusi', teks: 'Jika satu persamaan sudah berbentuk y = …, masukkan ke persamaan lain. y = 2x + 1 dan 3x + 2y = 16 → 3x + 2(2x + 1) = 16 → 7x + 2 = 16 → x = 2, lalu y = 5.' },
+        { judul: 'Eliminasi', teks: 'Samakan koefisien salah satu variabel, lalu jumlahkan atau kurangkan kedua persamaan agar variabel itu hilang. Setelah dapat satu variabel, substitusi untuk mencari yang lain.' },
+        { judul: 'Banyak penyelesaian dan cerita', teks: 'Dua garis bisa berpotongan (satu penyelesaian), sejajar (tidak ada), atau berimpit (tak hingga).\nSoal cerita: misalkan dua hal yang dicari dengan x dan y, tulis dua persamaan, selesaikan. Titik impas terjadi saat pendapatan sama dengan biaya.' }
+      ],
+      contoh: { level: 2, seed: 4 }, cobaMaks: 3,
+      kenapa: 'Penyelesaian sistem adalah titik yang berada di kedua garis sekaligus. Itu sebabnya pasangan (x, y) harus memenuhi kedua persamaan, dan itu juga cara memeriksa jawaban.'
+    },
+    'VIII-3': {
+      konsep: [
+        { judul: 'Fungsi linear dan gradien', teks: 'Fungsi linear f(x) = mx + n. m adalah gradien (kemiringan), n adalah nilai f saat x = 0.\nGradien dari dua titik: m = (y₂ − y₁) ÷ (x₂ − x₁).' },
+        { judul: 'Persamaan garis dan titik potong', teks: 'Garis dengan gradien m melalui (x₁, y₁): y − y₁ = m(x − x₁).\nMemotong sumbu y di x = 0, memotong sumbu x di y = 0.' },
+        { judul: 'Sejajar dan tegak lurus', teks: 'Garis sejajar punya gradien sama. Garis tegak lurus punya gradien m₁ × m₂ = −1, jadi gradien 3/4 tegak lurus dengan −4/3.\nDalam cerita, n adalah biaya tetap dan m adalah tarif per satuan.' }
+      ],
+      contoh: { level: 2, seed: 6 }, cobaMaks: 3,
+      kenapa: 'Gradien menyatakan seberapa cepat y berubah ketika x bertambah 1. Karena garis lurus, perubahan itu selalu sama di mana pun, sehingga dua titik sudah cukup menentukan garis.'
+    },
+    'VIII-4': {
+      konsep: [
+        { judul: 'Sudut dan segitiga', teks: 'Berpelurus: berjumlah 180°. Berpenyiku: berjumlah 90°. Bertolak belakang: sama besar.\nJumlah sudut dalam segitiga 180°. Sudut luar = jumlah dua sudut dalam yang tidak bersebelahan.' },
+        { judul: 'Segi banyak dan segiempat', teks: 'Jumlah sudut dalam segi-n = (n − 2) × 180°. Segi-n beraturan: tiap sudut dalam = jumlah ÷ n; tiap sudut luar = 360° ÷ n.\nLuas: jajargenjang = alas × tinggi; belah ketupat dan layang-layang = ½ × d₁ × d₂; trapesium = ½ × (a + b) × t.' },
+        { judul: 'Teorema Pythagoras', teks: 'Pada segitiga siku-siku, a² + b² = c² dengan c sisi miring.\nTripel yang sering muncul: 3-4-5, 5-12-13, 8-15-17, 7-24-25 (dan kelipatannya).' }
+      ],
+      contoh: { level: 4, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Dua segitiga siku-siku yang sama dapat disusun menjadi persegi besar bersisi (a + b); dari kedua cara menghitung luasnya kita memperoleh a² + b² = c².'
+    },
+    'VIII-5': {
+      konsep: [
+        { judul: 'Ruang sampel', teks: 'Ruang sampel adalah semua hasil yang mungkin. Dua koin: AA, AG, GA, GG, jadi 4 hasil. Dua dadu: 6 × 6 = 36 hasil. Diagram pohon membantu mendaftar semua hasil.' },
+        { judul: 'Peluang teoretis dan empiris', teks: 'Peluang teoretis = banyak hasil yang diinginkan ÷ banyak seluruh hasil.\nFrekuensi relatif (peluang empiris) = banyak muncul ÷ banyak percobaan. Perkiraan kejadian = banyak percobaan × peluang.' },
+        { judul: 'Komplemen dan saling bebas', teks: 'Peluang tidak terjadi = 1 − peluang terjadi.\nJika dua kejadian saling bebas, peluang keduanya = peluang pertama × peluang kedua.' }
+      ],
+      contoh: { level: 4, seed: 7 }, cobaMaks: 3,
+      kenapa: 'Makin banyak percobaan, frekuensi relatif cenderung mendekati peluang teoretis. Itu sebabnya hasil survei besar bisa dipakai untuk memperkirakan kejadian berikutnya.'
+    },
     H1: {
       konsep: [
         { judul: 'Pecah per tempat', teks: 'Pisahkan puluhan dan satuan. 48 + 37 = (40 + 30) + (8 + 7) = 70 + 15 = 85.\nKerjakan dari bagian besar dulu supaya mudah dicek.' },

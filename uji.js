@@ -5,7 +5,7 @@ const path = require('path');
 const muat = (f) => require(path.join(__dirname, 'js', f));
 muat('inti.js'); muat('peta.js');
 if (fs.existsSync(path.join(__dirname, 'js', 'materi.js'))) muat('materi.js');
-muat('sekolah.js'); muat('hitung.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js');
+muat('sekolah.js'); muat('hitung.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js');
 const CP = globalThis.CP;
 
 let lulus = 0, gagal = 0;
@@ -219,6 +219,40 @@ contoh('X-7', 3, { jenis: 'harapan', n: 200, pr: 30, q: 4, pp: 1 }, '60', 'freku
 contoh('X-7', 4, { jenis: 'dadu', k: 0 }, '2/3', 'genap atau >4');
 contoh('X-7', 5, { jenis: 'dua dadu', j: 7, m: 2, b: 2, h: 1 }, '1/6', 'jumlah 7');
 contoh('X-7', 6, { jenis: 'satu', N: 20, cc: 5, pr: 10, n: 100, k: 0 }, '3/4', 'peluang tidak cacat');
+/* ---- Tahap 3: contoh tetap ---- */
+contoh('VIII-1', 1, { op: '+', a1: 3, b1: 2, c1: -5, a2: 1, b2: -4, c2: 7, s: 1 }, '4x − 2y + 2', '(3x+2y-5)+(x-4y+7)');
+contoh('VIII-1', 2, { a: 2, b: 3, c: 1, d: -4, s: 1 }, '2x² − 5x − 12', '(2x+3)(x-4)');
+contoh('VIII-1', 3, { c: 3, b: 4, m: 3, p: 1, n: 2, q: 1, s: 1 }, '3x²y', '12x3y2 : 4xy');
+contoh('VIII-1', 4, { jenis: 'persekutuan', g: 3, p: 2, q: 3, s: 1 }, '3(2x + 3)', '6x+9');
+contoh('VIII-1', 4, { jenis: 'kuadrat', p: 2, q: 5, s: 1 }, '(x + 2)(x + 5)', 'x2+7x+10');
+contoh('VIII-1', 5, { a: 2, b: 3, c: 1, d: -1, t: 4 }, '33', '(2x+3)(x-1), x=4');
+contoh('VIII-1', 6, { jenis: 'keliling', a: 3, b: 2, x: 5, k: 0 }, '5', 'keliling 26');
+contoh('VIII-2', 1, { x: 2, a: 2, b: 1, y: 5, cc: 3, d: 2, e: 16, tanya: 'x' }, '2', 'substitusi');
+contoh('VIII-2', 2, { x: 3, y: 1, a1: 2, b1: 1, a2: 1, b2: -1, tanya: 'jumlah' }, '4', 'x+y');
+contoh('VIII-2', 3, { k: 2, um: [40, 10], tanya: 'x', nama: 'Dina', x: 1, y: 2, a1: 1, b1: 1, a2: 1, b2: 2 }, '40', 'umur ayah');
+contoh('VIII-2', 4, { x: 3, y: 2, a1: 1, b1: 1, a2: 2, b2: 1, s: 1 }, '(3, 2)', 'periksa penyelesaian');
+contoh('VIII-2', 5, { jenis: 'tidak', a: 2, b: 3, cc: 6, k: 2, s: 1 }, 'Tidak ada penyelesaian', 'sejajar');
+contoh('VIII-2', 5, { jenis: 'tak hingga', a: 2, b: 3, cc: 6, k: 2, s: 1 }, 'Tak hingga banyak penyelesaian', 'berimpit');
+contoh('VIII-2', 6, { jenis: 'impas', t: 10, v: 4, sel: 5, a: 1, k: 0 }, '10', 'titik impas');
+contoh('VIII-3', 1, { m: 2, n: 3, a: 4 }, '11', 'f(4)');
+contoh('VIII-3', 2, { m: 2, x1: 1, y1: 3, x2: 3, y2: 7 }, '2', 'gradien');
+contoh('VIII-3', 3, { jenis: 'dua titik', m: 2, n: 1, x1: 1, dx: 2, s: 1 }, 'y = 2x + 1', 'persamaan garis');
+contoh('VIII-3', 4, { m: 2, x0: -3, n: 6, jenis: 'sumbu x' }, '-3', 'potong sumbu x');
+contoh('VIII-3', 5, { jenis: 'tegak', m: 2, n: 1, px: 1, py: 1, a: 3, b: 4 }, '-4/3', 'tegak lurus');
+contoh('VIII-3', 6, { jenis: 'biaya', tetap: 5, per: 3, k: 4, z: 0 }, '17', 'biaya taksi');
+contoh('VIII-4', 1, { jenis: 'pelurus', th: 70 }, '110', 'berpelurus');
+contoh('VIII-4', 2, { jenis: 'dalam', A: 50, B: 60 }, '70', 'sudut C');
+contoh('VIII-4', 3, { jenis: 'jumlah', n: 6, k: 0 }, '720', 'segi-6');
+contoh('VIII-4', 3, { jenis: 'beraturan', n: 6, k: 0 }, '120', 'segi-6 beraturan');
+contoh('VIII-4', 4, { jenis: 'belah ketupat', a: 5, t: 4, b: 3, d1: 10, d2: 6 }, '30', 'luas belah ketupat');
+contoh('VIII-4', 5, { jenis: 'miring', t: [3, 4, 5], k: 1, pos: 0 }, '5', 'pythagoras');
+contoh('VIII-4', 6, { jenis: 'tangga', t: [3, 4, 5], k: 2, a: 5, h: 4, d1: 6, d2: 5, b: 3 }, '10', 'tangga');
+contoh('VIII-5', 1, { jenis: 'koin', n: 2, u: 2 }, '4', 'ruang sampel 2 koin');
+contoh('VIII-5', 2, { jenis: 'bola', m: [3, 4, 5], k: 0, N: 20, z: 0 }, '3/4', 'bukan merah');
+contoh('VIII-5', 3, { jenis: 'relatif', n: 50, k: 0, q: 5, pp: 3, mult: 2, z: 0, sk: 0 }, '3/5', 'frekuensi relatif');
+contoh('VIII-5', 4, { jenis: 'dua', z: 0 }, '1/2', 'pohon dua koin');
+contoh('VIII-5', 5, { jenis: 'kembar', j: 8, d: 1 }, '1/6', 'dua dadu kembar');
+contoh('VIII-5', 6, { jenis: 'bebas', n: 40, a: 3, b: 4, m: 2, sk: 0 }, '2/3', 'peluang bebas');
 // H3 tampil bentuk SVG
 const sH3 = CP.peta.H3.bangun(1, { t: 0, n: NN, a: 36, b: 48 });
 cek(CP.peta.H3.gambar(sH3).indexOf('<svg') === 0, 'gambar H3 contoh');
@@ -305,12 +339,13 @@ cek(CP.modulUntukProfil({ jenjang: 'SMP', kelas: 'VII', tl: false }).sekolah.len
 const BAB_SEGERA = CP.REG.filter((m) => m.status === 'segera');
 BAB_SEGERA.forEach((m) => { cek(typeof m.generator !== 'function', 'bab segera tidak boleh punya generator: ' + m.id); });
 cek(['VII-1', 'VII-2', 'VII-3', 'X-1', 'X-2', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 1 aktif');
-cek(CP.REG.filter((m) => m.status === 'aktif').length === 19, 'tepat 19 modul aktif (Tahap 1 + Tahap 2)');
+cek(CP.REG.filter((m) => m.status === 'aktif').length === 24, 'tepat 24 modul aktif (Tahap 1-3)');
+cek(['VIII-1', 'VIII-2', 'VIII-3', 'VIII-4', 'VIII-5'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 3 aktif');
 cek(['VII-4', 'VII-5', 'VII-6', 'X-3', 'X-4', 'X-5', 'X-6', 'X-7'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 2 aktif');
 cek(CP.REG.filter((m) => m.status === 'aktif').every((m) => m.level.length === 6 || (m.id === 'H5' && m.level.length === 4)), 'level tiap modul');
-cek(CP.peta['VIII-1'].status === 'segera' && CP.peta['XI-TL-3'].judul === 'Matriks', 'bab segera terdaftar dengan judul');
+cek(CP.peta['IX-1'].status === 'segera' && CP.peta['XI-TL-3'].judul === 'Matriks', 'bab segera terdaftar dengan judul');
 cek(CP.peta['XII-TL-2'].judul === 'Limit' && CP.peta['IX-2'].perluGambar === true, 'detail registri');
-try { CP.peta['VIII-1'].generator(1); cek(false, 'bab segera dapat dilatih'); } catch (e) { cek(true, ''); }
+try { CP.peta['IX-1'].generator(1); cek(false, 'bab segera dapat dilatih'); } catch (e) { cek(true, ''); }
 cek(CP.targetModul(CP.peta.H1, 1) === 10 && CP.targetModul(CP.peta.H1, 6) === 30 && CP.targetModul(CP.peta['VII-1'], 1) === 30 && CP.targetModul(CP.peta['VII-1'], 6) === 90, 'target waktu awal');
 
 /* ---------- 6. Profil dan naik kelas ---------- */

@@ -177,6 +177,8 @@
     return { langkah, dibagi, c1, c2 };
   }
 
+  CP.spl = { eq, acakSPL, langkahSPL };
+
   CP.aktifkan('X-4', {
     level: [
       lv('Jumlah dan selisih dua bilangan', 'x + y = 10, x − y = 4', 'angka',

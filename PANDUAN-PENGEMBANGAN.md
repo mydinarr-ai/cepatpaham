@@ -13,6 +13,7 @@ Dokumen ini untuk sesi Claude Code berikutnya. Baca juga `spesifikasi-aplikasi-h
 | `js/sekolah.js` | Tahap 1: VII-1..3, X-1..2. |
 | `js/kelas7b.js` | Tahap 2 Kelas VII: VII-4 (aljabar), VII-5 (kesebangunan), VII-6 (data). Juga mengekspor `CP.alj` dan `CP.gbr` untuk dipakai file lain. |
 | `js/kelas10b.js` | Tahap 2 Kelas X: X-3 (trigonometri), X-4 (SPL), X-5 (kuadrat), X-6 (data), X-7 (peluang). |
+| `js/kelas8.js` | Tahap 3 Kelas VIII: VIII-1 (aljabar), VIII-2 (SPLDV), VIII-3 (fungsi linear), VIII-4 (bangun geometri), VIII-5 (peluang). Memakai `CP.alj` (kelas7b) dan `CP.spl` (kelas10b). |
 | `js/gambar.js` | Penggambar SVG umum (`CP.gambarUmum`): persegi panjang, segitiga, parabola, diagram batang/lingkaran/kotak-garis dibuat dari daftar elemen (`CP.H`). Gambar balok H3 tetap di `cerita.js`. |
 | `js/hitung.js` | Hitung Cepat H1, H2, H4, H5, H6. |
 | `js/cerita.js` | H3 Soal Cerita Model Bar + penggambar SVG balok + templat cerita. |
@@ -21,7 +22,7 @@ Dokumen ini untuk sesi Claude Code berikutnya. Baca juga `spesifikasi-aplikasi-h
 | `uji.js` | Pengujian otomatis. Jalankan: `node uji.js` (cepat: `BANYAK=100 node uji.js`). |
 | `serve.js` | Server lokal untuk mencoba: `node serve.js` lalu buka `http://localhost:5173`. |
 
-Urutan muat skrip di `index.html` dan `uji.js` harus tetap: `inti` → `peta` → `materi` → `sekolah` → `hitung` → `cerita` → `gambar` → `kelas7b` → `kelas10b`. File modul baru (mis. `kelas8.js` untuk Tahap 3) ditambahkan **setelah** `kelas10b.js` dan didaftarkan di tiga tempat: tag `<script>` di `index.html`, daftar `ASET` di `sw.js`, dan baris `muat(...)` di `uji.js`.
+Urutan muat skrip di `index.html` dan `uji.js` harus tetap: `inti` → `peta` → `materi` → `sekolah` → `hitung` → `cerita` → `gambar` → `kelas7b` → `kelas10b` → `kelas8`. File modul baru (mis. `kelas9.js` untuk Tahap 5) ditambahkan **setelah** `kelas8.js` dan didaftarkan di tiga tempat: tag `<script>` di `index.html`, daftar `ASET` di `sw.js`, dan baris `muat(...)` di `uji.js`.
 
 ## 2. Cara mengaktifkan satu bab (langkah demi langkah)
 
