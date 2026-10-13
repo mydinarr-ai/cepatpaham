@@ -81,6 +81,8 @@
     return { tipe: 'gambar', alt: o.alt || 'Bidang koordinat', tinggi: 150, el };
   }
 
+  CP.gbrBidang = gbrBidang;
+
   /* ========================= IX-1 SPLDV ========================= */
   function acakSol(r, lo, hi) {
     for (;;) {

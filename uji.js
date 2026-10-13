@@ -5,7 +5,7 @@ const path = require('path');
 const muat = (f) => require(path.join(__dirname, 'js', f));
 muat('inti.js'); muat('peta.js');
 if (fs.existsSync(path.join(__dirname, 'js', 'materi.js'))) muat('materi.js');
-muat('sekolah.js'); muat('hitung.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js'); muat('kelas9.js'); muat('kelas11.js');
+muat('sekolah.js'); muat('hitung.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js'); muat('kelas9.js'); muat('kelas11.js'); muat('kelas12.js');
 const CP = globalThis.CP;
 
 let lulus = 0, gagal = 0;
@@ -302,6 +302,28 @@ contoh('XI-3', 3, { a: 2, b: 3, e: [1, -1, 0, -1, 1], kk: 1, tanya: 'b', k: 0 },
 contoh('XI-3', 4, { a: 2, b: 3, e: [1, -1, 0, -1, 1], kk: 1, sd: 1, k: 0 }, 'y = 3x + 2', 'persamaan regresi');
 contoh('XI-3', 5, { a: 2, b: 3, e: [1, -1, 0, -1, 1], kk: 1, x0: 7, k: 0 }, '23', 'prediksi');
 contoh('XI-3', 6, { mag: 80, tanda: -1, k: 0, sd: 1 }, 'Korelasi negatif kuat', 'tafsir r');
+/* ---- Kelas XII: contoh tetap ---- */
+contoh('XII-1', 1, { px: 2, py: 3, a: 4, b: -1, tanya: 'absis' }, '6', 'translasi absis');
+contoh('XII-1', 2, { a: 2, b: 3, sd: 1 }, 'y = (x − 2)² + 3', 'rumus translasi');
+contoh('XII-1', 3, { jenis: 'sumbu y', a: 1, b: 2, cc: -3, x0: 2 }, '-3', 'refleksi sumbu y');
+contoh('XII-1', 4, { jenis: 'vertikal', k: 2, m: 1, n: 3, x0: 4 }, '14', 'dilatasi vertikal');
+contoh('XII-1', 5, { jenis: 'nilai', A: 2, h: 1, K: -3, x0: 3 }, '5', 'komposisi transformasi');
+contoh('XII-1', 6, { m: 3, n: 5, a: 2, b: 1, k: 2, x0: 6, z: 0 }, '42', 'cerita biaya');
+contoh('XII-2', 1, { th: 90, k: 2, rr: 14 }, '22', 'busur 90');
+contoh('XII-2', 2, { th: 180, k: 1, rr: 7 }, '77', 'juring 180');
+contoh('XII-2', 3, { jenis: 'dariBusur', th: 90, k: 2, rr: 14 }, '90', 'sudut dari busur');
+contoh('XII-2', 4, { jenis: 'keliling', a: 35, t1: 30, t2: 90, b1: 3 }, '35', 'sudut keliling');
+contoh('XII-2', 4, { jenis: 'banding', a: 35, t1: 30, t2: 90, b1: 3 }, '18', 'busur sebanding');
+contoh('XII-2', 5, { jenis: 'kelilingJuring', th: 90, k: 2, rr: 14, m: 1 }, '50', 'keliling juring');
+contoh('XII-2', 5, { jenis: 'tembereng', th: 90, k: 2, rr: 14, m: 1 }, '56', 'tembereng');
+contoh('XII-2', 6, { jenis: 'sapuan', mnt: 15, k: 2, th: 90, kk: 1, z: 0 }, '154', 'wiper');
+contoh('XII-3', 1, { jenis: 'berbeda', m: 6, k: 3, a: 2, b: 2, cc: 2 }, '120', 'bilangan berbeda');
+contoh('XII-3', 2, { jenis: 'permutasi', n: 8, r: 3, z: 0 }, '336', 'P(8,3)');
+contoh('XII-3', 3, { jenis: 'nilai', n: 10, r: 3, z: 0 }, '120', 'C(10,3)');
+contoh('XII-3', 4, { jenis: 'unsurSama', w: 0, n: 5 }, '30', 'KATAK');
+contoh('XII-3', 4, { jenis: 'siklis', w: 0, n: 5 }, '24', 'siklis 5 orang');
+contoh('XII-3', 5, { jenis: 'kelompok', a: 5, b: 4, x: 2, y: 1, tot: 3 }, '40', 'tim 2 putra 1 putri');
+contoh('XII-3', 6, { a: 3, b: 3, x: 1, y: 1, z: 0 }, '3/5', 'peluang kombinatorik');
 // H3 tampil bentuk SVG
 const sH3 = CP.peta.H3.bangun(1, { t: 0, n: NN, a: 36, b: 48 });
 cek(CP.peta.H3.gambar(sH3).indexOf('<svg') === 0, 'gambar H3 contoh');
@@ -388,15 +410,16 @@ cek(CP.modulUntukProfil({ jenjang: 'SMP', kelas: 'VII', tl: false }).sekolah.len
 const BAB_SEGERA = CP.REG.filter((m) => m.status === 'segera');
 BAB_SEGERA.forEach((m) => { cek(typeof m.generator !== 'function', 'bab segera tidak boleh punya generator: ' + m.id); });
 cek(['VII-1', 'VII-2', 'VII-3', 'X-1', 'X-2', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 1 aktif');
-cek(CP.REG.filter((m) => m.status === 'aktif').length === 31, 'tepat 31 modul aktif (kelas VII-XI)');
+cek(CP.REG.filter((m) => m.status === 'aktif').length === 34, 'tepat 34 modul aktif (kelas VII-XII Umum)');
+cek(['XII-1', 'XII-2', 'XII-3'].every((id) => CP.peta[id].status === 'aktif'), 'bab Kelas XII aktif');
 cek(['XI-1', 'XI-2', 'XI-3'].every((id) => CP.peta[id].status === 'aktif'), 'bab Kelas XI aktif');
 cek(['IX-1', 'IX-2', 'IX-3', 'IX-4'].every((id) => CP.peta[id].status === 'aktif'), 'bab Kelas IX aktif');
 cek(['VIII-1', 'VIII-2', 'VIII-3', 'VIII-4', 'VIII-5'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 3 aktif');
 cek(['VII-4', 'VII-5', 'VII-6', 'X-3', 'X-4', 'X-5', 'X-6', 'X-7'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 2 aktif');
 cek(CP.REG.filter((m) => m.status === 'aktif').every((m) => m.level.length === 6 || (m.id === 'H5' && m.level.length === 4)), 'level tiap modul');
-cek(CP.peta['XII-1'].status === 'segera' && CP.peta['XI-TL-3'].judul === 'Matriks', 'bab segera terdaftar dengan judul');
+cek(CP.peta['XI-TL-1'].status === 'segera' && CP.peta['XI-TL-3'].judul === 'Matriks', 'bab segera terdaftar dengan judul');
 cek(CP.peta['XII-TL-2'].judul === 'Limit' && CP.peta['IX-2'].perluGambar === true, 'detail registri');
-try { CP.peta['XII-1'].generator(1); cek(false, 'bab segera dapat dilatih'); } catch (e) { cek(true, ''); }
+try { CP.peta['XI-TL-1'].generator(1); cek(false, 'bab segera dapat dilatih'); } catch (e) { cek(true, ''); }
 cek(CP.targetModul(CP.peta.H1, 1) === 10 && CP.targetModul(CP.peta.H1, 6) === 30 && CP.targetModul(CP.peta['VII-1'], 1) === 30 && CP.targetModul(CP.peta['VII-1'], 6) === 90, 'target waktu awal');
 
 /* ---------- 6. Profil dan naik kelas ---------- */

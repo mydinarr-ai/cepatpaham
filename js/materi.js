@@ -230,6 +230,33 @@
       contoh: { level: 3, seed: 5 }, cobaMaks: 3,
       kenapa: 'Garis regresi dipilih agar jumlah kuadrat jarak vertikal titik-titik ke garis sekecil mungkin, sehingga garis itu mewakili kecenderungan data.'
     },
+    'XII-1': {
+      konsep: [
+        { judul: 'Translasi dan refleksi grafik', teks: 'Grafik y = f(x) digeser a ke kanan dan b ke atas menjadi y = f(x \u2212 a) + b.\nRefleksi terhadap sumbu x: y = \u2212f(x). Terhadap sumbu y: y = f(\u2212x).' },
+        { judul: 'Dilatasi grafik', teks: 'Dilatasi vertikal faktor k: y = k\u00B7f(x) (grafik memanjang ke atas-bawah).\nDilatasi horizontal faktor k: y = f(x/k) (grafik melebar ke samping k kali).' },
+        { judul: 'Menggabungkan transformasi', teks: 'Untuk y = x\u00B2: y = A(x \u2212 h)\u00B2 + K memiliki titik puncak (h, K). Terapkan transformasi sesuai urutan yang disebutkan soal, ganti x di dalam fungsi untuk gerak horizontal dan ubah nilai di luar untuk gerak vertikal.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Menggeser grafik ke kanan a sama dengan "mengulur waktu" input: nilai f(x) yang dulu di x sekarang ada di x + a, sehingga x diganti x \u2212 a.'
+    },
+    'XII-2': {
+      konsep: [
+        { judul: 'Busur dan juring', teks: 'Juring dengan sudut pusat \u03B8 pada lingkaran berjari-jari r:\nPanjang busur = \u03B8/360 \u00D7 2\u03C0r. Luas juring = \u03B8/360 \u00D7 \u03C0r\u00B2. Keliling juring = 2r + busur.' },
+        { judul: 'Sudut pusat dan sudut keliling', teks: 'Sudut keliling yang menghadap busur yang sama dengan sudut pusat besarnya setengah sudut pusat itu.\nPanjang busur dan luas juring sebanding dengan sudut pusatnya.' },
+        { judul: 'Tembereng', teks: 'Tembereng adalah juring dikurangi segitiga yang dibentuk dua jari-jari dan tali busur. Untuk sudut pusat 90\u00B0: tembereng = \u00BC\u03C0r\u00B2 \u2212 \u00BDr\u00B2. Gunakan \u03C0 = 22/7 untuk r kelipatan 7.' }
+      ],
+      contoh: { level: 2, seed: 7 }, cobaMaks: 3,
+      kenapa: 'Juring adalah "irisan" dari lingkaran penuh: sudut \u03B8 dari 360\u00B0 penuh, sehingga luas dan busurnya juga \u03B8/360 dari luas dan keliling lingkaran.'
+    },
+    'XII-3': {
+      konsep: [
+        { judul: 'Aturan pengisian tempat', teks: 'Kalikan banyak pilihan tiap tempat. Angka berbeda: pilihan berkurang satu tiap tempat. Jika ada syarat (misalnya genap), isi tempat yang bersyarat lebih dulu.' },
+        { judul: 'Permutasi dan kombinasi', teks: 'Permutasi (urutan penting): P(n, r) = n!/(n \u2212 r)!. Kombinasi (urutan tidak penting): C(n, r) = n!/(r!(n \u2212 r)!).\nUnsur sama: n!/(n\u2081! n\u2082! \u2026). Permutasi siklis: (n \u2212 1)!.' },
+        { judul: 'Peluang', teks: 'Peluang = banyak cara yang diinginkan \u00F7 banyak semua cara. Gunakan kombinasi untuk pemilihan tanpa urutan: C(a, x) \u00D7 C(b, y) \u00F7 C(n, r). "Paling sedikit satu" = semua cara \u2212 cara tanpa yang diinginkan.' }
+      ],
+      contoh: { level: 3, seed: 8 }, cobaMaks: 3,
+      kenapa: 'Kombinasi adalah permutasi yang dibagi r! karena setiap kelompok r unsur yang sama dihitung r! kali dalam permutasi (semua urutannya).'
+    },
     H1: {
       konsep: [
         { judul: 'Pecah per tempat', teks: 'Pisahkan puluhan dan satuan. 48 + 37 = (40 + 30) + (8 + 7) = 70 + 15 = 85.\nKerjakan dari bagian besar dulu supaya mudah dicek.' },

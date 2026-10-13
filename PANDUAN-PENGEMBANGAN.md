@@ -16,6 +16,7 @@ Dokumen ini untuk sesi Claude Code berikutnya. Baca juga `spesifikasi-aplikasi-h
 | `js/kelas8.js` | Tahap 3 Kelas VIII: VIII-1 (aljabar), VIII-2 (SPLDV), VIII-3 (fungsi linear), VIII-4 (bangun geometri), VIII-5 (peluang). Memakai `CP.alj` (kelas7b) dan `CP.spl` (kelas10b). |
 | `js/kelas9.js` | Kelas IX: IX-1 (SPLDV), IX-2 (bangun ruang), IX-3 (transformasi geometri), IX-4 (peluang dan sampel). Berisi penggambar bangun ruang dan bidang koordinat. |
 | `js/kelas11.js` | Kelas XI Umum: XI-1 (komposisi dan invers fungsi), XI-2 (lingkaran), XI-3 (statistika: pencar, regresi, korelasi). |
+| `js/kelas12.js` | Kelas XII Umum: XII-1 (transformasi fungsi), XII-2 (busur dan juring), XII-3 (kombinatorik). |
 | `js/gambar.js` | Penggambar SVG umum (`CP.gambarUmum`): persegi panjang, segitiga, parabola, diagram batang/lingkaran/kotak-garis dibuat dari daftar elemen (`CP.H`). Gambar balok H3 tetap di `cerita.js`. |
 | `js/hitung.js` | Hitung Cepat H1, H2, H4, H5, H6. |
 | `js/cerita.js` | H3 Soal Cerita Model Bar + penggambar SVG balok + templat cerita. |
@@ -24,7 +25,7 @@ Dokumen ini untuk sesi Claude Code berikutnya. Baca juga `spesifikasi-aplikasi-h
 | `uji.js` | Pengujian otomatis. Jalankan: `node uji.js` (cepat: `BANYAK=100 node uji.js`). |
 | `serve.js` | Server lokal untuk mencoba: `node serve.js` lalu buka `http://localhost:5173`. |
 
-Urutan muat skrip di `index.html` dan `uji.js` harus tetap: `inti` → `peta` → `materi` → `sekolah` → `hitung` → `cerita` → `gambar` → `kelas7b` → `kelas10b` → `kelas8` → `kelas9` → `kelas11`. File modul baru (mis. `kelas12.js`) ditambahkan **setelah** `kelas11.js` dan didaftarkan di tiga tempat: tag `<script>` di `index.html`, daftar `ASET` di `sw.js`, dan baris `muat(...)` di `uji.js`.
+Urutan muat skrip di `index.html` dan `uji.js` harus tetap: `inti` → `peta` → `materi` → `sekolah` → `hitung` → `cerita` → `gambar` → `kelas7b` → `kelas10b` → `kelas8` → `kelas9` → `kelas11` → `kelas12`. File modul baru (mis. `kelas11tl.js` untuk Tingkat Lanjut) ditambahkan **setelah** `kelas12.js` dan didaftarkan di tiga tempat: tag `<script>` di `index.html`, daftar `ASET` di `sw.js`, dan baris `muat(...)` di `uji.js`.
 
 ## 2. Cara mengaktifkan satu bab (langkah demi langkah)
 
@@ -102,4 +103,4 @@ GitHub Pages memperbarui dalam 1-2 menit. File `.nojekyll` sudah ada. Setelah me
 
 ## 7. Urutan pengerjaan
 
-Atas permintaan pemilik, bab dikerjakan **berurutan menurut kelas (VII → XII)**, bukan menurut nomor tahap di spesifikasi. Selesai: VII, VIII, IX, X, XI Umum. Berikutnya: XII Umum, lalu Tingkat Lanjut XI dan XII, lalu modul TKA/UTBK dan akun online.
+Atas permintaan pemilik, bab dikerjakan **berurutan menurut kelas (VII → XII)**, bukan menurut nomor tahap di spesifikasi. Selesai: VII, VIII, IX, X, XI Umum, XII Umum. Berikutnya: lalu Tingkat Lanjut XI dan XII, lalu modul TKA/UTBK dan akun online.
