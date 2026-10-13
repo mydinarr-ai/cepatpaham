@@ -15,7 +15,7 @@
       elemen: [
         { id: 'bilangan', nama: 'Bilangan', bobot: 7, modul: ['VII-1', 'VII-2', 'VII-3', 'H1', 'H2', 'H3'], khas: [] },
         { id: 'aljabar', nama: 'Aljabar', bobot: 7, modul: ['VII-4', 'VIII-1', 'VIII-2', 'VIII-3', 'IX-1'] },
-        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 6, modul: ['VII-5', 'VIII-4', 'IX-2', 'IX-3'], khas: ['ruang', 'pemuatan'] },
+        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 6, modul: ['VII-5', 'VIII-4', 'IX-2', 'IX-3'], khas: ['ruang', 'kubus', 'pemuatan'] },
         { id: 'data', nama: 'Data dan Peluang', bobot: 5, modul: ['VII-6', 'VIII-5', 'IX-4'], khas: ['grafikGaris'] }
       ]
     },
@@ -24,7 +24,7 @@
       elemen: [
         { id: 'bilangan', nama: 'Bilangan', bobot: 5, modul: ['X-1', 'X-2', 'H1', 'H2'], khas: ['himpunan', 'biner'] },
         { id: 'aljabar', nama: 'Aljabar dan Fungsi', bobot: 7, modul: ['X-4', 'X-5', 'XI-1', 'XII-1'], khas: ['peluruhan', 'cukup', 'daerah', 'buket'] },
-        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 4, modul: ['XI-2', 'XII-2'], khas: ['ruang', 'cukup', 'pemuatan'] },
+        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 4, modul: ['XI-2', 'XII-2'], khas: ['ruang', 'kubus', 'cukup', 'pemuatan', 'transformasi'] },
         { id: 'trigonometri', nama: 'Trigonometri', bobot: 3, modul: ['X-3'] },
         { id: 'data', nama: 'Data dan Peluang', bobot: 6, modul: ['X-6', 'X-7', 'XI-3', 'XII-3'], khas: ['grafikGaris', 'tabelDistribusi'] }
       ]
@@ -405,6 +405,110 @@
         langkah: [CP.st('Misalkan harga satuan ' + nm.join(', ').toLowerCase() + ' adalah x, y, z (ribu rupiah). Dari tiga baris tabel: ' + M.map((r, i) => r[0] + 'x + ' + r[1] + 'y + ' + r[2] + 'z = ' + harga[i]).join('; ') + '.'), CP.st('Penyelesaian sistem: x = ' + x + ', y = ' + y + ', z = ' + z + ' (ribu rupiah).'), CP.st('Total = ' + harga[K] + ' + ' + tambah[0] + '×' + x + ' + ' + tambah[1] + '×' + y + ' + ' + tambah[2] + '×' + z + ' = ' + tot + ' ribu = Rp' + CP.angka(tot * 1000) + ',00.', 'Rp' + CP.angka(tot * 1000) + ',00')], param: { x, y, z, M, harga, tambah, K, tot } };
     }
     throw new Error('buket gagal');
+  };
+
+  /* --- kubus 3D: kedudukan rusuk dan bidang (bergambar) --- */
+  const BIDANG = { ABFE: { ax: 1, v: 0 }, DCGH: { ax: 1, v: 1 }, ADHE: { ax: 0, v: 0 }, BCGF: { ax: 0, v: 1 }, ABCD: { ax: 2, v: 0 }, EFGH: { ax: 2, v: 1 } };
+  const LAWAN_BIDANG = { ABFE: 'DCGH', DCGH: 'ABFE', ADHE: 'BCGF', BCGF: 'ADHE', ABCD: 'EFGH', EFGH: 'ABCD' };
+  const namaRusuk = RUSUK.map((r) => r[0] + r[1]);
+  const rusukDari = (n) => RUSUK.find((r) => r[0] + r[1] === n);
+  const putarNama = (n, k) => n.slice(k) + n.slice(0, k);
+  const bersama = (a, b) => a[0] === b[0] || a[0] === b[1] || a[1] === b[0] || a[1] === b[1];
+  const REL_RUSUK = {
+    sejajar: (a, b) => a !== b && a[2] === b[2],
+    bersilangan: (a, b) => a[2] !== b[2] && !bersama(a, b),
+    berpotongan: (a, b) => a[2] !== b[2] && bersama(a, b)
+  };
+  const REL_RB = {
+    'terletak pada': (e, p) => e[2] !== p.ax && KUBUS[e[0]][p.ax] === p.v,
+    'sejajar dengan': (e, p) => e[2] !== p.ax && KUBUS[e[0]][p.ax] !== p.v,
+    'tegak lurus pada': (e, p) => e[2] === p.ax
+  };
+  const sudutKubus = (v) => { const s = 62, dx = 44, dy = 32, x0 = 104, y0 = 116; return [x0 + v[0] * s + v[1] * dx, y0 - v[2] * s - v[1] * dy]; };
+  function gbrKubus(sorot) {
+    sorot = sorot || {};
+    const P = {}; Object.keys(KUBUS).forEach((k) => { P[k] = sudutKubus(KUBUS[k]); });
+    const pusat = sudutKubus([0.5, 0.5, 0.5]), el = [];
+    if (sorot.bidang) el.push(CP.H.p(sorot.bidang.split('').map((k) => P[k]), 'isi2'));
+    const tersembunyi = (r) => r[0] === 'D' || r[1] === 'D';
+    RUSUK.forEach((r) => el.push(CP.H.l(P[r[0]][0], P[r[0]][1], P[r[1]][0], P[r[1]][1], tersembunyi(r) ? 'putus' : 'garis')));
+    (sorot.rusuk || []).forEach((n) => { const r = rusukDari(n); if (r) el.push(CP.H.l(P[r[0]][0], P[r[0]][1], P[r[1]][0], P[r[1]][1], 'merah')); });
+    Object.keys(P).forEach((k) => { const dx = P[k][0] - pusat[0], dy = P[k][1] - pusat[1], d = Math.hypot(dx, dy) || 1; el.push(CP.H.t(P[k][0] + (dx / d) * 11, P[k][1] + (dy / d) * 11 + 4, k, 'middle', 'tebal')); });
+    return { tipe: 'gambar', alt: 'Kubus ABCD.EFGH' + (sorot.bidang ? ', bidang ' + sorot.bidang + ' diarsir' : '') + (sorot.rusuk && sorot.rusuk.length ? ', rusuk ' + sorot.rusuk.join(', ') + ' ditebalkan merah' : ''), tinggi: 142, el };
+  }
+  KHAS.kubus = function (cfg, el, rng) {
+    const sub = rng.bulat(0, 3);
+    const baseItem = { khas: 'kubus', elemen: el.id };
+    if (sub === 0) { // bidang yang sejajar
+      const nm = rng.pilih(Object.keys(BIDANG)), pakaiNama = putarNama(nm, rng.bulat(0, 3)), benar = LAWAN_BIDANG[nm];
+      const salah = Object.keys(BIDANG).filter((b) => b !== nm && b !== benar).map((b) => putarNama(b, rng.bulat(0, 3)));
+      const benarTampil = putarNama(benar, rng.bulat(0, 3));
+      const o = buatPilihanKhas(rng, benarTampil, salah, cfg.opsi);
+      return Object.assign(baseItem, { tipe: 'pg', teks: 'Perhatikan kubus ABCD.EFGH berikut. Bidang manakah yang sejajar dengan bidang ' + pakaiNama + ' (bidang yang diarsir)?', gambar: CP.gambarSVG(gbrKubus({ bidang: nm })), pilihan: o.pilihan, benar: o.benar,
+        langkah: [CP.st('Dua bidang sejajar jika berhadapan dan tidak berpotongan. Pada kubus, setiap bidang sejajar dengan tepat satu bidang lain, yaitu bidang di seberangnya.'), CP.st('Bidang yang berhadapan dengan ' + nm + ' adalah ' + benar + '.', benarTampil)], param: { sub, bidang: nm, benar } });
+    }
+    if (sub === 1) { // rusuk terhadap rusuk
+      const rel = rng.pilih(Object.keys(REL_RUSUK)), e0 = rng.pilih(RUSUK), n0 = e0[0] + e0[1];
+      for (let t = 0; t < 100; t++) {
+        const cand = rng.kocok(RUSUK.filter((r) => r !== e0)).slice(0, cfg.opsi), tr = cand.map((r) => REL_RUSUK[rel](e0, r));
+        if (!tr.some((x) => x) || tr.filter((x) => x).length > 3) continue;
+        const nama = cand.map((r) => (rng.peluang(0.5) ? r[0] + r[1] : r[1] + r[0]));
+        return Object.assign(baseItem, { tipe: 'mcma', teks: 'Perhatikan kubus ABCD.EFGH berikut. Rusuk mana saja yang ' + rel + ' dengan rusuk ' + n0 + ' (rusuk merah)? Pilih semua jawaban yang benar.', gambar: CP.gambarSVG(gbrKubus({ rusuk: [n0] })), pilihan: nama, benar: tr.map((x, i) => (x ? i : -1)).filter((i) => i >= 0),
+          langkah: cand.map((r, i) => [CP.st('Rusuk ' + nama[i] + (tr[i] ? ' ' + rel + ' dengan ' + n0 + '.' : ' tidak ' + rel + ' dengan ' + n0 + '.'))]), kunciNilai: cand.map((r, i) => (tr[i] ? 'ya' : 'tidak')), param: { sub, rel, e0: n0, cand: cand.map((r) => r[0] + r[1]), tr } });
+      }
+    }
+    if (sub === 2) { // rusuk terhadap bidang
+      const relB = rng.pilih(Object.keys(REL_RB)), nmP = rng.pilih(Object.keys(BIDANG)), P0 = BIDANG[nmP];
+      for (let t = 0; t < 100; t++) {
+        const cand = rng.kocok(RUSUK).slice(0, cfg.opsi), tr = cand.map((r) => REL_RB[relB](r, P0));
+        if (!tr.some((x) => x) || tr.filter((x) => x).length > 3) continue;
+        const nama = cand.map((r) => (rng.peluang(0.5) ? r[0] + r[1] : r[1] + r[0]));
+        return Object.assign(baseItem, { tipe: 'mcma', teks: 'Perhatikan kubus ABCD.EFGH berikut. Rusuk mana saja yang ' + relB + ' bidang ' + putarNama(nmP, rng.bulat(0, 3)) + ' (bidang yang diarsir)? Pilih semua jawaban yang benar.', gambar: CP.gambarSVG(gbrKubus({ bidang: nmP })), pilihan: nama, benar: tr.map((x, i) => (x ? i : -1)).filter((i) => i >= 0),
+          langkah: cand.map((r, i) => [CP.st('Rusuk ' + nama[i] + (tr[i] ? ' ' + relB + ' bidang ' + nmP + '.' : ' tidak ' + relB + ' bidang ' + nmP + '.'))]), kunciNilai: cand.map((r, i) => (tr[i] ? 'ya' : 'tidak')), param: { sub, rel: relB, bidang: nmP, cand: cand.map((r) => r[0] + r[1]), tr } });
+      }
+    }
+    // sub 3: tiga pernyataan benar/salah
+    for (let t = 0; t < 300; t++) {
+      const st = [];
+      for (let i = 0; i < 3; i++) {
+        const j = rng.bulat(0, 3);
+        if (j === 0) { const a = rng.pilih(RUSUK), b = rng.pilih(RUSUK.filter((r) => r !== a)), rel = rng.pilih(Object.keys(REL_RUSUK)); st.push({ teks: 'Rusuk ' + a[0] + a[1] + ' ' + rel + ' dengan rusuk ' + b[0] + b[1] + '.', v: REL_RUSUK[rel](a, b), p: ['rr', a[0] + a[1], rel, b[0] + b[1]] }); }
+        else if (j === 1) { const e = rng.pilih(RUSUK), nm = rng.pilih(Object.keys(BIDANG)), rel = rng.pilih(Object.keys(REL_RB)); st.push({ teks: 'Rusuk ' + e[0] + e[1] + ' ' + rel + ' bidang ' + nm + '.', v: REL_RB[rel](e, BIDANG[nm]), p: ['rb', e[0] + e[1], rel, nm] }); }
+        else if (j === 2) { const a = rng.pilih(Object.keys(BIDANG)), b = rng.pilih(Object.keys(BIDANG).filter((x) => x !== a)); st.push({ teks: 'Bidang ' + a + ' sejajar dengan bidang ' + b + '.', v: BIDANG[a].ax === BIDANG[b].ax && BIDANG[a].v !== BIDANG[b].v, p: ['bs', a, 'sejajar', b] }); }
+        else { const a = rng.pilih(Object.keys(BIDANG)), b = rng.pilih(Object.keys(BIDANG).filter((x) => x !== a)); st.push({ teks: 'Bidang ' + a + ' tegak lurus dengan bidang ' + b + '.', v: BIDANG[a].ax !== BIDANG[b].ax, p: ['bt', a, 'tegak', b] }); }
+      }
+      if (!st.some((x) => x.v) || !st.some((x) => !x.v) || new Set(st.map((x) => x.teks)).size < 3) continue;
+      return Object.assign(baseItem, { tipe: 'kategori', teks: 'Perhatikan kubus ABCD.EFGH berikut. Tentukan benar atau salah setiap pernyataan.', gambar: CP.gambarSVG(gbrKubus({})), pernyataan: st.map((x) => x.teks), kunci: st.map((x) => x.v),
+        langkah: st.map((x) => [CP.st(x.teks + (x.v ? ' (benar)' : ' (salah)'))]), kunciNilai: st.map((x) => (x.v ? 'benar' : 'salah')), param: { sub, st: st.map((x) => x.p) } });
+    }
+    throw new Error('kubus gagal');
+  };
+
+  /* --- transformasi titik: pilih gambar --- */
+  const ROT_TKA = { 90: (x, y) => [-y, x], 180: (x, y) => [-x, -y], 270: (x, y) => [y, -x] };
+  const lab = (q, t, c) => ({ x: q[0], y: q[1], t, c, dx: q[0] >= 4 ? -7 : 7, a: q[0] >= 4 ? 'end' : 'start', dy: q[1] >= 7 ? 15 : -7 });
+  function gambarTitikTransformasi(B, Bp, garis) {
+    return CP.gbrBidang({ batas: [-9, 9, -9, 9], langkah: 3, pts: [lab(B, 'B'), ...(Bp ? [lab(Bp, "B'", 'merah')] : [])], seg: garis ? [garis] : [], alt: Bp ? 'Bidang koordinat dengan titik B dan kandidat bayangan B\'' : 'Bidang koordinat dengan titik B' });
+  }
+  KHAS.transformasi = function (cfg, el, rng) {
+    for (let t = 0; t < 300; t++) {
+      const B = [rng.bulat(-5, 5), rng.bulat(-5, 5)]; if (B[0] === 0 || B[1] === 0 || Math.abs(B[0]) === Math.abs(B[1])) continue;
+      const k = rng.pilih([-3, -2, -1, 1, 2, 3]);
+      const REF = [['sumbu x', (x, y) => [x, -y], null], ['sumbu y', (x, y) => [-x, y], null], ['garis y = ' + (k < 0 ? CP.MIN + Math.abs(k) : k), (x, y) => [x, 2 * k - y], { x1: -9, y1: k, x2: 9, y2: k }], ['garis x = ' + (k < 0 ? CP.MIN + Math.abs(k) : k), (x, y) => [2 * k - x, y], { x1: k, y1: -9, x2: k, y2: 9 }], ['garis y = x', (x, y) => [y, x], { x1: -9, y1: -9, x2: 9, y2: 9 }]];
+      const rf = rng.pilih(REF), sd = rng.pilih([90, 180, 270]);
+      const dalam = (q) => Math.abs(q[0]) <= 9 && Math.abs(q[1]) <= 9;
+      const R1 = rf[1](B[0], B[1]), hasil = ROT_TKA[sd](R1[0], R1[1]);
+      const lain = REF.filter((r) => r !== rf), rotLain = [90, 180, 270].filter((s) => s !== sd);
+      const kand = [ROT_TKA[sd](B[0], B[1]), (() => rf[1](...ROT_TKA[sd](B[0], B[1])))(), R1, ROT_TKA[rotLain[0]](R1[0], R1[1]), ROT_TKA[rotLain[1]](R1[0], R1[1]), rf[1](B[0], B[1]) && lain[0][1](...ROT_TKA[sd](...lain[0][1](B[0], B[1]))), [-hasil[0], hasil[1]], [hasil[0], -hasil[1]]];
+      const unik = []; kand.forEach((q) => { if (q && dalam(q) && !(q[0] === hasil[0] && q[1] === hasil[1]) && !unik.some((u) => u[0] === q[0] && u[1] === q[1])) unik.push(q); });
+      if (!dalam(hasil) || unik.length < cfg.opsi - 1) continue;
+      const pil = rng.kocok([hasil, ...rng.kocok(unik).slice(0, cfg.opsi - 1)]);
+      const benar = pil.findIndex((q) => q === hasil), tx = (q) => '(' + (q[0] < 0 ? CP.MIN + Math.abs(q[0]) : q[0]) + ', ' + (q[1] < 0 ? CP.MIN + Math.abs(q[1]) : q[1]) + ')';
+      const sdt = sd === 90 ? 'Titik B(' + tx(B).slice(1, -1) + ') direfleksikan terhadap ' + rf[0] + ', kemudian dirotasikan ' + sd + '° berlawanan arah jarum jam dengan pusat O(0, 0). ' : 'Titik B(' + tx(B).slice(1, -1) + ') direfleksikan terhadap ' + rf[0] + ', kemudian dirotasikan ' + sd + '° berlawanan arah jarum jam dengan pusat O(0, 0). ';
+      return { tipe: 'pg', khas: 'transformasi', elemen: el.id, teks: sdt + "Titik B' adalah bayangan hasil komposisi kedua transformasi itu. Gambar yang menunjukkan titik B' dengan benar adalah …", gambar: CP.gambarSVG(gambarTitikTransformasi(B, null, rf[2])), gambarOpsi: pil.map((q) => CP.gambarSVG(gambarTitikTransformasi(B, q, rf[2]))), pilihan: pil.map(tx), benar,
+        langkah: [CP.st('Refleksi terhadap ' + rf[0] + ': B' + tx(B) + ' → ' + tx(R1) + '.'), CP.st('Rotasi ' + sd + '° berlawanan arah jarum jam (pusat O): ' + (sd === 90 ? '(p, q) → (−q, p)' : sd === 180 ? '(p, q) → (−p, −q)' : '(p, q) → (q, −p)') + ', sehingga ' + tx(R1) + " → B'" + tx(hasil) + '.'), CP.st('Gambar yang benar adalah yang menempatkan B\' di ' + tx(hasil) + '.', tx(hasil))], param: { B, refl: rf[0], k, sd, R1, hasil, opsi: pil } };
+    }
+    throw new Error('transformasi gagal');
   };
 
   CP.TKA_KHAS = KHAS;

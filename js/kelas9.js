@@ -66,13 +66,14 @@
   function gbrBidang(o) {
     const pts = o.pts || [], poly = o.poly || [], seg = o.seg || [];
     const xs = [0], ys = [0]; pts.forEach((p) => { xs.push(p.x); ys.push(p.y); }); poly.forEach((q) => q.pts.forEach((p) => { xs.push(p[0]); ys.push(p[1]); })); seg.forEach((g) => { xs.push(g.x1, g.x2); ys.push(g.y1, g.y2); });
-    const x0 = Math.min(...xs) - 1, x1 = Math.max(...xs) + 1, y0 = Math.min(...ys) - 1, y1 = Math.max(...ys) + 1;
+    let x0 = Math.min(...xs) - 1, x1 = Math.max(...xs) + 1, y0 = Math.min(...ys) - 1, y1 = Math.max(...ys) + 1;
+    if (o.batas) { x0 = o.batas[0]; x1 = o.batas[1]; y0 = o.batas[2]; y1 = o.batas[3]; }
     const W = 270, Hh = 112, s = Math.min(W / (x1 - x0), Hh / (y1 - y0)), ox = 160 - ((x0 + x1) / 2) * s, oy = 72 + ((y0 + y1) / 2) * s;
     const mx = (x) => ox + x * s, my = (y) => oy - y * s, el = [];
     for (let x = Math.ceil(x0); x <= x1; x++) el.push(H.l(mx(x), my(y0), mx(x), my(y1), 'tipis'));
     for (let y = Math.ceil(y0); y <= y1; y++) el.push(H.l(mx(x0), my(y), mx(x1), my(y), 'tipis'));
     el.push(H.l(mx(x0), my(0), mx(x1), my(0), 'garis'), H.l(mx(0), my(y0), mx(0), my(y1), 'garis'));
-    const step = Math.max(1, Math.ceil((x1 - x0) / 10));
+    const step = o.langkah || Math.max(1, Math.ceil((x1 - x0) / 10));
     for (let x = Math.ceil(x0); x <= x1; x += step) if (x !== 0) el.push(H.t(mx(x), my(0) + 12, x, 'middle', 'kecil'));
     for (let y = Math.ceil(y0); y <= y1; y += step) if (y !== 0) el.push(H.t(mx(0) - 3, my(y) + 4, y, 'end', 'kecil'));
     poly.forEach((q) => el.push(H.p(q.pts.map((p) => [mx(p[0]), my(p[1])]), q.c || 'isi')));

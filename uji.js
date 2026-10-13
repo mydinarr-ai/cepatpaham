@@ -548,7 +548,7 @@ bagian('9. Simulasi TKA (SMP, SMA, SMK)');
         cek(it.pilihan.length === (it.khas === 'cukup' ? 5 : cfg.opsi) && new Set(it.pilihan).size === it.pilihan.length && it.benar >= 0 && it.benar < it.pilihan.length, id + ' opsi pg ' + it.pilihan.length);
         cek(Array.isArray(it.langkah) && it.langkah.length >= 1, id + ' tanpa langkah');
       } else if (it.tipe === 'mcma') {
-        cek(it.pilihan.length === (it.khas ? 5 : cfg.opsi) && it.benar.length >= 1 && it.benar.length < it.pilihan.length, id + ' mcma jumlah benar ' + it.benar.length + ' dari ' + it.pilihan.length);
+        cek(it.pilihan.length === (it.khas === 'kubus' ? cfg.opsi : it.khas ? 5 : cfg.opsi) && it.benar.length >= 1 && it.benar.length < it.pilihan.length, id + ' mcma jumlah benar ' + it.benar.length + ' dari ' + it.pilihan.length);
         if (!it.khas) it.pilihan.forEach((t, i) => cek(t.indexOf(' Jawabannya ' + it.kunciNilai[i] + '.') >= 0 === (it.benar.indexOf(i) >= 0), id + ' pernyataan ' + i + ' tidak konsisten dengan kunci'));
       } else {
         cek(it.pernyataan.length === 3 && it.kunci.some((k) => k) && it.kunci.some((k) => !k), id + ' kategori harus campuran benar/salah');
@@ -657,6 +657,42 @@ bagian('9b. Keluarga soal khas TKA (dihitung ulang terpisah)');
         for (let x = 1; x <= 12; x++) for (let y = 1; y <= 12; y++) for (let z = 1; z <= 12; z++) if (q.M.every((r, i) => r[0] * x + r[1] * y + r[2] * z === q.harga[i])) { cnt++; sat = [x, y, z]; }
         const tot = q.harga[q.K] + q.tambah[0] * sat[0] + q.tambah[1] * sat[1] + q.tambah[2] * sat[2];
         cek(cnt === 1 && JSON.stringify(sat) === JSON.stringify([q.x, q.y, q.z]) && tot === q.tot && it.pilihan[it.benar] === 'Rp' + CP.angka(tot * 1000) + ',00' && it.gambar.indexOf('<svg') === 0, 'buket: penyelesaian ' + cnt + ' / ' + tot + ' vs ' + q.tot);
+      }
+      // kubus 3D (kedudukan dihitung ulang dari koordinat)
+      for (let u = 0; u < 4; u++) {
+        it = K.kubus(cfg, mkEl('geometri'), rngK); jum.kubus = (jum.kubus || 0) + 1;
+        const Vk = { A: [0, 0, 0], B: [1, 0, 0], C: [1, 1, 0], D: [0, 1, 0], E: [0, 0, 1], F: [1, 0, 1], G: [1, 1, 1], H: [0, 1, 1] };
+        const arah = (e) => Vk[e[0]].map((x, i) => Math.abs(x - Vk[e[1]][i])).indexOf(1);
+        const titikSama = (a, b) => a[0] === b[0] || a[0] === b[1] || a[1] === b[0] || a[1] === b[1];
+        const nrm = (nama) => { const t = nama.split('').map((c) => Vk[c]); for (let ax = 0; ax < 3; ax++) if (t.every((p) => p[ax] === t[0][ax])) return { ax, v: t[0][ax] }; return null; };
+        const relRusuk = (rel, a, b) => (rel === 'sejajar' ? a !== b && arah(a) === arah(b) : rel === 'bersilangan' ? arah(a) !== arah(b) && !titikSama(a, b) : arah(a) !== arah(b) && titikSama(a, b));
+        const relRB = (rel, e, nmP) => { const p = nrm(nmP), d = arah(e); return rel === 'terletak pada' ? d !== p.ax && Vk[e[0]][p.ax] === p.v : rel === 'sejajar dengan' ? d !== p.ax && Vk[e[0]][p.ax] !== p.v : d === p.ax; };
+        const q = it.param;
+        cek(it.gambar.indexOf('<svg') === 0 && it.gambar.indexOf('NaN') < 0 && it.gambar.indexOf('undefined') < 0, 'kubus: gambar');
+        if (q.sub === 0) {
+          const a = nrm(q.bidang), b = nrm(q.benar);
+          cek(a.ax === b.ax && a.v !== b.v && nrm(it.pilihan[it.benar]) && nrm(it.pilihan[it.benar]).ax === a.ax && nrm(it.pilihan[it.benar]).v !== a.v, 'kubus: bidang sejajar salah');
+          it.pilihan.forEach((p, k) => { if (k !== it.benar) cek(!(nrm(p).ax === a.ax && nrm(p).v !== a.v), 'kubus: pengecoh bidang sejajar ' + p); });
+        } else if (q.sub === 1) {
+          const e0 = q.e0.split('').map((c) => c); const ed = (n) => [n[0], n[1], arah(n)];
+          const bn = q.cand.map((n) => relRusuk(q.rel, ed(q.e0), ed(n)));
+          cek(JSON.stringify(bn.map((x, i) => (x ? i : -1)).filter((i) => i >= 0)) === JSON.stringify(it.benar) && it.benar.length >= 1 && it.benar.length <= 3 && it.pilihan.length === cfg.opsi, 'kubus: kunci rusuk-rusuk ' + JSON.stringify(it.benar) + ' vs ' + JSON.stringify(bn));
+        } else if (q.sub === 2) {
+          const bn = q.cand.map((n) => relRB(q.rel, [n[0], n[1], arah(n)], q.bidang));
+          cek(JSON.stringify(bn.map((x, i) => (x ? i : -1)).filter((i) => i >= 0)) === JSON.stringify(it.benar) && it.benar.length >= 1 && it.benar.length <= 3, 'kubus: kunci rusuk-bidang');
+        } else {
+          const bn = q.st.map((s) => { if (s[0] === 'rr') return relRusuk(s[2], [s[1][0], s[1][1], arah(s[1])], [s[3][0], s[3][1], arah(s[3])]); if (s[0] === 'rb') return relRB(s[2], [s[1][0], s[1][1], arah(s[1])], s[3]); const a = nrm(s[1]), b = nrm(s[3]); return s[0] === 'bs' ? a.ax === b.ax && a.v !== b.v : a.ax !== b.ax; });
+          cek(JSON.stringify(bn) === JSON.stringify(it.kunci) && it.kunci.some((x) => x) && it.kunci.some((x) => !x), 'kubus: kunci kategori');
+        }
+      }
+      // transformasi titik: pilih gambar
+      it = K.transformasi(cfg, mkEl('geometri'), rngK); jum.transformasi = (jum.transformasi || 0) + 1;
+      {
+        const q = it.param, B = q.B; let R;
+        const refl = q.refl.indexOf('sumbu x') === 0 ? [B[0], -B[1]] : q.refl.indexOf('sumbu y') === 0 ? [-B[0], B[1]] : q.refl.indexOf('y = x') >= 0 ? [B[1], B[0]] : q.refl.indexOf('garis y') === 0 ? [B[0], 2 * q.k - B[1]] : [2 * q.k - B[0], B[1]];
+        R = q.sd === 90 ? [-refl[1], refl[0]] : q.sd === 180 ? [-refl[0], -refl[1]] : [refl[1], -refl[0]];
+        const sama = q.opsi.filter((p) => p[0] === R[0] && p[1] === R[1]).length;
+        cek(sama === 1 && q.opsi[it.benar][0] === R[0] && q.opsi[it.benar][1] === R[1] && q.opsi.length === cfg.opsi && it.gambarOpsi.length === cfg.opsi && new Set(it.gambarOpsi).size === cfg.opsi && it.gambarOpsi.every((g) => g.indexOf('<svg') === 0 && g.indexOf('NaN') < 0 && g.indexOf('undefined') < 0), 'transformasi: jawaban ' + JSON.stringify(R) + ' vs ' + JSON.stringify(q.opsi[it.benar]));
       }
       // grafik garis
       it = K.grafikGaris(cfg, mkEl('data'), rngK, j === 'SMK' ? 'vokasi' : 'umum'); jum.grafik = (jum.grafik || 0) + 1;
