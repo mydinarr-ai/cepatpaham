@@ -15,7 +15,7 @@
       elemen: [
         { id: 'bilangan', nama: 'Bilangan', bobot: 7, modul: ['VII-1', 'VII-2', 'VII-3', 'H1', 'H2', 'H3'], khas: [] },
         { id: 'aljabar', nama: 'Aljabar', bobot: 7, modul: ['VII-4', 'VIII-1', 'VIII-2', 'VIII-3', 'IX-1'] },
-        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 6, modul: ['VII-5', 'VIII-4', 'IX-2', 'IX-3'], khas: ['ruang'] },
+        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 6, modul: ['VII-5', 'VIII-4', 'IX-2', 'IX-3'], khas: ['ruang', 'pemuatan'] },
         { id: 'data', nama: 'Data dan Peluang', bobot: 5, modul: ['VII-6', 'VIII-5', 'IX-4'], khas: ['grafikGaris'] }
       ]
     },
@@ -23,10 +23,10 @@
       nama: 'TKA SMA', durasi: 75, jumlah: 25, opsi: 5, konteks: 'umum', pasti: true,
       elemen: [
         { id: 'bilangan', nama: 'Bilangan', bobot: 5, modul: ['X-1', 'X-2', 'H1', 'H2'], khas: ['himpunan', 'biner'] },
-        { id: 'aljabar', nama: 'Aljabar dan Fungsi', bobot: 7, modul: ['X-4', 'X-5', 'XI-1', 'XII-1'], khas: ['peluruhan', 'cukup'] },
-        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 4, modul: ['XI-2', 'XII-2'], khas: ['ruang', 'cukup'] },
+        { id: 'aljabar', nama: 'Aljabar dan Fungsi', bobot: 7, modul: ['X-4', 'X-5', 'XI-1', 'XII-1'], khas: ['peluruhan', 'cukup', 'daerah', 'buket'] },
+        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 4, modul: ['XI-2', 'XII-2'], khas: ['ruang', 'cukup', 'pemuatan'] },
         { id: 'trigonometri', nama: 'Trigonometri', bobot: 3, modul: ['X-3'] },
-        { id: 'data', nama: 'Data dan Peluang', bobot: 6, modul: ['X-6', 'X-7', 'XI-3', 'XII-3'], khas: ['grafikGaris'] }
+        { id: 'data', nama: 'Data dan Peluang', bobot: 6, modul: ['X-6', 'X-7', 'XI-3', 'XII-3'], khas: ['grafikGaris', 'tabelDistribusi'] }
       ]
     }
   };
@@ -282,6 +282,131 @@
     }
     throw new Error('grafik gagal');
   };
+  /* --- daerah penyelesaian pertidaksamaan (dari gambar) --- */
+  function potongSetengah(poli, a, b, c, atas) { // pertahankan titik dengan a x + b y (>=|<=) c
+    const out = [], n = poli.length, nilai = (p) => a * p[0] + b * p[1] - c, dalam = (p) => (atas ? nilai(p) >= -1e-9 : nilai(p) <= 1e-9);
+    for (let i = 0; i < n; i++) {
+      const p = poli[i], q = poli[(i + 1) % n];
+      if (dalam(p)) out.push(p);
+      if (dalam(p) !== dalam(q)) { const t = nilai(p) / (nilai(p) - nilai(q)); out.push([p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])]); }
+    }
+    return out;
+  }
+  function gbrDaerah(m, u, v, L2) {
+    const maks = Math.max(m, u, v) + 1.5, X0 = 40, Y1 = 124, sk = 92 / maks, mx = (x) => X0 + x * sk * 1.6, my = (y) => Y1 - y * sk * 1.15;
+    let poli = [[0, 0], [maks, 0], [maks, maks], [0, maks]];
+    poli = potongSetengah(poli, 1, 1, m, false); poli = potongSetengah(poli, L2.a, L2.b, L2.c, true);
+    const el = [CP.H.p(poli.map((p) => [mx(p[0]), my(p[1])]), 'isi2'), CP.H.l(X0, Y1, mx(maks), Y1, 'garis'), CP.H.l(X0, Y1, X0, my(maks), 'garis')];
+    el.push(CP.H.l(mx(m), my(0), mx(0), my(m), 'garis'), CP.H.l(mx(v), my(0), mx(0), my(u), 'merah'));
+    [[m, 0], [v, 0]].forEach((p) => el.push(CP.H.t(mx(p[0]), Y1 + 14, p[0], 'middle', 'tebal')));
+    [[0, m], [0, u]].forEach((p) => el.push(CP.H.t(X0 - 6, my(p[1]) + 4, p[1], 'end', 'tebal')));
+    el.push(CP.H.t(mx(maks) - 4, Y1 - 6, 'x', 'end', 'kecil'), CP.H.t(X0 + 8, my(maks) + 10, 'y', 'start', 'kecil'));
+    return { tipe: 'gambar', alt: 'Daerah arsiran dibatasi sumbu koordinat dan dua garis yang memotong sumbu di (' + m + ', 0), (0, ' + m + '), (' + v + ', 0), dan (0, ' + u + ')', tinggi: 144, el };
+  }
+  const gcd2 = CP.gcd;
+  KHAS.daerah = function (cfg, el, rng) {
+    for (let t = 0; t < 200; t++) {
+      const m = rng.bulat(6, 9), u = rng.bulat(2, 5), v = rng.bulat(2, 5), g = gcd2(u, v);
+      if (u === v) continue;
+      const L2 = { a: u / g, b: v / g, c: (u * v) / g };
+      const sis = (opsi) => [{ a: 1, b: 1, c: m, r: opsi.r1 }, { a: opsi.a, b: opsi.b, c: opsi.c, r: opsi.r2 }, ...(opsi.tanpaX ? [] : [{ a: 1, b: 0, c: 0, r: '≥' }]), { a: 0, b: 1, c: 0, r: '≥' }];
+      const bnr = sis({ r1: '≤', a: L2.a, b: L2.b, c: L2.c, r2: '≥' });
+      const varian = [
+        sis({ r1: '≤', a: L2.a, b: L2.b, c: L2.c, r2: '≤' }),
+        sis({ r1: '≥', a: L2.a, b: L2.b, c: L2.c, r2: '≥' }),
+        sis({ r1: '≤', a: L2.b, b: L2.a, c: L2.c, r2: '≥' }),
+        sis({ r1: '≤', a: L2.a, b: L2.b, c: L2.c, r2: '≥', tanpaX: true }),
+        sis({ r1: '≤', a: L2.a, b: L2.b, c: L2.c + gcd2(L2.a, L2.b) * 0 + 1, r2: '≥' }),
+        sis({ r1: '≤', a: L2.a, b: -L2.b, c: -L2.c, r2: '≥' })
+      ];
+      const teksSis = (s) => s.map((c) => rend0(c.a, c.b) + ' ' + c.r + ' ' + F0(c.c)).join('; ');
+      const dalamS = (sis, x, y) => sis.every((c) => { const w = c.a * x + c.b * y; return c.r === '≤' ? w <= c.c : w >= c.c; });
+      const beda = (sis) => { for (let x = -4; x <= 14; x++) for (let y = -4; y <= 14; y++) if (dalamS(sis, x, y) !== dalamS(bnr, x, y)) return true; return false; };
+      const benar = teksSis(bnr), salah = varian.filter(beda).map(teksSis).filter((x) => x !== benar);
+      if (new Set([benar, ...salah]).size < cfg.opsi) continue;
+      const o = buatPilihanKhas(rng, benar, salah, cfg.opsi);
+      return { tipe: 'pg', khas: 'daerah', elemen: el.id, teks: 'Perhatikan gambar berikut. Daerah yang diarsir merupakan himpunan penyelesaian dari sistem pertidaksamaan …', gambar: CP.gambarSVG(gbrDaerah(m, u, v, L2)), pilihan: o.pilihan, benar: o.benar,
+        langkah: [CP.st('Garis hitam memotong sumbu di (' + m + ', 0) dan (0, ' + m + '): persamaannya x + y = ' + m + '. Daerah arsiran ada di bawah/dalam garis (titik O(0, 0) memenuhi), jadi x + y ≤ ' + m + '.'), CP.st('Garis merah memotong sumbu di (' + v + ', 0) dan (0, ' + u + '): persamaannya ' + rend0(L2.a, L2.b) + ' = ' + L2.c + '. Titik O(0, 0) berada di luar daerah arsiran (0 < ' + L2.c + '), jadi tandanya ≥.'), CP.st('Daerah juga di kuadran pertama: x ≥ 0 dan y ≥ 0. Sistemnya: ' + benar + '.', benar)],
+        param: { m, u, v, L2 }, opsiData: [bnr, ...varian.filter(beda)] };
+    }
+    throw new Error('daerah gagal');
+  };
+  const rend0 = (a, b) => (a === 0 ? '' : (a === 1 ? '' : a === -1 ? CP.MIN : a) + 'x') + (a !== 0 && b > 0 ? ' + ' : a !== 0 && b < 0 ? ' ' + CP.MIN + ' ' : b < 0 ? CP.MIN : '') + (b === 0 ? '' : (Math.abs(b) === 1 ? '' : Math.abs(b)) + 'y');
+  const F0 = (c) => (c < 0 ? CP.MIN + Math.abs(c) : String(c));
+
+  /* --- memuat kardus ke bak truk --- */
+  KHAS.pemuatan = function (cfg, el, rng, konteks) {
+    for (let t = 0; t < 300; t++) {
+      const a = 5 * rng.bulat(3, 7), b = 5 * rng.bulat(3, 7), c = 5 * rng.bulat(3, 7);
+      const P = a * rng.bulat(3, 7) + rng.pilih([0, 5, 10]), L = b * rng.bulat(2, 5) + rng.pilih([0, 5, 15]), T = c * rng.bulat(2, 4) + rng.pilih([0, 5]);
+      if (a === b) continue;
+      const n1 = Math.floor(P / a) * Math.floor(L / b), n2 = Math.floor(P / b) * Math.floor(L / a), lap = Math.floor(T / c), maks = Math.max(n1, n2) * lap;
+      if (n1 === n2 || maks < 20) continue;
+      const vol = Math.floor((P * L * T) / (a * b * c));
+      const salah = [Math.min(n1, n2) * lap, n1 * lap + n2 * lap, vol, maks - lap, maks + lap, Math.max(n1, n2) * (lap - 1), Math.max(n1, n2) * (lap + 1), maks + Math.floor(maks / 10)].filter((x) => x !== maks && x > 0).map(String);
+      if (new Set(salah).size < cfg.opsi - 1) continue;
+      const o = buatPilihanKhas(rng, String(maks), salah, cfg.opsi);
+      const barang = konteks === 'vokasi' ? 'kardus kemasan produk' : 'kardus helm';
+      return { tipe: 'pg', khas: 'pemuatan', elemen: el.id, teks: 'Sebuah bak truk berbentuk balok berukuran panjang ' + P + ' cm, lebar ' + L + ' cm, dan tinggi ' + T + ' cm. Truk itu akan memuat ' + barang + ' berbentuk balok berukuran ' + a + ' cm × ' + b + ' cm × ' + c + ' cm (tinggi ' + c + ' cm harus tegak dan kardus tidak boleh dibalik). Kardus boleh diputar 90° pada alasnya, tetapi semua kardus disusun dengan arah yang sama. Berapa paling banyak kardus yang dapat dimuat?', gambar: '', pilihan: o.pilihan, benar: o.benar,
+        langkah: [CP.st('Arah 1 (' + a + ' sejajar panjang bak): ' + Math.floor(P / a) + ' × ' + Math.floor(L / b) + ' = ' + n1 + ' kardus per lapis. Arah 2 (diputar 90°): ' + Math.floor(P / b) + ' × ' + Math.floor(L / a) + ' = ' + n2 + ' kardus per lapis.'), CP.st('Banyak lapis = ' + T + ' ÷ ' + c + ' dibulatkan ke bawah = ' + lap + '.'), CP.st('Maksimum = ' + Math.max(n1, n2) + ' × ' + lap + ' = ' + maks + '.', maks)], param: { P, L, T, a, b, c, maks } };
+    }
+    throw new Error('pemuatan gagal');
+  };
+
+  /* --- tabel data dengan syarat (benar/salah, pasti atau mungkin) --- */
+  KHAS.tabelDistribusi = function (cfg, el, rng, konteks) {
+    const hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+    for (let t = 0; t < 600; t++) {
+      const lo = rng.bulat(1, 3), hi = rng.bulat(9, 12), val = hari.map(() => rng.bulat(lo, hi));
+      const mean = Math.round(val.reduce((a, b) => a + b, 0) / 5), tot = mean * 5;
+      const urut = (x) => x.slice().sort((p, q) => p - q);
+      const med = urut(val)[2];
+      const idx = rng.kocok([0, 1, 2, 3, 4]), tak = [idx[0], idx[1]], tahu = [idx[2], idx[3], idx[4]];
+      const sol = [];
+      for (let p = lo; p <= hi; p++) for (let q = lo; q <= hi; q++) { const w = val.slice(); w[tak[0]] = p; w[tak[1]] = q; if (w.reduce((a, b) => a + b, 0) === tot && urut(w)[2] === med) sol.push(w); }
+      if (sol.length < 3 || sol.length > 12) continue;
+      const nm = (i) => hari[i], A = tak[0], B = tak[1];
+      const batas = rng.bulat(lo, hi - 1);
+      const P = [
+        ['Banyak pengunjung hari ' + nm(A) + ' pasti lebih dari ' + batas + ' orang.', sol.every((w) => w[A] > batas)],
+        ['Banyak pengunjung hari ' + nm(B) + ' pasti paling banyak ' + (batas + 1) + ' orang.', sol.every((w) => w[B] <= batas + 1)],
+        ['Banyak pengunjung hari ' + nm(A) + ' dan hari ' + nm(B) + ' mungkin saja sama.', sol.some((w) => w[A] === w[B])]
+      ];
+      const ok = P.map((x) => x[1]); if (!ok.some((x) => x) || !ok.some((x) => !x)) continue;
+      const vok = konteks === 'vokasi';
+      const tabel = hari.map((h, i) => '• ' + h + ': ' + (tak.indexOf(i) >= 0 ? '?' : val[i])).join('\n');
+      return { tipe: 'kategori', khas: 'tabelDistribusi', elemen: el.id, teks: (vok ? 'Tabel berikut menunjukkan banyak pesanan yang diterima sebuah toko pada hari buka Senin sampai Jumat. Dua hari datanya hilang (?).' : 'Tabel berikut menunjukkan banyak pengunjung perpustakaan desa pada hari buka Senin sampai Jumat. Dua hari datanya hilang (?).') + '\n' + tabel + '\nDiketahui: rata-rata per hari ' + mean + ', banyak per hari paling sedikit ' + lo + ' dan paling banyak ' + hi + ', serta median data ' + med + '. Tentukan benar atau salah setiap pernyataan.', pernyataan: P.map((x) => x[0]), kunci: ok,
+        langkah: P.map(() => [CP.st('Jumlah seluruh = ' + mean + ' × 5 = ' + tot + '. Jumlah hari yang diketahui = ' + tahu.reduce((a, i) => a + val[i], 0) + ', sehingga dua hari hilang berjumlah ' + (tot - tahu.reduce((a, i) => a + val[i], 0)) + '. Semua pasangan yang memenuhi jumlah, batas, dan median ada ' + sol.length + ' kemungkinan.')]), kunciNilai: P.map((x) => (x[1] ? 'benar untuk semua kemungkinan / ada kemungkinan' : 'tidak berlaku')), param: { lo, hi, val, tak, mean, med, batas, sol } };
+    }
+    throw new Error('tabel gagal');
+  };
+
+  /* --- SPLTV dari tabel (buket) --- */
+  function gbrTabel(kolom, baris, lebarKol) {
+    const x0 = 10, y0 = 8, tg = 24, el = []; const lk = lebarKol || kolom.map(() => Math.floor(300 / kolom.length));
+    const semua = [kolom, ...baris]; let y = y0;
+    semua.forEach((r, ri) => { let x = x0; r.forEach((c, ci) => { el.push(CP.H.r(x, y, lk[ci], tg, ri === 0 ? 'isi' : 'kosong'), CP.H.t(x + lk[ci] / 2, y + 16, c, 'middle', ri === 0 ? 'tebal' : 'teks')); x += lk[ci]; }); y += tg; });
+    return { tipe: 'gambar', alt: 'Tabel: ' + semua.map((r) => r.join(' | ')).join('; '), lebar: 320, tinggi: y + 6, el };
+  }
+  KHAS.buket = function (cfg, el, rng, konteks) {
+    for (let t = 0; t < 400; t++) {
+      const x = rng.bulat(3, 12), y = rng.bulat(3, 12), z = rng.bulat(3, 12), M = [0, 1, 2].map(() => [rng.bulat(1, 4), rng.bulat(0, 4), rng.bulat(0, 4)]);
+      const det = M[0][0] * (M[1][1] * M[2][2] - M[1][2] * M[2][1]) - M[0][1] * (M[1][0] * M[2][2] - M[1][2] * M[2][0]) + M[0][2] * (M[1][0] * M[2][1] - M[1][1] * M[2][0]);
+      if (det === 0 || new Set([x, y, z]).size < 3) continue;
+      const harga = M.map((r) => r[0] * x + r[1] * y + r[2] * z), tambah = [rng.bulat(0, 3), rng.bulat(1, 3), rng.bulat(1, 3)], K = 2;
+      const tot = harga[K] + tambah[1] * y + tambah[2] * z + tambah[0] * x;
+      const salah = [tot + 1, tot - 1, tot + 2, tot - 2, tot + 5, tot - 5, tot + 10, tot - 10, harga[K] + tambah[1] * x + tambah[2] * y].map((q) => q).filter((q) => q !== tot && q > 0).map((q) => 'Rp' + CP.angka(q * 1000) + ',00');
+      if (new Set(salah).size < cfg.opsi - 1) continue;
+      const o = buatPilihanKhas(rng, 'Rp' + CP.angka(tot * 1000) + ',00', salah, cfg.opsi);
+      const vok = konteks === 'vokasi', nm = vok ? ['Bahan A', 'Bahan B', 'Bahan C'] : ['Mawar', 'Lili', 'Anyelir'], tipe = vok ? ['Paket 1', 'Paket 2', 'Paket 3'] : ['Tipe A', 'Tipe B', 'Tipe C'];
+      const tabel = gbrTabel([vok ? 'Paket' : 'Buket', nm[0], nm[1], nm[2], 'Harga'], M.map((r, i) => [tipe[i], r[0], r[1], r[2], 'Rp' + CP.angka(harga[i] * 1000)]), [62, 50, 50, 56, 82]);
+      const tamb = [tambah[0] ? tambah[0] + ' ' + nm[0].toLowerCase() : '', tambah[1] + ' ' + nm[1].toLowerCase(), tambah[2] + ' ' + nm[2].toLowerCase()].filter(Boolean).join(', ');
+      return { tipe: 'pg', khas: 'buket', elemen: el.id, teks: (vok ? 'Sebuah bengkel menyediakan tiga paket suku cadang yang terdiri dari tiga jenis bahan. Komposisi dan harga tiap paket diberikan pada tabel. ' : 'Bu Silma merangkai tiga tipe buket dari bunga mawar, lili, dan anyelir. Komposisi dan harga tiap buket diberikan pada tabel. ') + 'Seorang pembeli memilih ' + (vok ? tipe[K].toLowerCase() : 'buket ' + tipe[K]) + ' dan menambah ' + tamb + ' dengan harga satuan. Berapa total yang harus dibayar?', gambar: CP.gambarSVG(tabel), pilihan: o.pilihan, benar: o.benar,
+        langkah: [CP.st('Misalkan harga satuan ' + nm.join(', ').toLowerCase() + ' adalah x, y, z (ribu rupiah). Dari tiga baris tabel: ' + M.map((r, i) => r[0] + 'x + ' + r[1] + 'y + ' + r[2] + 'z = ' + harga[i]).join('; ') + '.'), CP.st('Penyelesaian sistem: x = ' + x + ', y = ' + y + ', z = ' + z + ' (ribu rupiah).'), CP.st('Total = ' + harga[K] + ' + ' + tambah[0] + '×' + x + ' + ' + tambah[1] + '×' + y + ' + ' + tambah[2] + '×' + z + ' = ' + tot + ' ribu = Rp' + CP.angka(tot * 1000) + ',00.', 'Rp' + CP.angka(tot * 1000) + ',00')], param: { x, y, z, M, harga, tambah, K, tot } };
+    }
+    throw new Error('buket gagal');
+  };
+
   CP.TKA_KHAS = KHAS;
 
   // alokasi proporsional (sisa terbesar)

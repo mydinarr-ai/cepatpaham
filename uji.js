@@ -623,6 +623,41 @@ bagian('9b. Keluarga soal khas TKA (dihitung ulang terpisah)');
       // kecukupan data
       it = K.cukup(cfg, mkEl('aljabar'), rngK); jum.cukup = (jum.cukup || 0) + 1;
       cek(it.pilihan.length === 5 && it.benar === it.param.jenis && /\(1\)/.test(it.teks) && /\(2\)/.test(it.teks), 'cukup struktur');
+      // daerah pertidaksamaan
+      it = K.daerah(cfg, mkEl('aljabar'), rngK); jum.daerah = (jum.daerah || 0) + 1;
+      {
+        const d = it.param, L = d.L2, dalamSis = (sis, x, y) => sis.every((c) => { const v = c.a * x + c.b * y; return c.r === '≤' ? v <= c.c : v >= c.c; });
+        const nyata = (x, y) => x >= 0 && y >= 0 && x + y <= d.m && L.a * x + L.b * y >= L.c;
+        let cocok = true; for (let x = 0; x <= 10; x++) for (let y = 0; y <= 10; y++) if (dalamSis(it.opsiData[0], x, y) !== nyata(x, y)) cocok = false;
+        cek(cocok, 'daerah: sistem benar tidak sesuai daerah');
+        it.opsiData.slice(1).forEach((sis, k) => { let beda = false; for (let x = -3; x <= 12; x++) for (let y = -3; y <= 12; y++) if (dalamSis(sis, x, y) !== nyata(x, y)) beda = true; cek(beda, 'daerah: pengecoh ' + k + ' setara dengan jawaban benar'); });
+        cek(it.pilihan[it.benar].indexOf('x + y ≤ ' + d.m) >= 0 && it.pilihan[it.benar].indexOf('y ≥ 0') >= 0 && it.gambar.indexOf('<svg') === 0 && it.gambar.indexOf('NaN') < 0, 'daerah: teks/gambar');
+      }
+      // pemuatan kardus
+      it = K.pemuatan(cfg, mkEl('geometri'), rngK, j === 'SMK' ? 'vokasi' : 'umum'); jum.pemuatan = (jum.pemuatan || 0) + 1;
+      {
+        const q = it.param; const hitung = (A, B) => { let n1 = 0, n2 = 0; for (let x = 0; x + A <= q.P; x += A) n1++; for (let y = 0; y + B <= q.L; y += B) n2++; return n1 * n2; };
+        let lap = 0; for (let z = 0; z + q.c <= q.T; z += q.c) lap++;
+        const maks = Math.max(hitung(q.a, q.b), hitung(q.b, q.a)) * lap;
+        cek(maks === q.maks && it.pilihan[it.benar] === String(maks), 'pemuatan: ' + maks + ' vs ' + q.maks);
+      }
+      // tabel dengan syarat
+      it = K.tabelDistribusi(cfg, mkEl('data'), rngK, j === 'SMK' ? 'vokasi' : 'umum'); jum.tabel = (jum.tabel || 0) + 1;
+      {
+        const q = it.param, urut = (x) => x.slice().sort((a, b) => a - b), sol = [];
+        for (let p = q.lo; p <= q.hi; p++) for (let r = q.lo; r <= q.hi; r++) { const w = q.val.slice(); w[q.tak[0]] = p; w[q.tak[1]] = r; if (w.reduce((a, b) => a + b, 0) === q.mean * 5 && urut(w)[2] === q.med) sol.push(w); }
+        const A = q.tak[0], B2 = q.tak[1];
+        const kun = [sol.every((w) => w[A] > q.batas), sol.every((w) => w[B2] <= q.batas + 1), sol.some((w) => w[A] === w[B2])];
+        cek(sol.length >= 3 && JSON.stringify(kun) === JSON.stringify(it.kunci) && it.kunci.some((x) => x) && it.kunci.some((x) => !x), 'tabel: kunci ' + JSON.stringify(it.kunci) + ' vs ' + JSON.stringify(kun));
+      }
+      // SPLTV buket
+      it = K.buket(cfg, mkEl('aljabar'), rngK, j === 'SMK' ? 'vokasi' : 'umum'); jum.buket = (jum.buket || 0) + 1;
+      {
+        const q = it.param; let cnt = 0, sat = null;
+        for (let x = 1; x <= 12; x++) for (let y = 1; y <= 12; y++) for (let z = 1; z <= 12; z++) if (q.M.every((r, i) => r[0] * x + r[1] * y + r[2] * z === q.harga[i])) { cnt++; sat = [x, y, z]; }
+        const tot = q.harga[q.K] + q.tambah[0] * sat[0] + q.tambah[1] * sat[1] + q.tambah[2] * sat[2];
+        cek(cnt === 1 && JSON.stringify(sat) === JSON.stringify([q.x, q.y, q.z]) && tot === q.tot && it.pilihan[it.benar] === 'Rp' + CP.angka(tot * 1000) + ',00' && it.gambar.indexOf('<svg') === 0, 'buket: penyelesaian ' + cnt + ' / ' + tot + ' vs ' + q.tot);
+      }
       // grafik garis
       it = K.grafikGaris(cfg, mkEl('data'), rngK, j === 'SMK' ? 'vokasi' : 'umum'); jum.grafik = (jum.grafik || 0) + 1;
       const g = it.param, sr = g.seri;
