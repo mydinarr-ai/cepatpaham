@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101B3C">
+<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CepatPaham">
+<meta name="description" content="Hitung cepat. Paham konsep. Latihan matematika SMP sampai SMA/SMK.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="ikon/ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon/apple-touch-180.png">
+<title>CepatPaham</title>
+<style>
+:root{
+  --bg:#F5F2EA; --kartu:#FFFFFF; --ink:#101B3C; --ink2:#55608A; --garis:#101B3C; --lembut:#ECE8DC;
+  --emas:#F5B301; --benar:#15803D; --benar-bg:#DCFCE7; --salah:#B91C1C; --salah-bg:#FEE2E2;
+  --aksen:#2F6BFF; --aksen-teks:#FFFFFF; --oranye:#F97316;
+  --bayang:3px 3px 0 var(--garis); --radius:14px;
+  --bar-a:#B9CBFF; --bar-b:#FBD772; --bar-d:#FDBA8C;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+:root[data-j="SMP"]{--aksen:#0E9F9A}
+:root[data-j="SMA"]{--aksen:#2F6BFF}
+:root[data-j="SMK"]{--aksen:#7C4DFF}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0B1020;--kartu:#141B36;--ink:#F1F3FF;--ink2:#9AA6CC;--garis:#46528A;--lembut:#1B2445;--benar:#4ADE80;--benar-bg:#12301F;--salah:#F87171;--salah-bg:#3A1620;--aksen-teks:#0B1020;--bayang:3px 3px 0 #05080F;--bar-a:#31468F;--bar-b:#8A6A12;--bar-d:#8F4B1E}
+  :root[data-j="SMP"]{--aksen:#2DD4BF}
+  :root[data-j="SMA"]{--aksen:#7AA2FF}
+  :root[data-j="SMK"]{--aksen:#B79BFF}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 var(--font);font-variant-numeric:tabular-nums;min-height:100vh;min-height:100dvh;overscroll-behavior-y:contain}
+#app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:0 16px calc(84px + env(safe-area-inset-bottom))}
+#app.tanpa-nav{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+h1,h2,h3{margin:0;line-height:1.15}
+h1{font-size:28px;font-weight:900;letter-spacing:-.02em}
+h2{font-size:20px;font-weight:800}
+h3{font-size:16px;font-weight:800}
+p{margin:0 0 .6em}
+button{font:inherit;color:inherit;cursor:pointer}
+.sembunyi{display:none!important}
+.kecil{font-size:13px;color:var(--ink2)}
+.tebal{font-weight:800}
+.tengah{text-align:center}
+.gap{height:14px}.gap2{height:8px}.gap3{height:24px}
+
+/* atas */
+.atas{display:flex;align-items:center;gap:10px;padding:14px 0 10px;position:sticky;top:0;background:var(--bg);z-index:5}
+.atas h1,.atas h2{flex:1;min-width:0}
+.merek{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.merek svg{width:34px;height:34px;flex:none}
+.merek b{font-size:19px;font-weight:900;letter-spacing:-.02em}
+.ikon-tombol{width:44px;height:44px;border-radius:12px;border:2px solid var(--garis);background:var(--kartu);display:grid;place-items:center;box-shadow:var(--bayang);flex:none}
+.ikon-tombol:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--garis)}
+.ikon-tombol svg{width:22px;height:22px}
+.avatar{height:44px;padding:0 12px;border-radius:12px;border:2px solid var(--garis);background:var(--kartu);display:flex;align-items:center;gap:8px;font-weight:800;box-shadow:var(--bayang);max-width:150px}
+.avatar i{width:20px;height:20px;border-radius:50%;background:var(--aksen);display:block;flex:none}
+.avatar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* kartu & tombol */
+.kartu{background:var(--kartu);border:2px solid var(--garis);border-radius:var(--radius);padding:14px;box-shadow:var(--bayang)}
+.kartu.rata{box-shadow:none}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 18px;border-radius:12px;border:2px solid var(--garis);background:var(--kartu);font-weight:800;font-size:16px;box-shadow:var(--bayang);width:100%;text-decoration:none;color:var(--ink)}
+.btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--garis)}
+.btn.utama{background:var(--aksen);color:var(--aksen-teks)}
+.btn.emas{background:var(--emas);color:#101B3C}
+.btn.bahaya{background:var(--salah-bg);color:var(--salah)}
+.btn.kecil-btn{min-height:44px;font-size:15px}
+.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn svg{width:20px;height:20px}
+.baris{display:flex;gap:10px}
+.baris>*{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:2px solid var(--garis);font-size:13px;font-weight:800;background:var(--lembut)}
+.chip.aksen{background:var(--aksen);color:var(--aksen-teks)}
+.chip.emas{background:var(--emas);color:#101B3C}
+.pilih-chip{display:flex;flex-wrap:wrap;gap:10px}
+.pilih-chip button{min-height:48px;padding:0 18px;border-radius:12px;border:2px solid var(--garis);background:var(--kartu);font-weight:800;font-size:16px;box-shadow:var(--bayang)}
+.pilih-chip button[aria-pressed="true"]{background:var(--aksen);color:var(--aksen-teks)}
+.pilih-besar{display:grid;gap:12px}
+.pilih-besar button{min-height:72px;text-align:left;padding:10px 16px;border-radius:var(--radius);border:2px solid var(--garis);background:var(--kartu);box-shadow:var(--bayang);display:flex;flex-direction:column;gap:2px}
+.pilih-besar b{font-size:20px}
+.pilih-besar span{font-size:14px;color:var(--ink2)}
+.pilih-besar button[data-j="SMP"] b{color:#0E9F9A}.pilih-besar button[data-j="SMA"] b{color:#2F6BFF}.pilih-besar button[data-j="SMK"] b{color:#7C4DFF}
+@media (prefers-color-scheme:dark){.pilih-besar button[data-j="SMP"] b{color:#2DD4BF}.pilih-besar button[data-j="SMA"] b{color:#7AA2FF}.pilih-besar button[data-j="SMK"] b{color:#B79BFF}}
+
+/* formulir */
+label{display:block;font-weight:800;margin-bottom:6px}
+input[type=text],input[type=password],textarea{width:100%;font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:2px solid var(--garis);background:var(--kartu);color:var(--ink)}
+textarea{min-height:120px;resize:vertical;font-family:ui-monospace,Consolas,monospace;font-size:13px;word-break:break-all}
+input:focus,textarea:focus,button:focus-visible{outline:3px solid var(--aksen);outline-offset:2px}
+.galat{color:var(--salah);font-weight:700;margin-top:8px}
+.info{background:var(--lembut);border-radius:12px;padding:12px 14px;font-size:14px}
+.peringatan{background:var(--salah-bg);color:var(--salah);border:2px solid var(--salah);border-radius:12px;padding:8px 12px;font-size:13px;font-weight:700;margin:6px 0}
+
+/* beranda */
+.hero{background:var(--ink);color:var(--bg);border-radius:var(--radius);padding:18px;border:2px solid var(--garis);box-shadow:var(--bayang);position:relative;overflow:hidden}
+@media (prefers-color-scheme:dark){.hero{background:var(--kartu);color:var(--ink)}}
+.hero h1{font-size:26px}
+.hero .sub{opacity:.8;font-size:14px;margin:4px 0 14px}
+.streak{display:inline-flex;align-items:center;gap:6px;font-weight:900;background:var(--emas);color:#101B3C;border-radius:999px;padding:4px 12px 4px 8px;font-size:15px}
+.streak svg{width:20px;height:20px}
+.streak.naik{animation:denyut .8s ease-out 2}
+.bagian-judul{display:flex;align-items:baseline;justify-content:space-between;margin:22px 0 10px}
+.baris-topik{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin-bottom:10px;padding:12px;border-radius:var(--radius);border:2px solid var(--garis);background:var(--kartu);box-shadow:var(--bayang)}
+.baris-topik:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--garis)}
+.baris-topik.segera{opacity:.62;box-shadow:none;border-style:dashed}
+.kode{flex:none;min-width:52px;height:44px;border-radius:10px;background:var(--aksen);color:var(--aksen-teks);font-weight:900;display:grid;place-items:center;font-size:14px;padding:0 6px}
+.baris-topik.segera .kode{background:var(--lembut);color:var(--ink2)}
+.baris-topik .isi{flex:1;min-width:0}
+.baris-topik .jdl{font-weight:800;line-height:1.2}
+.baris-topik .meta{font-size:13px;color:var(--ink2);margin-top:2px}
+.ubin{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ubin button{text-align:left;padding:12px;border-radius:var(--radius);border:2px solid var(--garis);background:var(--kartu);box-shadow:var(--bayang);display:flex;flex-direction:column;gap:6px;min-height:112px}
+.ubin button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--garis)}
+.ubin .besar{font-size:30px;font-weight:900;color:var(--aksen);line-height:1}
+.ubin .jdl{font-weight:800;line-height:1.2;font-size:15px}
+.ubin .meta{font-size:12.5px;color:var(--ink2);margin-top:auto}
+.ubin .saran{align-self:flex-start}
+.pips{display:flex;gap:4px}
+.pips i{width:16px;height:8px;border-radius:4px;border:1.5px solid var(--garis);background:transparent;display:block}
+.pips i.on{background:var(--aksen)}
+.baris-topik .pips{gap:3px}.baris-topik .pips i{width:9px}
+
+/* navigasi bawah */
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--kartu);border-top:2px solid var(--garis);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:10}
+.nav div{display:flex;width:100%;max-width:480px}
+.nav button{flex:1;border:0;background:transparent;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;font-weight:800;color:var(--ink2)}
+.nav button svg{width:24px;height:24px}
+.nav button[aria-current="page"]{color:var(--aksen)}
+.nav button[aria-current="page"] svg{stroke-width:2.6}
+
+/* soal */
+.soal-kartu{padding:18px 16px;margin-top:6px}
+.soal{font-size:clamp(28px,9vw,38px);font-weight:900;line-height:1.2;letter-spacing:-.01em;word-break:break-word}
+.soal.panjang{font-size:18px;font-weight:700;line-height:1.45;letter-spacing:0}
+.soal.sedang{font-size:clamp(22px,6.5vw,28px)}
+.pec{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;font-size:.8em;margin:0 .12em}
+.pec span:first-child{border-bottom:.1em solid currentColor;padding:0 .14em .06em}
+.pec span:last-child{padding-top:.06em}
+.gambar-bar{width:100%;height:auto;margin-top:10px;display:block}
+.bar-a{fill:var(--bar-a);stroke:var(--garis);stroke-width:1.5}
+.bar-b{fill:var(--bar-b);stroke:var(--garis);stroke-width:1.5}
+.bar-d{fill:var(--bar-d);stroke:var(--garis);stroke-width:1.5}
+.bar-k{fill:var(--kartu);stroke:var(--garis);stroke-width:1.5;stroke-dasharray:4 3}
+.bar-brace{fill:none;stroke:var(--ink2);stroke-width:1.6}
+.bar-teks{fill:var(--ink);font:600 13px var(--font)}
+.bar-tebal{font-weight:800}.bar-kecil{font-size:12px;fill:var(--ink2)}
+.latihan{display:flex;flex-direction:column;flex:1}
+.latihan .bawah{margin-top:auto;padding-top:12px}
+.prog{flex:1;height:12px;border-radius:6px;border:2px solid var(--garis);background:var(--kartu);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--aksen);transition:width .3s}
+.pen{font-weight:900;min-width:46px;text-align:right}
+.waktu{font-weight:800;color:var(--ink2);min-width:42px;text-align:right}
+.waktu.habis{color:var(--salah)}
+.sisa-waktu{height:6px;border-radius:3px;background:var(--lembut);overflow:hidden;margin-top:8px}
+.sisa-waktu i{display:block;height:100%;background:var(--emas);width:100%;transition:width .25s linear}
+.jawab{display:flex;align-items:center;justify-content:center;gap:8px;min-height:68px;border-radius:var(--radius);border:2px solid var(--garis);background:var(--kartu);font-size:36px;font-weight:900;padding:6px 14px;margin:10px 0;overflow:hidden;box-shadow:inset 0 3px 0 var(--lembut)}
+.jawab .isi{min-width:8px;word-break:break-all;text-align:center}
+.jawab .isi:empty::before{content:"?";color:var(--ink2);opacity:.5}
+.jawab .isi::after{content:"";display:inline-block;width:3px;height:.9em;background:var(--aksen);margin-left:3px;vertical-align:-.1em;animation:kedip 1s steps(1) infinite}
+.jawab .sat{font-size:18px;color:var(--ink2);font-weight:800}
+.jawab.benar{background:var(--benar-bg);border-color:var(--benar)}
+.jawab.salah{background:var(--salah-bg);border-color:var(--salah)}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.kp button{min-height:56px;border-radius:12px;border:2px solid var(--garis);background:var(--kartu);font-size:24px;font-weight:800;box-shadow:2px 2px 0 var(--garis)}
+.kp button:active:not(:disabled){transform:translate(2px,2px);box-shadow:none}
+.kp button:disabled{opacity:.25;box-shadow:none}
+.kp .fn{background:var(--lembut)}
+.kp .jwb{grid-column:span 2;background:var(--aksen);color:var(--aksen-teks);font-size:19px}
+.opsi{display:grid;gap:10px;margin:10px 0}
+.opsi button{display:flex;align-items:center;gap:12px;min-height:58px;text-align:left;padding:8px 14px;border-radius:12px;border:2px solid var(--garis);background:var(--kartu);font-size:22px;font-weight:800;box-shadow:var(--bayang)}
+.opsi button b{width:30px;height:30px;border-radius:8px;background:var(--lembut);display:grid;place-items:center;font-size:15px;flex:none}
+.opsi button[aria-pressed="true"]{background:var(--aksen);color:var(--aksen-teks)}
+.opsi button[aria-pressed="true"] b{background:rgba(255,255,255,.3);color:inherit}
+.opsi button.benar{background:var(--benar-bg);border-color:var(--benar);color:var(--ink)}
+.opsi button.salah{background:var(--salah-bg);border-color:var(--salah);color:var(--ink)}
+.umpan{border-radius:var(--radius);padding:12px 14px;border:2px solid;margin-top:10px}
+.umpan.benar{background:var(--benar-bg);border-color:var(--benar);color:var(--benar);animation:muncul .35s ease-out}
+.umpan.salah{background:var(--salah-bg);border-color:var(--salah);color:var(--salah);animation:getar .35s}
+.umpan b{display:block;font-size:19px}
+.umpan .jwb-benar{color:var(--ink);font-weight:800}
+.langkah{margin:10px 0 0;padding:0;list-style:none;counter-reset:l}
+.langkah li{counter-increment:l;position:relative;padding:8px 10px 8px 38px;margin-bottom:6px;background:var(--kartu);border:2px solid var(--garis);border-radius:10px;color:var(--ink);font-size:15px;font-weight:600;animation:muncul .25s ease-out}
+.langkah li::before{content:counter(l);position:absolute;left:8px;top:8px;width:22px;height:22px;border-radius:50%;background:var(--aksen);color:var(--aksen-teks);font-size:12px;font-weight:900;display:grid;place-items:center}
+.ulangan-tag{margin-bottom:8px}
+
+/* belajar */
+.konsep{font-size:17px;line-height:1.55}
+.konsep p{margin-bottom:.9em}
+.titik{display:flex;gap:6px;justify-content:center;margin:6px 0 14px}
+.titik i{width:10px;height:10px;border-radius:50%;border:2px solid var(--garis);display:block}
+.titik i.on{background:var(--aksen)}
+.titik i.lewat{background:var(--ink2)}
+.tahap-label{font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--aksen)}
+
+/* ringkasan */
+.skor{font-size:64px;font-weight:900;line-height:1;letter-spacing:-.03em}
+.skor small{font-size:28px;color:var(--ink2)}
+.statistik{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.statistik .kartu{padding:10px 12px;box-shadow:none}
+.statistik b{display:block;font-size:22px}
+.naik-level{position:relative;text-align:center;padding:18px 10px;background:var(--emas);color:#101B3C;border-radius:var(--radius);border:2px solid var(--garis);box-shadow:var(--bayang);overflow:hidden;animation:muncul .5s ease-out}
+.naik-level svg{width:64px;height:64px;animation:putar 1.6s ease-out}
+.turun-level{background:var(--lembut)}
+.salah-daftar{margin:0;padding:0;list-style:none}
+.salah-daftar li{padding:10px 0;border-top:2px dashed var(--lembut)}
+.salah-daftar li:first-child{border-top:0}
+
+/* grafik & tabel */
+.grafik{width:100%;height:auto;display:block}
+.grafik .bar{fill:var(--aksen)}
+.grafik .titik-akurasi{fill:var(--emas);stroke:var(--garis);stroke-width:1.5}
+.grafik .garis-akurasi{fill:none;stroke:var(--emas);stroke-width:2.5}
+.grafik text{fill:var(--ink2);font:600 10px var(--font)}
+.legenda{display:flex;gap:14px;font-size:12.5px;color:var(--ink2);margin-top:6px;flex-wrap:wrap}
+.legenda i{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--aksen);vertical-align:-1px;margin-right:4px}
+.legenda i.e{background:var(--emas);border-radius:50%}
+.tabel{width:100%;border-collapse:collapse;font-size:14px}
+.tabel th{text-align:left;font-size:12px;color:var(--ink2);padding:4px 4px 6px;text-transform:uppercase;letter-spacing:.04em}
+.tabel td{padding:8px 4px;border-top:2px dashed var(--lembut)}
+.tabel .kanan{text-align:right}
+.batang{height:10px;border-radius:5px;background:var(--lembut);overflow:hidden;min-width:60px}
+.batang i{display:block;height:100%;background:var(--benar)}
+.batang i.rendah{background:var(--salah)}
+.batang i.sedang{background:var(--emas)}
+
+/* pembuka */
+.pembuka{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px;padding:24px 0}
+.pembuka .logo{width:132px;height:132px;animation:muncul .6s ease-out}
+.pembuka h1{font-size:40px}
+.pembuka .tagline{font-size:19px;color:var(--ink2);font-weight:700;margin:0}
+
+/* modal & toast */
+.modal-latar{position:fixed;inset:0;background:rgba(5,8,15,.6);display:grid;place-items:end center;z-index:50;padding:16px}
+.modal{background:var(--kartu);border:2px solid var(--garis);border-radius:18px;padding:18px;width:100%;max-width:440px;box-shadow:var(--bayang);animation:naikmuncul .25s ease-out}
+.modal h3{font-size:19px;margin-bottom:6px}
+#toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px;z-index:60;max-width:90vw;opacity:0;pointer-events:none;transition:opacity .2s}
+@media (prefers-color-scheme:dark){#toast{background:var(--emas);color:#101B3C}}
+#toast.tampil{opacity:1}
+.pin-titik{display:flex;gap:14px;justify-content:center;margin:12px 0}
+.pin-titik i{width:18px;height:18px;border-radius:50%;border:2px solid var(--garis);display:block}
+.pin-titik i.on{background:var(--aksen)}
+.kartu-anak{margin-bottom:14px}
+.naik-turun{font-weight:800;font-size:13px}
+.naik-turun.plus{color:var(--benar)}.naik-turun.minus{color:var(--salah)}
+details summary{cursor:pointer;font-weight:800;min-height:44px;display:flex;align-items:center}
+details[open] summary{margin-bottom:6px}
+
+@keyframes kedip{50%{opacity:0}}
+@keyframes muncul{from{opacity:0;transform:scale(.94) translateY(6px)}to{opacity:1;transform:none}}
+@keyframes naikmuncul{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes getar{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes denyut{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+@keyframes putar{from{transform:scale(.2) rotate(-120deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<noscript><p style="padding:20px">CepatPaham membutuhkan JavaScript. Aktifkan JavaScript di browser lalu muat ulang.</p></noscript>
+
+<script src="js/inti.js"></script>
+<script src="js/peta.js"></script>
+<script src="js/materi.js"></script>
+<script src="js/sekolah.js"></script>
+<script src="js/hitung.js"></script>
+<script src="js/cerita.js"></script>
+<script>
+(function () {
+'use strict';
+const CP = window.CP;
+const K = CP.KONFIG;
+
+/* ====================== UTIL ====================== */
+const $ = (s, r) => (r || document).querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = (s) => esc(s).replace(/(\d+)\/(\d+)/g, '<span class="pec"><span>$1</span><span>$2</span></span>').replace(/\n/g, '<br>');
+const sub = (s) => String(s);
+const app = $('#app');
+const IKON = {
+  rumah: '<path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/>',
+  grafik: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  gerigi: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+  kembali: '<path d="M15 5l-7 7 7 7"/>',
+  silang: '<path d="M6 6l12 12M18 6L6 18"/>',
+  centang: '<path d="M4 12l5 5L20 6"/>',
+  buku: '<path d="M4 4h7a3 3 0 013 3v13a2 2 0 00-2-2H4zM20 4h-6M20 4v14h-6"/>',
+  salin: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/>',
+  kunci: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+  orang: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+  api: '<path d="M12 2c1 4 5 6 5 11a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-10z" fill="currentColor" stroke="none"/>',
+  bintang: '<path d="M12 2l3 7 7 .8-5.3 4.8 1.6 7.4L12 18l-6.3 4 1.6-7.4L2 9.8 9 9z" fill="currentColor" stroke="none"/>',
+  panah: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  kilat: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'
+};
+const svgI = (n, cls) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"' + (cls ? ' class="' + cls + '"' : '') + '>' + IKON[n] + '</svg>';
+const LOGO = '<svg viewBox="0 0 64 64" role="img" aria-label="Logo CepatPaham"><rect width="64" height="64" rx="14" fill="#101B3C"/><polygon points="40,4 16,36 30,36 24,60 50,26 35,26" fill="#F5B301"/><circle cx="48" cy="46" r="11" fill="#22C55E"/><path d="M42 46L47 51L55 41" fill="none" stroke="#fff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+let toastT = 0;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('tampil'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('tampil'), 2600); }
+
+/* ====================== PENYIMPANAN ====================== */
+let store = null;
+try { store = window.localStorage; store.getItem('cp:uji'); } catch (e) { store = null; }
+const simpanan = new CP.Simpan(store);
+let data = simpanan.muat();
+if (!store) simpanan.bermasalah = true;
+function simpan() { if (store) simpanan.simpan(); else simpanan.bermasalah = true; }
+const profilAktif = () => (data.aktif && data.profil[data.aktif]) || null;
+const hariIni = () => CP.tglLokal();
+function setTema() { document.documentElement.dataset.j = (profilAktif() || { jenjang: 'SMA' }).jenjang; }
+
+/* ====================== KONFIRMASI DI HALAMAN ====================== */
+function konfirmasi(judul, teks, labelYa, onYa, bahaya) {
+  const el = document.createElement('div');
+  el.className = 'modal-latar';
+  el.innerHTML = '<div class="modal" role="dialog" aria-modal="true"><h3>' + esc(judul) + '</h3><p>' + esc(teks) + '</p><div class="baris"><button class="btn" data-m="batal">Batal</button><button class="btn ' + (bahaya ? 'bahaya' : 'utama') + '" data-m="ya">' + esc(labelYa) + '</button></div></div>';
+  el.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-m]');
+    if (e.target === el || (b && b.dataset.m === 'batal')) el.remove();
+    else if (b && b.dataset.m === 'ya') { el.remove(); onYa(); }
+  });
+  document.body.appendChild(el);
+  const ya = $('[data-m="ya"]', el); if (ya) ya.focus();
+}
+
+/* ====================== ROUTER ====================== */
+let bersihkan = null;
+function rute() { const p = location.hash.replace(/^#\/?/, '').split('/'); return { nama: p[0] || '', arg: p[1] ? decodeURIComponent(p[1]) : '' }; }
+function pergi(r) { const t = '#/' + r; if (location.hash === t) render(); else location.hash = t; }
+function kembaliKe(fallback) { if (history.length > 1 && document.referrer !== undefined && window.__nav > 1) history.back(); else pergi(fallback); }
+window.__nav = 0;
+window.addEventListener('hashchange', () => { window.__nav++; render(); });
+
+function render() {
+  if (bersihkan) { bersihkan(); bersihkan = null; }
+  document.querySelectorAll('.modal-latar').forEach((m) => m.remove());
+  setTema();
+  const r = rute(); const pr = profilAktif();
+  if (r.nama !== 'ortu') { ortuAman = false; pinBuf = ''; }
+  window.scrollTo(0, 0);
+  if (!pr && r.nama !== 'profilbaru' && r.nama !== 'pulih') { return r.nama === 'mulai' ? layarProfilBaru() : layarPembuka(); }
+  const peta = {
+    '': layarBeranda, beranda: layarBeranda, topik: layarTopik, belajar: layarBelajar, latihan: layarLatihan, progres: layarProgres,
+    pengaturan: layarPengaturan, profilbaru: layarProfilBaru, ganti: layarGanti, ubah: layarUbah, naik: layarNaik, cadangan: layarCadangan,
+    laporan: layarLaporan, ortu: layarOrtu, riwayat: layarRiwayat, tentang: layarTentang, pulih: layarPulih
+  };
+  (peta[r.nama] || layarBeranda)(r.arg);
+}
+function tampil(html, o) {
+  o = o || {};
+  app.className = o.tanpaNav ? 'tanpa-nav' : '';
+  let nav = '';
+  if (!o.tanpaNav) {
+    const cur = (n) => (o.nav === n ? ' aria-current="page"' : '');
+    nav = '<nav class="nav" aria-label="Menu utama"><div><button data-a="pergi" data-r="beranda"' + cur('beranda') + '>' + svgI('rumah') + 'Beranda</button><button data-a="pergi" data-r="progres"' + cur('progres') + '>' + svgI('grafik') + 'Progres</button><button data-a="pergi" data-r="pengaturan"' + cur('pengaturan') + '>' + svgI('gerigi') + 'Pengaturan</button></div></nav>';
+  }
+  const peringatan = simpanan.bermasalah ? '<div class="peringatan" role="alert">Progres tidak bisa disimpan di perangkat ini.</div>' : '';
+  app.innerHTML = html.replace('<!--PERINGATAN-->', peringatan) + nav;
+}
+const atasSub = (judul, balik, aksiKanan) => '<div class="atas"><button class="ikon-tombol" data-a="balik" data-r="' + (balik || 'beranda') + '" aria-label="Kembali">' + svgI('kembali') + '</button><h2>' + esc(judul) + '</h2>' + (aksiKanan || '') + '</div><!--PERINGATAN-->';
+
+app.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-a]');
+  if (!t || t.disabled) return;
+  const f = AKSI[t.dataset.a];
+  if (f) f(t.dataset, t, e);
+});
+
+/* ====================== ANGKA & STATISTIK ====================== */
+const rec = (id) => { const pr = profilAktif(); return pr.topik[id] || CP.catatBaru(); };
+const pips = (n) => '<span class="pips" aria-label="Level ' + n + ' dari 6">' + [1, 2, 3, 4, 5, 6].map((i) => '<i class="' + (i <= n ? 'on' : '') + '"></i>').join('') + '</span>';
+const persen = (n, b) => (n ? Math.round((100 * b) / n) : 0);
+function metaTopik(m) {
+  const r = rec(m.id), a = CP.akurasiTujuhHari(r, hariIni());
+  return '<span>Level ' + r.level + '</span> · ' + (a ? '7 hari: ' + a.persen + '% (' + a.n + ' soal)' : 'Belum ada latihan');
+}
+const waktuStr = (d) => { d = Math.max(0, Math.round(d)); return Math.floor(d / 60) + ':' + ('0' + (d % 60)).slice(-2); };
+
+/* ====================== LAYAR: PEMBUKA & PROFIL ====================== */
+function layarPembuka() {
+  tampil('<div class="pembuka"><div class="logo">' + LOGO + '</div><h1>' + esc(K.nama) + '</h1><p class="tagline">' + esc(K.tagline) + '</p><p class="kecil" style="max-width:300px">Latihan matematika SMP sampai SMA/SMK: materi sekolah dan trik hitung cepat.</p><div style="width:100%;max-width:320px"><button class="btn utama" data-a="pergi" data-r="profilbaru" style="min-height:58px;font-size:19px">Mulai</button><div class="gap2"></div><button class="btn kecil-btn" data-a="pergi" data-r="pulih">Pulihkan dari cadangan</button></div></div>', { tanpaNav: true });
+}
+
+let wiz = { langkah: 1, username: '', jenjang: '', kelas: '', tl: false };
+function layarProfilBaru() {
+  const ada = !!profilAktif();
+  const w = wiz; let isi = '';
+  if (w.langkah === 1) {
+    isi = '<h2>Siapa namamu?</h2><p class="kecil">3-15 karakter: huruf, angka, atau garis bawah (_). Contoh: Dina_7</p><label for="un">Username</label><input id="un" type="text" maxlength="15" autocomplete="off" autocapitalize="off" spellcheck="false" value="' + esc(w.username) + '"><div id="gal" class="galat"></div><div class="gap"></div><button class="btn utama" data-a="wizLanjut1">Lanjut</button>';
+  } else if (w.langkah === 2) {
+    isi = '<h2>Jenjang sekolah</h2><div class="gap2"></div><div class="pilih-besar">' + ['SMP', 'SMA', 'SMK'].map((j) => '<button data-a="wizJenjang" data-j="' + j + '"><b>' + j + '</b><span>' + { SMP: 'Kelas VII, VIII, IX', SMA: 'Kelas X, XI, XII', SMK: 'Kelas X, XI, XII dengan soal cerita vokasi' }[j] + '</span></button>').join('') + '</div>';
+  } else if (w.langkah === 3) {
+    isi = '<h2>Kelas berapa?</h2><div class="gap2"></div><div class="pilih-chip">' + CP.pilihanKelas(w.jenjang).map((k) => '<button data-a="wizKelas" data-k="' + k + '">Kelas ' + k + '</button>').join('') + '</div>';
+  } else {
+    isi = '<h2>Pilih materi</h2><p class="kecil">Untuk SMA kelas ' + w.kelas + '. Kamu bisa mengubahnya nanti di Pengaturan.</p><div class="pilih-besar"><button data-a="wizTL" data-t="0"><b>Matematika Umum</b><span>Materi wajib seperti buku teks</span></button><button data-a="wizTL" data-t="1"><b>Umum + Tingkat Lanjut</b><span>Ditambah materi pilihan: kompleks, matriks, limit, dan lainnya</span></button></div>';
+  }
+  tampil('<div class="atas"><button class="ikon-tombol" data-a="wizKembali" aria-label="Kembali">' + svgI('kembali') + '</button><h2 style="font-size:16px;color:var(--ink2)">Langkah ' + w.langkah + ' dari ' + (w.jenjang === 'SMA' ? 4 : 3) + '</h2></div>' + isi, { tanpaNav: true });
+  const un = $('#un'); if (un) { un.focus(); un.addEventListener('keydown', (e) => { if (e.key === 'Enter') AKSI.wizLanjut1(); }); }
+}
+
+/* ====================== LAYAR: BERANDA ====================== */
+function layarBeranda() {
+  const pr = profilAktif(); const { sekolah, hitung } = CP.modulUntukProfil(pr);
+  const streak = CP.hitungStreak(pr.hariSesi, hariIni());
+  const terakhir = pr.terakhir && CP.peta[pr.terakhir] && CP.peta[pr.terakhir].status === 'aktif' ? CP.peta[pr.terakhir] : null;
+  const awal = terakhir || sekolah.find((m) => m.status === 'aktif') || CP.peta.H1;
+  const barisM = (m) => {
+    const aktif = m.status === 'aktif';
+    return '<button class="baris-topik' + (aktif ? '' : ' segera') + '" data-a="pergi" data-r="topik/' + esc(m.id) + '"><span class="kode">' + esc(m.id.replace(/^[IVX]+-/, '').replace('TL-', 'TL ')) + '</span><span class="isi"><div class="jdl">' + esc(m.judul) + '</div><div class="meta">' + (aktif ? metaTopik(m) : 'Segera hadir') + '</div></span>' + (aktif ? pips(rec(m.id).level) : '<span class="chip">Segera hadir</span>') + '</button>';
+  };
+  const umum = sekolah.filter((m) => m.kategori === 'umum'), lanjut = sekolah.filter((m) => m.kategori === 'lanjut');
+  const saran = K.disarankan[pr.jenjang] || [];
+  const ubin = hitung.map((m) => '<button data-a="pergi" data-r="topik/' + m.id + '"><span class="besar">' + m.id + '</span><span class="jdl">' + esc(m.judul) + '</span>' + (saran.indexOf(m.id) >= 0 ? '<span class="chip aksen saran">Disarankan</span>' : '') + '<span class="meta">' + metaTopik(m) + '</span></button>').join('');
+  tampil('<div class="atas"><div class="merek">' + LOGO + '<b>' + esc(K.nama) + '</b></div><button class="avatar" data-a="pergi" data-r="ganti" aria-label="Ganti profil"><i></i><span>' + esc(pr.username) + '</span></button></div><!--PERINGATAN-->' +
+    '<div class="hero"><h1>Halo, ' + esc(pr.username) + '!</h1><div class="sub">' + pr.jenjang + ' kelas ' + pr.kelas + (pr.tl ? ' · Tingkat Lanjut' : '') + '</div><div class="baris" style="align-items:center;margin-bottom:14px"><span class="streak" id="strk">' + svgI('api') + streak + ' hari</span><span style="flex:1"></span></div><button class="btn emas" data-a="pergi" data-r="latihan/' + awal.id + '">' + svgI('kilat') + (terakhir ? 'Lanjutkan: ' + esc(terakhir.judul) : 'Mulai: ' + esc(awal.judul)) + '</button></div>' +
+    '<div class="bagian-judul"><h2>Materi Sekolah</h2><span class="kecil">Kelas ' + pr.kelas + '</span></div>' +
+    (lanjut.length ? '<div class="kecil tebal" style="margin-bottom:8px">Matematika Umum</div>' : '') + umum.map(barisM).join('') +
+    (lanjut.length ? '<div class="kecil tebal" style="margin:14px 0 8px">Tingkat Lanjut</div>' + lanjut.map(barisM).join('') : '') +
+    '<div class="bagian-judul"><h2>Hitung Cepat</h2><span class="kecil">Semua kelas</span></div><div class="ubin">' + ubin + '</div>' +
+    (pr.riwayatKelas.length ? '<div class="gap3"></div><button class="btn kecil-btn" data-a="pergi" data-r="riwayat">Lihat kelas sebelumnya</button>' : ''), { nav: 'beranda' });
+  if (window.__streakNaik) { const s = $('#strk'); if (s) s.classList.add('naik'); window.__streakNaik = false; }
+}
+
+/* ====================== LAYAR: TOPIK ====================== */
+function layarTopik(id) {
+  const m = CP.peta[id]; if (!m) return pergi('beranda');
+  if (m.status !== 'aktif') {
+    return tampil(atasSub(m.judul) + '<div class="kartu"><span class="chip">Segera hadir</span><div class="gap2"></div><h3>Bab ini belum tersedia</h3><p class="kecil">Materi dan soal untuk bab ini sedang dikerjakan. Kamu bisa berlatih bab lain dulu.</p></div><div class="gap"></div><button class="btn" data-a="pergi" data-r="beranda">Kembali ke Beranda</button>', { nav: 'beranda' });
+  }
+  const r = rec(id), L = m.level[r.level - 1], a = CP.akurasiTujuhHari(r, hariIni());
+  const bw = m.batasWaktu ? '<div class="info" style="margin-top:12px">Ada batas waktu tiap soal. Jika waktu habis, soal dihitung salah.</div>' : '';
+  tampil(atasSub(m.judul) + '<div class="kartu"><div class="baris" style="align-items:center"><span class="chip aksen">' + esc(m.id) + '</span>' + pips(r.level) + '</div><div class="gap2"></div><h3>Level ' + r.level + ': ' + esc(L.judul) + '</h3><p class="kecil" style="margin-top:4px">Contoh: ' + fmt(L.isi) + '</p><div class="statistik" style="margin-top:12px"><div class="kartu"><b>' + (a ? a.persen + '%' : '-') + '</b><span class="kecil">Akurasi 7 hari</span></div><div class="kartu"><b>' + (r.n ? waktuStr(r.detik / r.n) : '-') + '</b><span class="kecil">Waktu rata-rata</span></div></div>' + bw + '</div><div class="gap"></div><button class="btn utama" data-a="pergi" data-r="latihan/' + esc(id) + '">' + svgI('kilat') + 'Latihan ' + K.soalPerSesi + ' soal</button><div class="gap2"></div><button class="btn" data-a="pergi" data-r="belajar/' + esc(id) + '">' + svgI('buku') + 'Belajar dulu</button>', { nav: 'beranda' });
+}
+
+/* ====================== KOMPONEN JAWAB (keypad / pilihan) ====================== */
+let keyHandler = null;
+function pasangJawab(wadah, soal, onJawab) {
+  let nilai = ''; let pilih = -1; let kunci = false;
+  const izin = Object.assign({ minus: false, koma: false, garis: false }, soal.izin || {});
+  const hurufOpsi = ['A', 'B', 'C', 'D'];
+  const akhiran = soal.satuan ? '<span class="sat">' + esc(soal.satuan) + '</span>' : '';
+  const awalan = soal.awalan ? '<span class="sat">' + esc(soal.awalan) + '</span>' : '';
+  if (soal.tipe === 'pilihan') {
+    wadah.innerHTML = '<div class="opsi" role="group" aria-label="Pilihan jawaban">' + soal.pilihan.map((p, i) => '<button data-o="' + i + '" aria-pressed="false"><b>' + hurufOpsi[i] + '</b><span>' + esc(p) + '</span></button>').join('') + '</div><button class="btn utama" data-j="jawab" disabled>Jawab</button>';
+  } else {
+    wadah.innerHTML = '<div class="jawab" id="jwbBox" aria-live="polite">' + awalan + '<span class="isi" id="jwbIsi"></span>' + akhiran + '</div><div class="kp" role="group" aria-label="Keypad">' +
+      [7, 8, 9].map((d) => '<button data-k="' + d + '">' + d + '</button>').join('') + '<button class="fn" data-k="hapus" aria-label="Hapus">&#9003;</button>' +
+      [4, 5, 6].map((d) => '<button data-k="' + d + '">' + d + '</button>').join('') + '<button class="fn" data-k="-"' + (izin.minus ? '' : ' disabled') + ' aria-label="Minus">−</button>' +
+      [1, 2, 3].map((d) => '<button data-k="' + d + '">' + d + '</button>').join('') + '<button class="fn" data-k=","' + (izin.koma ? '' : ' disabled') + '>,</button>' +
+      '<button data-k="0">0</button><button class="fn" data-k="/"' + (izin.garis ? '' : ' disabled') + '>/</button><button class="jwb" data-j="jawab">Jawab</button></div>';
+  }
+  const tampilNilai = () => { const e = $('#jwbIsi', wadah); if (e) e.textContent = nilai.replace(/-/g, '−'); };
+  const tekan = (k) => {
+    if (kunci) return;
+    if (k === 'hapus') nilai = nilai.slice(0, -1);
+    else if (k === '-') { if (izin.minus && nilai === '') nilai = '-'; }
+    else if (k === ',') { if (izin.koma && /\d$/.test(nilai) && nilai.indexOf(',') < 0 && nilai.indexOf('/') < 0) nilai += ','; }
+    else if (k === '/') { if (izin.garis && /\d$/.test(nilai) && nilai.indexOf('/') < 0 && nilai.indexOf(',') < 0) nilai += '/'; }
+    else if (/^\d$/.test(k)) { if (nilai.length < 14) nilai += k; }
+    tampilNilai();
+  };
+  const kirim = () => {
+    if (kunci) return;
+    if (soal.tipe === 'pilihan') { if (pilih < 0) return; }
+    else if (!/\d/.test(nilai) || /[,\/-]$/.test(nilai)) { toast('Isi jawaban dulu.'); return; }
+    kunci = true; onJawab(soal.tipe === 'pilihan' ? pilih : nilai);
+  };
+  wadah.onclick = (e) => {
+    const o = e.target.closest('[data-o]'), k = e.target.closest('[data-k]'), j = e.target.closest('[data-j]');
+    if (o && !kunci) { pilih = +o.dataset.o; wadah.querySelectorAll('[data-o]').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.o === pilih))); const jb = $('[data-j]', wadah); if (jb) jb.disabled = false; }
+    else if (k) tekan(k.dataset.k);
+    else if (j) kirim();
+  };
+  keyHandler = (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'Enter') { e.preventDefault(); kirim(); return; }
+    if (soal.tipe === 'pilihan') { const i = 'abcd1234'.indexOf(e.key.toLowerCase()); if (i >= 0 && !kunci) { pilih = i % 4; wadah.querySelectorAll('[data-o]').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.o === pilih))); const jb = $('[data-j]', wadah); if (jb) jb.disabled = false; } return; }
+    if (e.key === 'Backspace') { e.preventDefault(); tekan('hapus'); }
+    else if (/^\d$/.test(e.key)) tekan(e.key);
+    else if (e.key === '-') tekan('-');
+    else if (e.key === ',' || e.key === '.') tekan(',');
+    else if (e.key === '/') { e.preventDefault(); tekan('/'); }
+  };
+  document.addEventListener('keydown', keyHandler);
+  return {
+    tandai(benar, idxBenar) {
+      kunci = true;
+      if (soal.tipe === 'pilihan') wadah.querySelectorAll('[data-o]').forEach((b) => { const i = +b.dataset.o; b.disabled = true; if (i === idxBenar) b.classList.add('benar'); else if (i === pilih) b.classList.add('salah'); });
+      else { const bx = $('#jwbBox', wadah); if (bx) bx.classList.add(benar ? 'benar' : 'salah'); }
+    },
+    bersih() { document.removeEventListener('keydown', keyHandler); keyHandler = null; }
+  };
+}
+const gambarHtml = (m, soal) => { const g = m.gambar(soal); return g ? '<div class="gambar">' + g + '</div>' : ''; };
+const kelasTeks = (t) => (t.length > 80 ? 'panjang' : t.length > 28 ? 'sedang' : '');
+const langkahHtml = (soal, hingga) => '<ol class="langkah">' + soal.langkah.slice(0, hingga === undefined ? soal.langkah.length : hingga).map((l) => '<li>' + fmt(l.t) + '</li>').join('') + '</ol>';
+const jawabBenarTeks = (soal) => CP.tampilJawab(soal);
+
+/* ====================== LAYAR: LATIHAN ====================== */
+let sesi = null;
+function layarLatihan(id) {
+  const m = CP.peta[id]; const pr = profilAktif();
+  if (!m || m.status !== 'aktif') return pergi('topik/' + id);
+  if (!pr.topik[id]) pr.topik[id] = CP.catatBaru();
+  const r = pr.topik[id];
+  const cap = id === 'H6' ? { H4: (pr.topik.H4 || { level: 1 }).level, H5: (pr.topik.H5 || { level: 1 }).level } : undefined;
+  sesi = { m, r, id, soal: CP.susunSesi(m, r, CP.rngUmum, CP.konteksProfil(pr), K.soalPerSesi, { cap }), i: 0, hasil: [], levelAwal: r.level, streakAwal: CP.hitungStreak(pr.hariSesi, hariIni()), kontrol: null, timer: 0, mulai: 0, selesai: false };
+  bersihkan = () => { if (sesi) { clearInterval(sesi.timer); clearTimeout(sesi.auto); if (sesi.enterLanjut) document.removeEventListener('keydown', sesi.enterLanjut); if (sesi.kontrol) sesi.kontrol.bersih(); } };
+  soalKe();
+}
+function soalKe() {
+  const s = sesi, soal = s.soal[s.i], m = s.m;
+  const batas = m.batasWaktu ? m.batasWaktu[soal.level - 1] : 0;
+  tampil('<div class="latihan"><div class="atas"><button class="ikon-tombol" data-a="keluarLatihan" aria-label="Keluar">' + svgI('silang') + '</button><div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="' + s.soal.length + '" aria-valuenow="' + s.i + '"><i style="width:' + (100 * s.i / s.soal.length) + '%"></i></div><span class="pen">' + (s.i + 1) + '/' + s.soal.length + '</span><span class="waktu" id="wkt">0:00</span></div><!--PERINGATAN-->' +
+    '<div class="kartu soal-kartu">' + (soal.ulangan ? '<span class="chip emas ulangan-tag">Ulangan</span>' : '') + '<div class="soal ' + kelasTeks(soal.teks) + '">' + fmt(soal.teks) + '</div>' + gambarHtml(m, soal) + (batas ? '<div class="sisa-waktu"><i id="sisaW"></i></div>' : '') + '</div>' +
+    '<div class="bawah"><div id="areaJawab"></div><div id="umpan"></div></div></div>', { tanpaNav: true });
+  s.mulai = Date.now(); s.terjawab = false;
+  s.kontrol = pasangJawab($('#areaJawab'), soal, (jwb) => proses(jwb, false));
+  clearInterval(s.timer);
+  s.timer = setInterval(() => {
+    const d = (Date.now() - s.mulai) / 1000;
+    const w = $('#wkt'); if (w) { w.textContent = batas ? waktuStr(Math.max(0, Math.ceil(batas - d))) : waktuStr(d); w.classList.toggle('habis', !!batas && batas - d <= 5); }
+    const sw = $('#sisaW'); if (sw) sw.style.width = Math.max(0, 100 * (1 - d / batas)) + '%';
+    if (batas && d >= batas && !s.terjawab) proses(null, true);
+  }, 250);
+}
+function proses(jwb, waktuHabis) {
+  const s = sesi, soal = s.soal[s.i], pr = profilAktif();
+  if (s.terjawab) return; s.terjawab = true; clearInterval(s.timer);
+  const batas = s.m.batasWaktu ? s.m.batasWaktu[soal.level - 1] : 0;
+  const detik = waktuHabis ? batas : Math.min(120, (Date.now() - s.mulai) / 1000);
+  const benar = waktuHabis ? false : CP.periksaJawaban(soal, jwb);
+  s.hasil.push({ soal, benar, detik, waktuHabis });
+  CP.catatJawaban(s.r, { benar, detik, jenis: soal.jenis, level: soal.level, ulangan: soal.ulangan }, hariIni());
+  pr.topik[s.id] = s.r; pr.terakhir = s.id; simpan();
+  s.kontrol.tandai(benar, soal.tipe === 'pilihan' ? soal.benar : undefined);
+  const akhir = s.i === s.soal.length - 1;
+  const lanjutLabel = akhir ? 'Lihat hasil' : 'Lanjut';
+  const u = $('#umpan');
+  if (benar) {
+    u.innerHTML = '<div class="umpan benar" role="status"><b>Benar!</b><span class="kecil" style="color:inherit">' + waktuStr(detik) + ' detik</span></div><div class="gap2"></div><button class="btn utama" data-a="lanjutSoal" id="btnLanjut">' + lanjutLabel + '</button>';
+    s.auto = setTimeout(() => { if (sesi === s && s.i === sesi.soal.indexOf(soal)) AKSI.lanjutSoal(); }, 1100);
+  } else {
+    u.innerHTML = '<div class="umpan salah" role="alert"><b>' + (waktuHabis ? 'Waktu habis' : 'Belum tepat') + '</b><span class="jwb-benar">Jawaban benar: ' + esc(jawabBenarTeks(soal)) + '</span></div><div id="caranya"></div><div class="gap2"></div><div class="baris"><button class="btn" data-a="lihatCara">Lihat caranya</button><button class="btn utama" data-a="lanjutSoal" id="btnLanjut">' + lanjutLabel + '</button></div>';
+  }
+  const area = $('#areaJawab'); if (area) { if (soal.tipe !== 'pilihan') { const kp = $('.kp', area); if (kp) kp.classList.add('sembunyi'); } else { const jb = $('[data-j]', area); if (jb) jb.classList.add('sembunyi'); } }
+  s.kontrol.bersih();
+  const bl = $('#btnLanjut'); if (bl) bl.focus({ preventScroll: true });
+  document.addEventListener('keydown', s.enterLanjut = (e) => { if (e.key === 'Enter' && sesi === s) { e.preventDefault(); AKSI.lanjutSoal(); } });
+}
+function selesaiSesi() {
+  const s = sesi, pr = profilAktif(), tgl = hariIni();
+  const target = CP.targetModul(s.m, s.levelAwal);
+  const ev = CP.evaluasiLevel(s.r.riwayat, s.r.level, target);
+  s.r.level = ev.level;
+  const n = s.hasil.length, b = s.hasil.filter((x) => x.benar).length, rata = s.hasil.reduce((a, x) => a + x.detik, 0) / n;
+  CP.catatSesi(pr, { modul: s.id, level: s.levelAwal, n, b, rata: Math.round(rata * 10) / 10 }, tgl);
+  pr.topik[s.id] = s.r; simpan();
+  const streakBaru = CP.hitungStreak(pr.hariSesi, tgl);
+  if (streakBaru > s.streakAwal) window.__streakNaik = true;
+  s.ringkas = { n, b, rata, ev, streakBaru, naikStreak: streakBaru > s.streakAwal, target };
+  layarRingkasan();
+}
+function layarRingkasan() {
+  const s = sesi, R = s.ringkas, m = s.m;
+  const salahList = s.hasil.filter((x) => !x.benar);
+  let tingkat = '';
+  if (R.ev.aksi === 'naik') tingkat = '<div class="naik-level"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 7 7 .8-5.3 4.8 1.6 7.4L12 18l-6.3 4 1.6-7.4L2 9.8 9 9z" fill="#101B3C"/></svg><h2>Naik ke Level ' + R.ev.level + '!</h2><p style="margin:4px 0 0;font-weight:700">' + esc(m.level[R.ev.level - 1].judul) + '</p></div><div class="gap"></div>';
+  else if (R.ev.aksi === 'turun') tingkat = '<div class="naik-level turun-level" style="background:var(--lembut);color:var(--ink)"><h3>Kembali ke Level ' + R.ev.level + '</h3><p class="kecil" style="margin:4px 0 0">Kita perkuat dasarnya dulu. Itu bukan masalah.</p></div><div class="gap"></div>';
+  else tingkat = '<div class="info">Level ' + s.r.level + ' dipertahankan. Naik level jika 4 dari 5 soal terakhir benar dengan waktu rata-rata di bawah ' + R.target + ' detik.</div><div class="gap"></div>';
+  const perlu = R.b / R.n < 0.7 ? '<div class="info"><b>Perlu diulang:</b> ' + esc(m.level[s.levelAwal - 1].judul) + '</div><div class="gap"></div>' : '';
+  tampil('<div class="atas"><h2>Ringkasan sesi</h2></div><!--PERINGATAN-->' + '<div class="kartu tengah"><div class="skor">' + R.b + '<small>/' + R.n + '</small></div><p class="tebal" style="margin:6px 0 0">' + (R.b === R.n ? 'Sempurna!' : R.b / R.n >= 0.7 ? 'Bagus!' : 'Terus berlatih!') + '</p></div><div class="gap"></div>' + tingkat + perlu +
+    '<div class="statistik"><div class="kartu"><b>' + waktuStr(R.rata) + '</b><span class="kecil">Waktu rata-rata / soal</span></div><div class="kartu"><span class="streak' + (R.naikStreak ? ' naik' : '') + '" style="font-size:20px">' + svgI('api') + R.streakBaru + '</span><br><span class="kecil">Streak hari berturut-turut' + (R.naikStreak ? ' (bertambah)' : '') + '</span></div></div><div class="gap"></div>' +
+    (salahList.length ? '<div class="kartu rata"><h3>Soal yang salah (' + salahList.length + ')</h3><ul class="salah-daftar">' + salahList.map((x, i) => '<li><div style="font-weight:700">' + fmt(x.soal.teks) + '</div><div class="kecil">Jawaban benar: <b>' + esc(jawabBenarTeks(x.soal)) + '</b></div><details><summary>Lihat caranya</summary>' + langkahHtml(x.soal) + '</details></li>').join('') + '</ul></div><div class="gap"></div>' : '') +
+    '<button class="btn utama" data-a="ulangLatihan">' + svgI('kilat') + 'Latihan lagi</button><div class="gap2"></div><div class="baris"><button class="btn" data-a="pergi" data-r="beranda">Beranda</button><button class="btn" data-a="pergi" data-r="progres">Progres</button></div>', { tanpaNav: true });
+}
+
+/* ====================== LAYAR: BELAJAR ====================== */
+let bel = null;
+function layarBelajar(id) {
+  const m = CP.peta[id]; const pr = profilAktif();
+  if (!m || m.status !== 'aktif') return pergi('topik/' + id);
+  const mat = m.materiBelajar || { konsep: [{ judul: m.judul, teks: 'Materi belajar untuk topik ini sedang disiapkan. Langsung coba latihan.' }], contoh: { level: 1, seed: 1 }, cobaMaks: 2, kenapa: '' };
+  const r = rec(id), kon = CP.konteksProfil(pr);
+  const lvC = Math.max(1, Math.min(mat.contoh.level, m.level.length));
+  const contoh = m.generator(lvC, kon, CP.buatRng(mat.contoh.seed + 1000));
+  const lvT = Math.max(1, Math.min(r.level, mat.cobaMaks || 3));
+  const rng = CP.buatRng((Date.now() % 100000) + 7); const coba = []; const pakai = new Set();
+  const capB = id === 'H6' ? { H4: 1, H5: 1 } : undefined;
+  while (coba.length < 3) { const q = m.generator(lvT, kon, rng, undefined, { cap: capB }); if (!pakai.has(q.teks) || pakai.size > 20) { pakai.add(q.teks); coba.push(q); } }
+  const layar = [];
+  mat.konsep.forEach((k, i) => layar.push({ t: 'konsep', k, i }));
+  layar.push({ t: 'contoh' }); coba.forEach((q, i) => layar.push({ t: 'coba', q, i })); layar.push({ t: 'kenapa' }); layar.push({ t: 'akhir' });
+  bel = { m, id, mat, contoh, layar, i: 0, tampilLangkah: 0, kontrol: null, mencoba: null };
+  bersihkan = () => { if (bel && bel.kontrol) bel.kontrol.bersih(); };
+  layarBelajarKe();
+}
+function layarBelajarKe() {
+  const b = bel, L = b.layar[b.i], m = b.m;
+  if (b.kontrol) { b.kontrol.bersih(); b.kontrol = null; }
+  const titik = '<div class="titik" aria-hidden="true">' + b.layar.map((x, i) => '<i class="' + (i === b.i ? 'on' : i < b.i ? 'lewat' : '') + '"></i>').join('') + '</div>';
+  const kepala = '<div class="atas"><button class="ikon-tombol" data-a="keluarBelajar" aria-label="Keluar">' + svgI('silang') + '</button><h2 style="font-size:17px">' + esc(m.judul) + '</h2></div><!--PERINGATAN-->' + titik;
+  let isi = '', tombol = '';
+  if (L.t === 'konsep') {
+    isi = '<div class="kartu"><div class="tahap-label">Konsep ' + (L.i + 1) + ' dari ' + b.mat.konsep.length + '</div><div class="gap2"></div><h2>' + esc(L.k.judul) + '</h2><div class="gap2"></div><div class="konsep">' + L.k.teks.split('\n').map((p) => '<p>' + fmt(p) + '</p>').join('') + '</div></div>';
+    tombol = '<button class="btn utama" data-a="belLanjut">Lanjut' + svgI('panah') + '</button>';
+  } else if (L.t === 'contoh') {
+    const c = b.contoh, n = c.langkah.length, t = b.tampilLangkah;
+    isi = '<div class="kartu"><div class="tahap-label">Contoh</div><div class="gap2"></div><div class="soal ' + kelasTeks(c.teks) + '">' + fmt(c.teks) + '</div>' + gambarHtml(m, c) + '</div>' + (t > 0 ? langkahHtml(c, t) : '<p class="kecil" style="margin-top:12px">Ketuk "Lanjut" untuk melihat langkahnya satu per satu.</p>') + (t >= n ? '<div class="umpan benar" style="margin-top:10px"><b>Jawaban: ' + esc(jawabBenarTeks(c)) + '</b></div>' : '');
+    tombol = '<button class="btn utama" data-a="belLanjut">' + (t >= n ? 'Lanjut ke latihan kecil' : 'Lanjut') + svgI('panah') + '</button>';
+  } else if (L.t === 'coba') {
+    const q = L.q;
+    isi = '<div class="kartu"><div class="tahap-label">Coba sendiri ' + (L.i + 1) + ' dari 3</div><div class="gap2"></div><div class="soal ' + kelasTeks(q.teks) + '">' + fmt(q.teks) + '</div>' + gambarHtml(m, q) + '</div><div id="petunjuk"></div><div id="areaJawab"></div><div id="umpan"></div>';
+    tombol = '';
+  } else if (L.t === 'kenapa') {
+    isi = '<div class="kartu"><div class="tahap-label">Kenapa ini bekerja</div><div class="gap2"></div><div class="konsep"><p>' + fmt(b.mat.kenapa || 'Setiap langkah di atas memakai sifat bilangan yang selalu benar.') + '</p></div></div>';
+    tombol = '<button class="btn utama" data-a="belLanjut">Lanjut' + svgI('panah') + '</button>';
+  } else {
+    isi = '<div class="kartu tengah"><h2>Siap berlatih!</h2><p class="kecil">Sekarang latihan ' + K.soalPerSesi + ' soal. Levelnya menyesuaikan kemampuanmu.</p></div>';
+    tombol = '<button class="btn utama" data-a="pergi" data-r="latihan/' + esc(b.id) + '">' + svgI('kilat') + 'Mulai latihan</button><div class="gap2"></div><button class="btn" data-a="pergi" data-r="topik/' + esc(b.id) + '">Kembali</button>';
+  }
+  tampil('<div style="display:flex;flex-direction:column;flex:1">' + kepala + isi + '<div class="bawah" style="margin-top:auto;padding-top:16px">' + (L.t === 'coba' ? '' : tombol) + '</div></div>', { tanpaNav: true });
+  if (L.t === 'coba') {
+    const q = L.q;
+    $('#petunjuk').innerHTML = '<button class="btn kecil-btn" data-a="petunjuk" style="margin-top:10px">Petunjuk</button>';
+    b.kontrol = pasangJawab($('#areaJawab'), q, (jwb) => {
+      const benar = CP.periksaJawaban(q, jwb);
+      b.kontrol.tandai(benar, q.tipe === 'pilihan' ? q.benar : undefined);
+      $('#umpan').innerHTML = (benar ? '<div class="umpan benar"><b>Benar!</b></div>' : '<div class="umpan salah"><b>Belum tepat</b><span class="jwb-benar">Jawaban benar: ' + esc(jawabBenarTeks(q)) + '</span></div>' + langkahHtml(q)) + '<div class="gap2"></div><button class="btn utama" data-a="belLanjut">Lanjut' + svgI('panah') + '</button>';
+      const area = $('#areaJawab'); const kp = $('.kp', area); if (kp) kp.classList.add('sembunyi'); const jb = $('[data-j]', area); if (jb && q.tipe === 'pilihan') jb.classList.add('sembunyi');
+      b.kontrol.bersih();
+    });
+  }
+}
+
+/* ====================== LAYAR: PROGRES ====================== */
+function grafikSVG(pr) {
+  const d = CP.grafikHarian(pr, hariIni()); const W = 320, H = 150, kiri = 8, bawah = 24, atas = 12, lebar = W - kiri * 2;
+  const maks = Math.max(5, ...d.map((x) => x.n)); const bw = lebar / d.length;
+  let s = '<svg class="grafik" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Grafik soal dan akurasi 14 hari terakhir">';
+  [0, 50, 100].forEach((v) => { const y = atas + (H - atas - bawah) * (1 - v / 100); s += '<line x1="' + kiri + '" x2="' + (W - kiri) + '" y1="' + y + '" y2="' + y + '" stroke="currentColor" opacity=".12"/>'; });
+  let pts = [];
+  d.forEach((x, i) => {
+    const h = (H - atas - bawah) * (x.n / maks), bx = kiri + i * bw + 3;
+    if (x.n) s += '<rect class="bar" x="' + bx + '" y="' + (H - bawah - h) + '" width="' + (bw - 6) + '" height="' + h + '" rx="3"/>';
+    if (x.persen !== null) pts.push([kiri + i * bw + bw / 2, atas + (H - atas - bawah) * (1 - x.persen / 100)]);
+    if (i % 2 === 0 || i === d.length - 1) s += '<text x="' + (kiri + i * bw + bw / 2) + '" y="' + (H - 8) + '" text-anchor="middle">' + x.tgl.slice(8) + '</text>';
+  });
+  if (pts.length > 1) s += '<polyline class="garis-akurasi" points="' + pts.map((p) => p.join(',')).join(' ') + '"/>';
+  pts.forEach((p) => { s += '<circle class="titik-akurasi" cx="' + p[0] + '" cy="' + p[1] + '" r="3.5"/>'; });
+  return s + '</svg><div class="legenda"><span><i></i>Jumlah soal (maks ' + maks + ')</span><span><i class="e"></i>Akurasi (0-100%)</span></div>';
+}
+function layarProgres() {
+  const pr = profilAktif(); const ids = Object.keys(pr.topik).filter((id) => pr.topik[id].n > 0);
+  const totalN = ids.reduce((a, id) => a + pr.topik[id].n, 0), totalB = ids.reduce((a, id) => a + pr.topik[id].b, 0);
+  const lemah = CP.topikTerlemah(pr).slice(0, 3);
+  const tabel = ids.length ? '<table class="tabel"><thead><tr><th>Topik</th><th>Lv</th><th>Akurasi</th><th class="kanan">Waktu</th></tr></thead><tbody>' + ids.map((id) => { const r = pr.topik[id], p = persen(r.n, r.b); return '<tr><td>' + esc(CP.judulModul(id)) + '<div class="kecil">' + r.n + ' soal</div></td><td>' + r.level + '</td><td><div class="batang"><i class="' + (p < 60 ? 'rendah' : p < 80 ? 'sedang' : '') + '" style="width:' + p + '%"></i></div><span class="kecil">' + p + '%</span></td><td class="kanan">' + waktuStr(r.detik / r.n) + '</td></tr>'; }).join('') + '</tbody></table>' : '<p class="kecil">Belum ada data. Mulai latihan dulu.</p>';
+  tampil('<div class="atas"><h2>Progres</h2></div><!--PERINGATAN-->' +
+    '<div class="statistik"><div class="kartu"><b>' + totalN + '</b><span class="kecil">Soal dikerjakan</span></div><div class="kartu"><b>' + (totalN ? persen(totalN, totalB) + '%' : '-') + '</b><span class="kecil">Akurasi total</span></div><div class="kartu"><b>' + CP.hitungStreak(pr.hariSesi, hariIni()) + '</b><span class="kecil">Streak (hari)</span></div><div class="kartu"><b>' + pr.sesi.length + '</b><span class="kecil">Sesi tercatat</span></div></div>' +
+    '<div class="bagian-judul"><h2>14 hari terakhir</h2></div><div class="kartu">' + grafikSVG(pr) + '</div>' +
+    '<div class="bagian-judul"><h2>Per topik</h2></div><div class="kartu">' + tabel + '</div>' +
+    '<div class="bagian-judul"><h2>Topik terlemah</h2></div><div class="kartu">' + (lemah.length ? lemah.map((x) => '<div class="baris" style="align-items:center;margin-bottom:6px"><span style="flex:3">' + esc(CP.judulModul(x.id)) + '</span><b style="flex:1;text-align:right">' + x.persen + '%</b></div>').join('') + '<p class="kecil">Dihitung dari topik dengan minimal 10 soal.</p>' : '<p class="kecil" style="margin:0">Belum ada topik dengan minimal 10 soal.</p>') + '</div>' +
+    '<div class="bagian-judul"><h2>5 sesi terakhir</h2></div><div class="kartu">' + (pr.sesi.length ? pr.sesi.slice(0, 5).map((x) => '<div class="baris" style="align-items:center;padding:6px 0;border-top:2px dashed var(--lembut)"><span style="flex:3"><b>' + esc(CP.judulModul(x.modul)) + '</b><div class="kecil">' + x.tgl + ' · Level ' + x.level + '</div></span><b style="flex:1;text-align:right">' + x.b + '/' + x.n + '</b></div>').join('') : '<p class="kecil" style="margin:0">Belum ada sesi.</p>') + '</div>', { nav: 'progres' });
+}
+function layarRiwayat() {
+  const pr = profilAktif();
+  const bagian = pr.riwayatKelas.slice().reverse().map((rk) => {
+    const mods = CP.REG.filter((m) => m.kategori !== 'hitungCepat' && m.kelas === rk.kelas && m.jenjang.indexOf(rk.jenjang) >= 0 && (m.kategori === 'umum' || (m.kategori === 'lanjut' && rk.tl)));
+    return '<div class="bagian-judul"><h2>' + rk.jenjang + ' kelas ' + rk.kelas + (rk.tl ? ' (+TL)' : '') + '</h2><span class="kecil">sampai ' + rk.sampai + '</span></div>' + mods.map((m) => { const r = pr.topik[m.id]; const aktif = m.status === 'aktif'; return '<button class="baris-topik' + (aktif ? '' : ' segera') + '" data-a="pergi" data-r="topik/' + m.id + '"><span class="kode">' + esc(m.id.replace(/^[IVX]+-/, '').replace('TL-', 'TL ')) + '</span><span class="isi"><div class="jdl">' + esc(m.judul) + '</div><div class="meta">' + (aktif ? (r && r.n ? 'Level ' + r.level + ' · ' + persen(r.n, r.b) + '% dari ' + r.n + ' soal' : 'Belum dilatih') : 'Segera hadir') + '</div></span></button>'; }).join('');
+  }).join('');
+  tampil(atasSub('Kelas sebelumnya', 'pengaturan') + (bagian || '<p class="kecil">Belum ada riwayat kelas.</p>'), { nav: 'pengaturan' });
+}
+
+/* ====================== LAYAR: PENGATURAN & PROFIL ====================== */
+function layarPengaturan() {
+  const pr = profilAktif(); const item = (r, jdl, ket, ikon) => '<button class="baris-topik" data-a="pergi" data-r="' + r + '"><span class="kode" style="min-width:44px">' + svgI(ikon) + '</span><span class="isi"><div class="jdl">' + jdl + '</div><div class="meta">' + ket + '</div></span></button>';
+  tampil('<div class="atas"><h2>Pengaturan</h2></div><!--PERINGATAN-->' + '<div class="kartu" style="margin-bottom:14px"><div class="baris" style="align-items:center"><span class="avatar" style="box-shadow:none"><i></i><span>' + esc(pr.username) + '</span></span><span class="chip aksen">' + pr.jenjang + ' ' + pr.kelas + (pr.tl ? ' +TL' : '') + '</span></div></div>' +
+    item('ubah', 'Ubah profil', 'Username, jenjang, kelas, Tingkat Lanjut', 'orang') + item('naik', 'Naik kelas', 'Pindah ke kelas berikutnya, progres lama tetap ada', 'panah') + item('ganti', 'Ganti profil', 'Satu HP boleh punya beberapa profil', 'orang') +
+    (pr.riwayatKelas.length ? item('riwayat', 'Kelas sebelumnya', 'Lihat progres kelas lama', 'buku') : '') +
+    item('laporan', 'Kirim laporan ke orang tua', 'Ringkasan + kode untuk WhatsApp', 'salin') + item('ortu', 'Mode Orang Tua', 'Baca laporan anak (dilindungi PIN)', 'kunci') +
+    item('cadangan', 'Cadangkan data', 'Pindah HP atau simpan cadangan', 'salin') + item('tentang', 'Tentang aplikasi', K.nama + ' versi ' + K.versiApp, 'bintang'), { nav: 'pengaturan' });
+}
+function layarGanti() {
+  const pr = profilAktif();
+  tampil(atasSub('Ganti profil', 'pengaturan') + Object.keys(data.profil).map((u) => { const p = data.profil[u]; return '<button class="baris-topik" data-a="pilihProfil" data-u="' + esc(u) + '"><span class="kode" style="min-width:44px">' + svgI('orang') + '</span><span class="isi"><div class="jdl">' + esc(u) + (u === pr.username ? ' (aktif)' : '') + '</div><div class="meta">' + p.jenjang + ' kelas ' + p.kelas + '</div></span></button>'; }).join('') + '<div class="gap"></div><button class="btn utama" data-a="tambahProfil">Tambah profil baru</button>', { nav: 'pengaturan' });
+}
+let ubah = null;
+function layarUbah() {
+  const pr = profilAktif(); if (!ubah || ubah.u !== pr.username) ubah = { u: pr.username, nama: pr.username, jenjang: pr.jenjang, kelas: pr.kelas, tl: pr.tl };
+  const w = ubah; if (CP.pilihanKelas(w.jenjang).indexOf(w.kelas) < 0) w.kelas = CP.pilihanKelas(w.jenjang)[0];
+  const chip = (arr, aksi, cur, lbl) => '<div class="pilih-chip">' + arr.map((x) => '<button data-a="' + aksi + '" data-v="' + x + '" aria-pressed="' + (cur === x) + '">' + (lbl ? lbl(x) : x) + '</button>').join('') + '</div>';
+  tampil(atasSub('Ubah profil', 'pengaturan') + '<div class="kartu"><label for="un">Username</label><input id="un" type="text" maxlength="15" autocomplete="off" autocapitalize="off" spellcheck="false" value="' + esc(w.nama) + '"><div class="gap"></div><label>Jenjang</label>' + chip(['SMP', 'SMA', 'SMK'], 'ubJenjang', w.jenjang) + '<div class="gap"></div><label>Kelas</label>' + chip(CP.pilihanKelas(w.jenjang), 'ubKelas', w.kelas) +
+    (CP.bisaTL(w.jenjang, w.kelas) ? '<div class="gap"></div><label>Materi</label>' + chip(['0', '1'], 'ubTL', w.tl ? '1' : '0', (x) => (x === '1' ? 'Umum + Tingkat Lanjut' : 'Matematika Umum')) : '') + '<div id="gal" class="galat"></div></div><div class="gap"></div><button class="btn utama" data-a="simpanUbah">Simpan perubahan</button>', { nav: 'pengaturan' });
+}
+let naikState = { jenjang: '', tl: false };
+function layarNaik() {
+  const pr = profilAktif(); const nx = CP.kelasBerikut(pr);
+  if (!nx) return tampil(atasSub('Naik kelas', 'pengaturan') + '<div class="kartu"><p style="margin:0">Kamu sudah di kelas XII, kelas tertinggi. Hebat! Progres tetap tersimpan.</p></div>', { nav: 'pengaturan' });
+  const jenjang = nx.jenjang || naikState.jenjang;
+  const tl = CP.bisaTL(jenjang, nx.kelas);
+  tampil(atasSub('Naik kelas', 'pengaturan') + '<div class="kartu"><p>Dari <b>' + pr.jenjang + ' kelas ' + pr.kelas + '</b> ke <b>kelas ' + nx.kelas + '</b>' + (nx.jenjang ? '' : ' (SMA atau SMK)') + '.</p><p class="kecil">Progres kelas sebelumnya <b>tidak dihapus</b>. Kamu tetap bisa membukanya di "Kelas sebelumnya".</p>' +
+    (nx.pilihJenjang ? '<label>Lanjut ke</label><div class="pilih-chip">' + nx.pilihJenjang.map((j) => '<button data-a="naikJenjang" data-v="' + j + '" aria-pressed="' + (naikState.jenjang === j) + '">' + j + '</button>').join('') + '</div>' : '') +
+    (tl ? '<div class="gap"></div><label>Materi</label><div class="pilih-chip"><button data-a="naikTL" data-v="0" aria-pressed="' + (!naikState.tl) + '">Matematika Umum</button><button data-a="naikTL" data-v="1" aria-pressed="' + naikState.tl + '">Umum + Tingkat Lanjut</button></div>' : '') + '</div><div class="gap"></div><button class="btn utama" data-a="jalankanNaik"' + (jenjang ? '' : ' disabled') + '>Naik ke kelas ' + nx.kelas + '</button>', { nav: 'pengaturan' });
+}
+function layarTentang() {
+  tampil(atasSub('Tentang', 'pengaturan') + '<div class="kartu tengah"><div style="width:96px;margin:0 auto 10px">' + LOGO + '</div><h2>' + esc(K.nama) + '</h2><p class="kecil">' + esc(K.tagline) + '</p><p class="kecil">Versi ' + K.versiApp + ' · data v' + K.versiData + '</p></div><div class="gap"></div><div class="kartu rata"><p>Semua soal dibuat otomatis oleh aplikasi, bukan disalin dari buku atau ujian. Buku teks hanya menjadi acuan urutan materi.</p><p>Data latihan tersimpan <b>di HP ini saja</b>. Ganti HP? Gunakan menu Cadangkan data.</p><p class="kecil" style="margin:0">Aplikasi dapat dipasang di layar utama dan berjalan tanpa internet setelah dibuka sekali.</p></div>', { nav: 'pengaturan' });
+}
+
+/* ====================== LAPORAN, ORANG TUA, CADANGAN ====================== */
+function salin(teks, area) {
+  const done = () => toast('Tersalin. Tempel di WhatsApp.');
+  const manual = () => { if (area) { area.focus(); area.select(); } toast('Pilih seluruh teks lalu salin manual.'); };
+  try {
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(teks).then(done, () => { if (!execSalin(area)) manual(); else done(); });
+    else if (execSalin(area)) done(); else manual();
+  } catch (e) { manual(); }
+}
+function execSalin(area) { try { if (!area) return false; area.focus(); area.select(); const ok = document.execCommand('copy'); return ok; } catch (e) { return false; } }
+function layarLaporan() {
+  const pr = profilAktif(); const lap = CP.buatLaporan(pr, hariIni()); const teks = CP.teksLaporan(lap);
+  tampil(atasSub('Laporan untuk orang tua', 'pengaturan') + '<div class="info">Salin teks di bawah, lalu tempel ke WhatsApp orang tua. Kode di bagian bawah dibaca otomatis di Mode Orang Tua.</div><div class="gap"></div><textarea id="lapTeks" readonly rows="10">' + esc(teks) + '</textarea><div class="gap"></div><button class="btn utama" data-a="salinLap">' + svgI('salin') + 'Salin</button>', { nav: 'pengaturan' });
+}
+let ortuAman = false, pinBuf = '', pinTahap = 'masuk', pinPertama = '';
+function layarOrtu() {
+  if (!ortuAman) return layarPin();
+  const lp = data.ortu.laporan; const nama = Object.keys(lp);
+  const kartu = nama.map((u) => {
+    const rc = lp[u], l = rc.terbaru, b = CP.bandingLaporan(rc);
+    const tanda = (v, s) => (v === 0 ? '<span class="naik-turun">tetap</span>' : '<span class="naik-turun ' + (v > 0 ? 'plus' : 'minus') + '">' + (v > 0 ? '▲ +' : '▼ ') + v + (s || '') + '</span>');
+    const topik = l.tp.map((t) => { const p = persen(t[1], t[2]); return '<tr><td>' + esc(CP.judulModul(t[0])) + '<div class="kecil">Level ' + t[4] + ' · ' + t[1] + ' soal</div></td><td><div class="batang"><i class="' + (p < 60 ? 'rendah' : p < 80 ? 'sedang' : '') + '" style="width:' + p + '%"></i></div><span class="kecil">' + p + '%</span></td><td class="kanan">' + waktuStr(t[3]) + '</td></tr>'; }).join('');
+    return '<div class="kartu kartu-anak"><div class="baris" style="align-items:center"><h3 style="flex:2">' + esc(l.u) + '</h3><span class="chip aksen">' + esc(l.j) + ' ' + esc(l.k) + (l.tl ? ' +TL' : '') + '</span></div><p class="kecil" style="margin:4px 0 10px">Laporan ' + esc(l.t) + (rc.sebelumnya ? ' · sebelumnya ' + esc(rc.sebelumnya.t) : '') + '</p>' +
+      '<div class="statistik"><div class="kartu"><b>' + l.a + '%</b><span class="kecil">Akurasi</span>' + (b ? '<br>' + tanda(b.akurasi, '%') : '') + '</div><div class="kartu"><b>' + l.m + '</b><span class="kecil">Soal 7 hari</span>' + (b ? '<br>' + tanda(b.soal) : '') + '</div><div class="kartu"><b>' + l.s + ' hari</b><span class="kecil">Streak</span>' + (b ? '<br>' + tanda(b.streak) : '') + '</div><div class="kartu"><b>' + (l.ul.length) + '</b><span class="kecil">Topik perlu diulang</span></div></div>' +
+      (l.ul.length ? '<div class="info" style="margin-top:10px"><b>Perlu diulang:</b> ' + l.ul.map((id) => esc(CP.judulModul(id))).join(', ') + '</div>' : '') +
+      '<details><summary>Akurasi dan waktu per topik</summary><table class="tabel"><thead><tr><th>Topik</th><th>Akurasi</th><th class="kanan">Waktu/soal</th></tr></thead><tbody>' + topik + '</tbody></table></details><button class="btn bahaya kecil-btn" data-a="hapusLaporan" data-u="' + esc(u) + '">Hapus laporan ini</button></div>';
+  }).join('');
+  tampil(atasSub('Mode Orang Tua', 'pengaturan', '<button class="ikon-tombol" data-a="kunciOrtu" aria-label="Kunci">' + svgI('kunci') + '</button>') + '<div class="kartu"><label for="tempel">Tempel laporan dari anak</label><textarea id="tempel" rows="4" placeholder="Tempel seluruh pesan WhatsApp di sini"></textarea><div id="gal" class="galat"></div><div class="gap2"></div><button class="btn utama" data-a="bacaLap">Baca laporan</button></div><div class="gap"></div>' + (kartu || '<p class="kecil tengah">Belum ada laporan. Minta anak menekan "Kirim laporan ke orang tua", lalu tempel pesannya di atas.</p>') + '<div class="gap"></div><button class="btn kecil-btn" data-a="ubahPin">Ubah PIN</button>', { nav: 'pengaturan' });
+}
+function layarPin() {
+  const baru = !data.ortu.pin;
+  const judul = baru ? (pinTahap === 'ulang' ? 'Ketik PIN sekali lagi' : 'Buat PIN 4 angka') : 'Masukkan PIN';
+  tampil(atasSub('Mode Orang Tua', 'pengaturan') + '<div class="kartu tengah"><div style="width:44px;margin:0 auto">' + svgI('kunci') + '</div><h3>' + judul + '</h3><p class="kecil">' + (baru ? 'PIN ini melindungi laporan anak di HP ini.' : '') + '</p><div class="pin-titik">' + [0, 1, 2, 3].map((i) => '<i class="' + (i < pinBuf.length ? 'on' : '') + '"></i>').join('') + '</div><div id="gal" class="galat"></div></div><div class="gap"></div><div class="kp" style="max-width:340px;margin:0 auto">' +
+    [1, 2, 3].map((d) => '<button data-a="pinKey" data-v="' + d + '">' + d + '</button>').join('') + '<button class="fn" data-a="pinKey" data-v="hapus" aria-label="Hapus">&#9003;</button>' + [4, 5, 6].map((d) => '<button data-a="pinKey" data-v="' + d + '">' + d + '</button>').join('') + '<span></span>' + [7, 8, 9].map((d) => '<button data-a="pinKey" data-v="' + d + '">' + d + '</button>').join('') + '<span></span><span></span><button data-a="pinKey" data-v="0">0</button><span></span><span></span></div>', { nav: 'pengaturan' });
+}
+function layarCadangan() {
+  const kode = CP.buatCadangan(data);
+  tampil(atasSub('Cadangkan data', 'pengaturan') + '<div class="kartu"><h3>1. Salin data</h3><p class="kecil">Simpan kodenya di tempat aman (misalnya catatan WhatsApp ke diri sendiri). Jangan membagikannya ke orang lain.</p><textarea id="cadKode" readonly rows="5">' + esc(kode) + '</textarea><div class="gap2"></div><button class="btn utama" data-a="salinCad">' + svgI('salin') + 'Salin data</button></div><div class="gap"></div><div class="kartu"><h3>2. Tempel data</h3><p class="kecil">Untuk memulihkan atau pindah HP. <b>Ini menimpa semua data di HP ini.</b></p><textarea id="cadTempel" rows="4" placeholder="Tempel kode yang diawali CPB1:"></textarea><div id="gal" class="galat"></div><div class="gap2"></div><button class="btn" data-a="pulihkan">Tempel data</button></div>', { nav: 'pengaturan' });
+}
+function layarPulih() {
+  tampil(atasSub('Pulihkan dari cadangan', profilAktif() ? 'pengaturan' : 'mulai') + '<div class="kartu"><p class="kecil">Tempel kode cadangan (diawali CPB1:) dari HP lama.</p><textarea id="cadTempel" rows="5"></textarea><div id="gal" class="galat"></div><div class="gap2"></div><button class="btn utama" data-a="pulihkan">Pulihkan</button></div>', { tanpaNav: true });
+}
+
+/* ====================== AKSI ====================== */
+function setGalat(t) { const g = $('#gal'); if (g) g.textContent = t; }
+const AKSI = {
+  pergi(d) { pergi(d.r); },
+  balik(d) { pergi(d.r); },
+  wizLanjut1() { const v = ($('#un').value || '').trim(); if (!CP.validasiUsername(v)) return setGalat('Username harus 3-15 karakter: huruf, angka, atau garis bawah.'); if (data.profil[v]) return setGalat('Username ini sudah dipakai di HP ini.'); wiz.username = v; wiz.langkah = 2; layarProfilBaru(); },
+  wizJenjang(d) { wiz.jenjang = d.j; wiz.kelas = ''; wiz.langkah = 3; layarProfilBaru(); },
+  wizKelas(d) { wiz.kelas = d.k; if (CP.bisaTL(wiz.jenjang, wiz.kelas)) { wiz.langkah = 4; layarProfilBaru(); } else buatProfilSelesai(false); },
+  wizTL(d) { buatProfilSelesai(d.t === '1'); },
+  wizKembali() { if (wiz.langkah > 1) { wiz.langkah--; layarProfilBaru(); } else { wiz = { langkah: 1, username: '', jenjang: '', kelas: '', tl: false }; pergi(profilAktif() ? 'ganti' : ''); } },
+  keluarLatihan() { konfirmasi('Keluar dari latihan?', 'Jawaban yang sudah kamu kerjakan tetap tercatat, tetapi ringkasan sesi tidak dibuat.', 'Keluar', () => pergi('topik/' + sesi.id)); },
+  lihatCara() { const soal = sesi.soal[sesi.i]; $('#caranya').innerHTML = langkahHtml(soal); const b = $('[data-a="lihatCara"]'); if (b) b.classList.add('sembunyi'); },
+  lanjutSoal() { const s = sesi; if (!s || s.selesai === 'x') return; clearTimeout(s.auto); if (s.enterLanjut) document.removeEventListener('keydown', s.enterLanjut); if (s.i >= s.soal.length - 1) { s.selesai = 'x'; selesaiSesi(); } else { s.i++; s.selesai = false; soalKe(); } },
+  ulangLatihan() { layarLatihan(sesi.id); },
+  belLanjut() { const b = bel, L = b.layar[b.i]; if (L.t === 'contoh' && b.tampilLangkah < b.contoh.langkah.length) { b.tampilLangkah++; layarBelajarKe(); return; } b.i = Math.min(b.layar.length - 1, b.i + 1); layarBelajarKe(); window.scrollTo(0, 0); },
+  petunjuk() { const q = bel.layar[bel.i].q; $('#petunjuk').innerHTML = '<div class="info" style="margin-top:10px"><b>Petunjuk:</b> ' + fmt(q.langkah[0].t) + '</div>'; },
+  keluarBelajar() { pergi('topik/' + bel.id); },
+  pilihProfil(d) { data.aktif = d.u; simpan(); pergi('beranda'); toast('Profil ' + d.u + ' aktif'); },
+  tambahProfil() { wiz = { langkah: 1, username: '', jenjang: '', kelas: '', tl: false }; pergi('profilbaru'); },
+  ubJenjang(d) { ubah.nama = ($('#un') || { value: ubah.nama }).value; ubah.jenjang = d.v; if (CP.pilihanKelas(d.v).indexOf(ubah.kelas) < 0) ubah.kelas = CP.pilihanKelas(d.v)[0]; if (!CP.bisaTL(ubah.jenjang, ubah.kelas)) ubah.tl = false; layarUbah(); },
+  ubKelas(d) { ubah.nama = ($('#un') || { value: ubah.nama }).value; ubah.kelas = d.v; if (!CP.bisaTL(ubah.jenjang, ubah.kelas)) ubah.tl = false; layarUbah(); },
+  ubTL(d) { ubah.nama = ($('#un') || { value: ubah.nama }).value; ubah.tl = d.v === '1'; layarUbah(); },
+  simpanUbah() {
+    const pr = profilAktif(), w = ubah; const nama = ($('#un').value || '').trim();
+    if (!CP.validasiUsername(nama)) return setGalat('Username harus 3-15 karakter: huruf, angka, atau garis bawah.');
+    if (nama !== pr.username && data.profil[nama]) return setGalat('Username ini sudah dipakai.');
+    if (nama !== pr.username) { delete data.profil[pr.username]; pr.username = nama; data.profil[nama] = pr; data.aktif = nama; }
+    pr.jenjang = w.jenjang; pr.kelas = w.kelas; pr.tl = !!w.tl && CP.bisaTL(w.jenjang, w.kelas);
+    ubah = null; simpan(); setTema(); toast('Profil disimpan'); pergi('pengaturan');
+  },
+  naikJenjang(d) { naikState.jenjang = d.v; layarNaik(); },
+  naikTL(d) { naikState.tl = d.v === '1'; layarNaik(); },
+  jalankanNaik() {
+    const pr = profilAktif(), nx = CP.kelasBerikut(pr);
+    konfirmasi('Naik ke kelas ' + nx.kelas + '?', 'Progres kelas ' + pr.kelas + ' tetap tersimpan dan bisa dibuka lagi.', 'Naik kelas', () => {
+      try { CP.naikKelas(pr, naikState.jenjang, naikState.tl); naikState = { jenjang: '', tl: false }; simpan(); setTema(); toast('Selamat naik ke kelas ' + pr.kelas + '!'); pergi('beranda'); } catch (e) { toast(e.message); }
+    });
+  },
+  salinLap() { salin($('#lapTeks').value, $('#lapTeks')); },
+  salinCad() { salin($('#cadKode').value, $('#cadKode')); },
+  pulihkan() {
+    const h = CP.pulihkan(($('#cadTempel').value || ''));
+    if (h.galat) return setGalat(h.galat);
+    const aksiPulih = () => { data = h.data; simpanan.mem = data; if (!data.aktif || !data.profil[data.aktif]) data.aktif = Object.keys(data.profil)[0] || null; simpan(); ortuAman = false; toast('Data dipulihkan'); pergi('beranda'); };
+    konfirmasi('Timpa data di HP ini?', 'Semua profil dan progres di HP ini diganti dengan data dari cadangan (' + Object.keys(h.data.profil).length + ' profil).', 'Pulihkan', aksiPulih, true);
+  },
+  pinKey(d) {
+    if (d.v === 'hapus') pinBuf = pinBuf.slice(0, -1); else if (pinBuf.length < 4) pinBuf += d.v;
+    if (pinBuf.length === 4) {
+      if (!data.ortu.pin) {
+        if (pinTahap !== 'ulang') { pinPertama = pinBuf; pinBuf = ''; pinTahap = 'ulang'; return layarPin(); }
+        if (pinBuf !== pinPertama) { pinBuf = ''; pinTahap = 'buat'; pinPertama = ''; layarPin(); return setGalat('PIN tidak sama. Ulangi dari awal.'); }
+        CP.setPin(data, pinBuf); simpan(); ortuAman = true; pinBuf = ''; pinTahap = 'masuk'; return layarOrtu();
+      }
+      if (CP.cekPin(data, pinBuf)) { ortuAman = true; pinBuf = ''; return layarOrtu(); }
+      pinBuf = ''; layarPin(); return setGalat('PIN salah.');
+    }
+    layarPin();
+  },
+  kunciOrtu() { ortuAman = false; pinBuf = ''; pergi('pengaturan'); },
+  ubahPin() { data.ortu.pin = null; ortuAman = false; pinBuf = ''; pinTahap = 'buat'; simpan(); layarPin(); },
+  bacaLap() {
+    const h = CP.bacaLaporan($('#tempel').value);
+    if (h.galat) return setGalat(h.galat);
+    CP.terimaLaporan(data, h.lap, hariIni()); simpan(); toast('Laporan ' + h.lap.u + ' tersimpan'); layarOrtu();
+  },
+  hapusLaporan(d) { konfirmasi('Hapus laporan ' + d.u + '?', 'Laporan ini dihapus dari HP ini.', 'Hapus', () => { delete data.ortu.laporan[d.u]; simpan(); layarOrtu(); }, true); }
+};
+function buatProfilSelesai(tl) {
+  try {
+    CP.buatProfil(data, { username: wiz.username, jenjang: wiz.jenjang, kelas: wiz.kelas, tl });
+    wiz = { langkah: 1, username: '', jenjang: '', kelas: '', tl: false };
+    simpan(); setTema(); toast('Selamat datang!'); pergi('beranda');
+  } catch (e) { toast(e.message); wiz.langkah = 1; layarProfilBaru(); }
+}
+
+/* ====================== MULAI ====================== */
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then((reg) => {
+      reg.addEventListener('updatefound', () => {
+        const w = reg.installing;
+        if (w) w.addEventListener('statechange', () => { if (w.state === 'installed' && navigator.serviceWorker.controller) toast('Versi baru siap. Tutup dan buka lagi aplikasi.'); });
+      });
+    }).catch(() => {});
+  });
+}
+window.CPUI = { render, data: () => data, sesi: () => sesi };
+render();
+})();
+</script>
+</body>
+</html>
