@@ -519,10 +519,11 @@ bagian('9. Simulasi TKA (SMP, SMA, SMK)');
   CP.REG.filter((m) => m.status === 'aktif').forEach((m) => {
     for (let level = 1; level <= m.level.length; level++) for (let i = 0; i < Math.max(20, Math.floor(BANYAK / 10)); i++) {
       const soal = m.generator(level, i % 2 ? 'vokasi' : 'umum', rng0); n++;
-      if (soal.tipe === 'pilihan') continue;
+      if (soal.tipe === 'pilihan') { if (soal.pilihan.some((t) => /\d/.test(t))) { const o5 = CP.jadikanPilihan(rng0, soal, 5); cek(o5.pilihan.length === 5 && new Set(o5.pilihan).size === 5 && o5.pilihan[o5.benar] === soal.pilihan[soal.benar], m.id + ' L' + level + ' pilihan 5 opsi: ' + soal.teks.slice(0, 40)); } continue; }
       let o; try { o = CP.jadikanPilihan(rng0, soal); } catch (e) { bermasalah++; cek(false, 'TKA jadikanPilihan gagal ' + m.id + ' L' + level + ': ' + e.message); continue; }
       const id = m.id + ' L' + level + ' "' + soal.teks.slice(0, 50) + '"';
       cek(o.pilihan.length === 4 && new Set(o.pilihan).size === 4, id + ' opsi TKA tidak 4 berbeda');
+      const o5 = CP.jadikanPilihan(rng0, soal, 5); cek(o5.pilihan.length === 5 && new Set(o5.pilihan).size === 5 && o5.pilihan[o5.benar] === CP.tampilJawab(soal), id + ' 5 opsi TKA tidak valid');
       cek(o.pilihan[o.benar] === CP.tampilJawab(soal), id + ' opsi benar "' + o.pilihan[o.benar] + '" != "' + CP.tampilJawab(soal) + '"');
       cek(o.nilai.every((q, k) => (k === o.benar) === CP.pSama(q, soal.jawab)), id + ' hanya satu opsi bernilai sama dengan jawaban');
       if (!(soal.izin && soal.izin.minus)) cek(o.nilai.every((q) => q.n >= 0), id + ' pengecoh negatif di topik non-negatif');
@@ -531,7 +532,7 @@ bagian('9. Simulasi TKA (SMP, SMA, SMK)');
   console.log('  soal diuji untuk konversi pilihan ganda: ' + n);
 }
 ['SMP', 'SMA', 'SMK'].forEach((j) => {
-  const cfg = CP.TKA[j]; const ulang = Math.max(6, Math.floor(BANYAK / 50)); let bentuk = { pg: 0, mcma: 0, kategori: 0 };
+  const cfg = CP.TKA[j]; const ulang = Math.max(6, Math.floor(BANYAK / 50)); let bentuk = { pg: 0, mcma: 0, kategori: 0 }, khasHitung = {};
   for (let rep = 0; rep < ulang; rep++) {
     const items = CP.susunTKA(j, CP.buatRng(500 + rep));
     cek(items.length === cfg.jumlah, j + ' jumlah soal ' + items.length);
@@ -540,18 +541,18 @@ bagian('9. Simulasi TKA (SMP, SMA, SMK)');
     cfg.elemen.forEach((e, k) => cek(items.filter((it) => it.elemen === e.id).length === alok[k], j + ' alokasi elemen ' + e.id));
     cek(new Set(items.filter((it) => it.tipe === 'pg').map((it) => it.teks)).size === items.filter((it) => it.tipe === 'pg').length, j + ' ada soal pg kembar');
     items.forEach((it) => {
-      bentuk[it.tipe]++;
+      bentuk[it.tipe]++; if (it.khas) khasHitung[it.khas] = (khasHitung[it.khas] || 0) + 1;
       const id = j + ' #' + it.no + ' ' + it.tipe + ' ' + it.elemen;
       cek(['pg', 'mcma', 'kategori'].indexOf(it.tipe) >= 0 && typeof it.teks === 'string' && it.teks.length > 5, id + ' teks');
       if (it.tipe === 'pg') {
-        cek(it.pilihan.length === 4 && new Set(it.pilihan).size === 4 && it.benar >= 0 && it.benar < 4, id + ' opsi pg');
+        cek(it.pilihan.length === (it.khas === 'cukup' ? 5 : cfg.opsi) && new Set(it.pilihan).size === it.pilihan.length && it.benar >= 0 && it.benar < it.pilihan.length, id + ' opsi pg ' + it.pilihan.length);
         cek(Array.isArray(it.langkah) && it.langkah.length >= 1, id + ' tanpa langkah');
       } else if (it.tipe === 'mcma') {
-        cek(it.pilihan.length === 4 && it.benar.length >= 1 && it.benar.length < 4, id + ' mcma jumlah benar ' + it.benar.length);
-        it.pilihan.forEach((t, i) => cek(t.indexOf(' Jawabannya ' + it.kunciNilai[i] + '.') >= 0 === (it.benar.indexOf(i) >= 0), id + ' pernyataan ' + i + ' tidak konsisten dengan kunci'));
+        cek(it.pilihan.length === (it.khas ? 5 : cfg.opsi) && it.benar.length >= 1 && it.benar.length < it.pilihan.length, id + ' mcma jumlah benar ' + it.benar.length + ' dari ' + it.pilihan.length);
+        if (!it.khas) it.pilihan.forEach((t, i) => cek(t.indexOf(' Jawabannya ' + it.kunciNilai[i] + '.') >= 0 === (it.benar.indexOf(i) >= 0), id + ' pernyataan ' + i + ' tidak konsisten dengan kunci'));
       } else {
         cek(it.pernyataan.length === 3 && it.kunci.some((k) => k) && it.kunci.some((k) => !k), id + ' kategori harus campuran benar/salah');
-        it.pernyataan.forEach((t, i) => cek(t.indexOf(' Jawabannya ' + it.kunciNilai[i] + '.') >= 0 === it.kunci[i], id + ' pernyataan kategori ' + i + ' tidak konsisten'));
+        if (!it.khas) it.pernyataan.forEach((t, i) => cek(t.indexOf(' Jawabannya ' + it.kunciNilai[i] + '.') >= 0 === it.kunci[i], id + ' pernyataan kategori ' + i + ' tidak konsisten'));
       }
     });
     // penilaian
@@ -566,6 +567,7 @@ bagian('9. Simulasi TKA (SMP, SMA, SMK)');
     if (mc && mc.benar.length > 1) cek(!CP.itemBenar(mc, [mc.benar[0]]), j + ' mcma sebagian benar tidak dihitung benar');
     cek(Object.keys(h1.perElemen).length === cfg.elemen.length, j + ' ringkasan per elemen');
   }
+  console.log('  keluarga khas ' + j + ': ' + JSON.stringify(khasHitung));
   console.log('  ' + j + ': ' + ulang + ' set x ' + cfg.jumlah + ' soal; bentuk ' + JSON.stringify(bentuk) + '; durasi ' + cfg.durasi + ' menit');
   cek(bentuk.pg > 0 && bentuk.mcma > 0 && bentuk.kategori > 0, j + ' ketiga bentuk soal muncul');
   // latihan per elemen
@@ -575,6 +577,62 @@ cek(CP.TKA.SMK.konteks === 'vokasi' && CP.TKA.SMA.konteks === 'umum' && CP.TKA.S
 {
   const pr = { tka: [] }; for (let i = 0; i < 25; i++) CP.catatTKA(pr, { n: 25, benar: i, skor: 4 * i, perElemen: {} }, { tgl: '2026-10-' + (10 + (i % 15)), jenjang: 'SMA', mode: 'simulasi', detik: 1000 });
   cek(pr.tka.length === 20 && pr.tka[0].b === 24, 'riwayat TKA maksimal 20, terbaru di depan');
+}
+
+bagian('9b. Keluarga soal khas TKA (dihitung ulang terpisah)');
+{
+  const rngK = CP.buatRng(2468); const jum = {};
+  const mkEl = (id) => ({ id });
+  const prima = (x) => { if (x < 2) return false; for (let i = 2; i * i <= x; i++) if (x % i === 0) return false; return true; };
+  for (let rep = 0; rep < Math.max(40, BANYAK / 5); rep++) {
+    ['SMA', 'SMK'].forEach((j) => {
+      const cfg = CP.TKA[j], K = CP.TKA_KHAS;
+      // himpunan
+      let it = K.himpunan(cfg, mkEl('bilangan'), rngK); jum.himpunan = (jum.himpunan || 0) + 1;
+      const pa = it.param, A = [], C = [];
+      for (let x = 1; x < pa.a; x++) A.push(x);
+      for (let x = 0; x <= pa.c; x++) if (prima(x)) C.push(x);
+      const fB = pa.tipeB === 'bilangan genap' ? (x) => x % 2 === 0 : pa.tipeB === 'bilangan ganjil' ? (x) => x % 2 === 1 : (x) => x % 3 === 0;
+      const U = [...Array(61).keys()], inn = (x, l) => l.indexOf(x) >= 0;
+      const f = [(x) => (inn(x, A) && fB(x)) || inn(x, C), (x) => inn(x, A) && (fB(x) || inn(x, C)), (x) => (inn(x, A) || inn(x, C)) && fB(x), (x) => (inn(x, A) && inn(x, C)) || (fB(x) && inn(x, C))][pa.k];
+      const hasil = U.filter(f);
+      cek(it.pilihan[it.benar] === '{' + hasil.join(', ') + '}', 'himpunan opsi benar ' + it.pilihan[it.benar] + ' != {' + hasil.join(', ') + '}');
+      cek(it.pilihan.length === 5 && new Set(it.pilihan).size === 5, 'himpunan 5 opsi berbeda');
+      // biner
+      it = K.biner(cfg, mkEl('bilangan'), rngK); jum.biner = (jum.biner || 0) + 1;
+      const b = it.param;
+      cek(b.p * b.a0 + b.q * b.k + b.r0 === b.R, 'biner R konsisten');
+      cek(it.kunci[0] === (b.a0 % b.m === 0) && it.kunci[1] === prima(b.a0) && it.kunci[2] === (b.tampilV === b.p * b.a0 + b.r0), 'biner kunci kategori');
+      // peluruhan
+      it = K.peluruhan(cfg, mkEl('aljabar'), rngK, j === 'SMK' ? 'vokasi' : 'umum'); jum.peluruhan = (jum.peluruhan || 0) + 1;
+      const pr = it.param, v = [pr.K0];
+      for (let i = 1; i < 8; i++) v.push(v[i - 1] * (1 - pr.pr / 100));
+      const benarIdx = [2, 3, 4, 5, 6].map((h, i) => (v[h - 1] < pr.T1 && v[h - 1] >= pr.T2 ? i : -1)).filter((i) => i >= 0);
+      cek(JSON.stringify(benarIdx) === JSON.stringify(it.benar) && it.benar.length >= 1 && it.benar.length < 5, 'peluruhan kunci ' + JSON.stringify(it.benar) + ' vs ' + JSON.stringify(benarIdx));
+      // ruang (kubus)
+      it = K.ruang(cfg, mkEl('geometri'), rngK); jum.ruang = (jum.ruang || 0) + 1;
+      const V = { A: [0, 0, 0], B: [1, 0, 0], C: [1, 1, 0], D: [0, 1, 0], E: [0, 0, 1], F: [1, 0, 1], G: [1, 1, 1], H: [0, 1, 1] };
+      const ed = [];
+      Object.keys(V).forEach((u) => Object.keys(V).forEach((w) => { if (u < w && V[u].reduce((s2, x, i) => s2 + Math.abs(x - V[w][i]), 0) === 1) ed.push(u + w); }));
+      cek(ed.length === 12, 'kubus punya 12 rusuk');
+      const dir = (e) => V[e[0]].map((x, i) => Math.abs(x - V[e[1]][i])).indexOf(1);
+      const sama = (a, b2) => a[0] === b2[0] || a[0] === b2[1] || a[1] === b2[0] || a[1] === b2[1];
+      const e0 = it.param.rusuk;
+      const hit = [ed.filter((e) => e !== e0 && dir(e) === dir(e0)).length, ed.filter((e) => dir(e) !== dir(e0) && !sama(e, e0)).length, ed.filter((e) => e !== e0 && dir(e) !== dir(e0) && sama(e, e0)).length, 4, 12, 6][it.param.pilih];
+      cek(it.param.jawab === hit && it.pilihan[it.benar] === String(hit), 'ruang jawaban ' + it.param.jawab + ' vs ' + hit);
+      // kecukupan data
+      it = K.cukup(cfg, mkEl('aljabar'), rngK); jum.cukup = (jum.cukup || 0) + 1;
+      cek(it.pilihan.length === 5 && it.benar === it.param.jenis && /\(1\)/.test(it.teks) && /\(2\)/.test(it.teks), 'cukup struktur');
+      // grafik garis
+      it = K.grafikGaris(cfg, mkEl('data'), rngK, j === 'SMK' ? 'vokasi' : 'umum'); jum.grafik = (jum.grafik || 0) + 1;
+      const g = it.param, sr = g.seri;
+      const naik = (s2, a, bb) => { for (let i = a; i < bb; i++) if (!(s2.v[i + 1] > s2.v[i])) return false; return true; };
+      const tt3 = sr[(g.s1 + 2) % 3];
+      const okG = [naik(sr[g.s1], g.mulai, 4), sr.every((s2) => naik(s2, 1, 3)), naik(sr[g.s2], 0, 4), tt3.v[2] === tt3.v[3] && tt3.v[3] === tt3.v[4], sr.every((s2) => s2.v[4] < s2.v[3])];
+      cek(JSON.stringify(okG.map((x, i) => (x ? i : -1)).filter((i) => i >= 0)) === JSON.stringify(it.benar) && it.benar.length >= 1 && it.gambar.indexOf('<svg') === 0 && it.gambar.indexOf('NaN') < 0, 'grafik garis kunci');
+    });
+  }
+  console.log('  keluarga khas diuji: ' + JSON.stringify(jum));
 }
 
 /* ---------- ringkasan ---------- */

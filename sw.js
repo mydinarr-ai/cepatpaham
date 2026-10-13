@@ -1,5 +1,5 @@
 /* CepatPaham - service worker. Naikkan nomor versi CACHE setiap kali ada pembaruan aplikasi. */
-const CACHE = 'cepatpaham-v1.6.0';
+const CACHE = 'cepatpaham-v1.7.0';
 const ASET = [
   './', './index.html', './manifest.json',
   './ikon/ikon.svg', './ikon/ikon-192.png', './ikon/ikon-512.png', './ikon/ikon-maskable-512.png', './ikon/apple-touch-180.png',

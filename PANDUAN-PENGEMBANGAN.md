@@ -113,3 +113,12 @@ Atas permintaan pemilik, bab dikerjakan **berurutan menurut kelas (VII → XII)*
 - SMK memakai konteks `vokasi` pada semua generator. Spesifikasi resmi menyebut tiga konteks SMK (teknik/kesehatan, bisnis/ekonomi, seni/pariwisata); generator vokasi saat ini berfokus pada bisnis dan produksi.
 - Menambah bab ke TKA: tambahkan id modul ke `modul` pada elemen yang sesuai di `CP.TKA`. Setelah menambah bab Tingkat Lanjut, putuskan apakah ikut dalam TKA SMA (kemungkinan tidak, karena TKA Matematika wajib memakai Matematika Umum).
 - UTBK belum dikerjakan. Cek format dan cakupan terbaru dari sumber resmi sebelum mengerjakannya.
+
+### Penyesuaian dengan contoh soal TKA SMA/SMK 2025 (dari pemilik)
+
+Pemilik membagikan PDF "Soal TKA Matematika Wajib SMA/SMK" (contoh resmi 2025). Dipakai **hanya sebagai acuan format dan jenis soal**; tidak ada soal yang disalin. Temuan dan penerapannya:
+
+- Pilihan ganda SMA/SMK memakai **5 opsi (A-E)** dan pilihan ganda kompleks memakai **5 pilihan**. Disetel lewat `opsi` pada `CP.TKA` (SMP tetap 4 sampai ada acuan resmi).
+- Ada soal **kecukupan data** ("pernyataan (1) dan (2) cukup untuk menjawab?") dengan 5 opsi baku. Dibuat oleh `CP.TKA_KHAS.cukup`.
+- Keluarga soal khas yang meniru jenis contoh: `himpunan`, `biner` (operasi biner, benar/salah), `peluruhan` (persen turun per hari, pilih semua yang benar), `ruang` (kedudukan rusuk kubus), `grafikGaris` (tafsir grafik garis, pilih semua yang benar). Kunci tiap keluarga dihitung ulang terpisah di bagian 9b `uji.js`.
+- Belum ada (kandidat berikutnya): soal daerah penyelesaian pertidaksamaan dari gambar, soal pemuatan benda di bak truk (volume tersusun), tabel distribusi data dengan syarat rata-rata/median, dan soal SPLTV bergambar (buket bunga).

@@ -490,7 +490,7 @@ function tkaTampil() {
   const it = tka.items[tka.i], n = tka.items.length, j = tka.jaw[tka.i];
   const grid = tka.items.map((x, k) => '<button data-a="tkaLompat" data-i="' + k + '" class="' + (k === tka.i ? 'aktif ' : '') + (tkaTerjawab(k) ? 'jawab ' : '') + (tka.ragu[k] ? 'ragu' : '') + '" aria-label="Soal ' + (k + 1) + '">' + (k + 1) + '</button>').join('');
   let isi = '';
-  if (it.tipe === 'pg') isi = '<div class="opsi" role="group">' + it.pilihan.map((p, k) => '<button data-a="tkaPilih" data-k="' + k + '" aria-pressed="' + (j === k) + '"><b>' + 'ABCD'[k] + '</b><span>' + fmt(p) + '</span></button>').join('') + '</div>';
+  if (it.tipe === 'pg') isi = '<div class="opsi" role="group">' + it.pilihan.map((p, k) => '<button data-a="tkaPilih" data-k="' + k + '" aria-pressed="' + (j === k) + '"><b>' + 'ABCDE'[k] + '</b><span>' + fmt(p) + '</span></button>').join('') + '</div>';
   else if (it.tipe === 'mcma') isi = '<div class="opsi" role="group">' + it.pilihan.map((p, k) => '<button data-a="tkaToggle" data-k="' + k + '" aria-pressed="' + ((j || []).indexOf(k) >= 0) + '"><b>' + ((j || []).indexOf(k) >= 0 ? '✓' : '') + '</b><span style="font-size:17px">' + fmt(p) + '</span></button>').join('') + '</div>';
   else isi = '<div class="kat">' + it.pernyataan.map((p, k) => '<div class="kat-baris"><div class="kat-teks">' + fmt(p) + '</div><div class="baris"><button data-a="tkaKat" data-k="' + k + '" data-v="1" aria-pressed="' + ((j || [])[k] === true) + '">Benar</button><button data-a="tkaKat" data-k="' + k + '" data-v="0" aria-pressed="' + ((j || [])[k] === false) + '">Salah</button></div></div>').join('') + '</div>';
   const el = tka.cfg.elemen.find((e) => e.id === it.elemen);
@@ -511,12 +511,12 @@ function tkaAkhiri() {
 }
 function tkaJawabanKamu(it, j) {
   if (!CP.itemTerjawab(it, j)) return 'Tidak dijawab';
-  if (it.tipe === 'pg') return 'ABCD'[j] + '. ' + it.pilihan[j];
+  if (it.tipe === 'pg') return 'ABCDE'[j] + '. ' + it.pilihan[j];
   if (it.tipe === 'mcma') return (j || []).slice().sort((a, b) => a - b).map((k) => 'nomor ' + (k + 1)).join(', ');
   return j.map((v) => (v ? 'Benar' : 'Salah')).join(', ');
 }
 function tkaKunci(it) {
-  if (it.tipe === 'pg') return 'ABCD'[it.benar] + '. ' + it.pilihan[it.benar];
+  if (it.tipe === 'pg') return 'ABCDE'[it.benar] + '. ' + it.pilihan[it.benar];
   if (it.tipe === 'mcma') return it.benar.map((k) => 'nomor ' + (k + 1)).join(', ');
   return it.kunci.map((v) => (v ? 'Benar' : 'Salah')).join(', ');
 }

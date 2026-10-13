@@ -7,7 +7,7 @@
   CP.KONFIG = {
     nama: 'CepatPaham',
     tagline: 'Hitung cepat. Paham konsep.',
-    versiApp: '1.6.0',
+    versiApp: '1.7.0',
     versiData: 1,
     kunciSimpan: 'cepatpaham:data',
     soalPerSesi: 10,

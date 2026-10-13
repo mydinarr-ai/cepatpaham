@@ -11,22 +11,22 @@
   CP.TKA = {
     sumber: 'Kerangka asesmen TKA SMA/MA/SMK: Peraturan Kepala BSKAP No. 045/H/AN/2025. Matematika wajib SMA/SMK 2026: 25 soal, 75 menit. Jumlah soal SMP belum dipastikan; nilai di bawah adalah perkiraan.',
     SMP: {
-      nama: 'TKA SMP', durasi: 60, jumlah: 25, konteks: 'umum', pasti: false,
+      nama: 'TKA SMP', durasi: 60, jumlah: 25, opsi: 4, konteks: 'umum', pasti: false,
       elemen: [
-        { id: 'bilangan', nama: 'Bilangan', bobot: 7, modul: ['VII-1', 'VII-2', 'VII-3', 'H1', 'H2', 'H3'] },
+        { id: 'bilangan', nama: 'Bilangan', bobot: 7, modul: ['VII-1', 'VII-2', 'VII-3', 'H1', 'H2', 'H3'], khas: [] },
         { id: 'aljabar', nama: 'Aljabar', bobot: 7, modul: ['VII-4', 'VIII-1', 'VIII-2', 'VIII-3', 'IX-1'] },
-        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 6, modul: ['VII-5', 'VIII-4', 'IX-2', 'IX-3'] },
-        { id: 'data', nama: 'Data dan Peluang', bobot: 5, modul: ['VII-6', 'VIII-5', 'IX-4'] }
+        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 6, modul: ['VII-5', 'VIII-4', 'IX-2', 'IX-3'], khas: ['ruang'] },
+        { id: 'data', nama: 'Data dan Peluang', bobot: 5, modul: ['VII-6', 'VIII-5', 'IX-4'], khas: ['grafikGaris'] }
       ]
     },
     SMA: {
-      nama: 'TKA SMA', durasi: 75, jumlah: 25, konteks: 'umum', pasti: true,
+      nama: 'TKA SMA', durasi: 75, jumlah: 25, opsi: 5, konteks: 'umum', pasti: true,
       elemen: [
-        { id: 'bilangan', nama: 'Bilangan', bobot: 5, modul: ['X-1', 'X-2', 'H1', 'H2'] },
-        { id: 'aljabar', nama: 'Aljabar dan Fungsi', bobot: 7, modul: ['X-4', 'X-5', 'XI-1', 'XII-1'] },
-        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 4, modul: ['XI-2', 'XII-2'] },
+        { id: 'bilangan', nama: 'Bilangan', bobot: 5, modul: ['X-1', 'X-2', 'H1', 'H2'], khas: ['himpunan', 'biner'] },
+        { id: 'aljabar', nama: 'Aljabar dan Fungsi', bobot: 7, modul: ['X-4', 'X-5', 'XI-1', 'XII-1'], khas: ['peluruhan', 'cukup'] },
+        { id: 'geometri', nama: 'Geometri dan Pengukuran', bobot: 4, modul: ['XI-2', 'XII-2'], khas: ['ruang', 'cukup'] },
         { id: 'trigonometri', nama: 'Trigonometri', bobot: 3, modul: ['X-3'] },
-        { id: 'data', nama: 'Data dan Peluang', bobot: 6, modul: ['X-6', 'X-7', 'XI-3', 'XII-3'] }
+        { id: 'data', nama: 'Data dan Peluang', bobot: 6, modul: ['X-6', 'X-7', 'XI-3', 'XII-3'], khas: ['grafikGaris'] }
       ]
     }
   };
@@ -59,12 +59,39 @@
     return hasil;
   };
 
-  // ubah soal angka/pecahan menjadi pilihan ganda 4 opsi
-  CP.jadikanPilihan = function (rng, soal) {
-    if (soal.tipe === 'pilihan') return { pilihan: soal.pilihan.slice(), benar: soal.benar };
+  // pilihan ganda bawaan hanya 4 opsi: tambahkan pengecoh sampai jumlah yang diminta
+  // buat pengecoh dari opsi salah yang ada dengan mengubah satu angka (selisih kecil)
+  function variasiAngka(pil, benar, i) {
+    const sumber = pil.filter((_, k) => k !== benar);
+    for (const t of sumber) {
+      const m = [...t.matchAll(/\d+/g)]; if (!m.length) continue;
+      const pilihM = m[(i - 1) % m.length], v = parseInt(pilihM[0], 10), v2 = v + ((i % 2) ? 1 : -1) * (1 + Math.floor((i - 1) / 2));
+      if (v2 < 0) continue;
+      return t.slice(0, pilihM.index) + v2 + t.slice(pilihM.index + pilihM[0].length);
+    }
+    return null;
+  }
+  function tambahOpsiPilihan(rng, soal, nOpsi) {
+    const pil = soal.pilihan.slice(), pakai = new Set(pil);
+    const dasar = pil[soal.benar];
+    const angka = /^[−-]?d+$/.test(String(dasar).replace(/./g, ''));
+    for (let i = 1; pil.length < nOpsi && i < 60; i++) {
+      let t;
+      if (angka) { const v = parseInt(String(dasar).replace(/./g, '').replace('−', '-'), 10); t = CP.angka(v + (i % 2 ? i : -i) * Math.max(1, Math.round(Math.abs(v) / 10))); }
+      else t = variasiAngka(pil, soal.benar, i);
+      if (t && !pakai.has(t)) { pakai.add(t); pil.push(t); }
+    }
+    if (pil.length < nOpsi) throw new Error('opsi tambahan kurang');
+    const urut = rng.kocok(pil.map((t, i) => ({ t, benar: i === soal.benar })));
+    return { pilihan: urut.map((x) => x.t), benar: urut.findIndex((x) => x.benar) };
+  }
+  // ubah soal angka/pecahan menjadi pilihan ganda (4 atau 5 opsi)
+  CP.jadikanPilihan = function (rng, soal, nOpsi) {
+    nOpsi = nOpsi || 4;
+    if (soal.tipe === 'pilihan') return soal.pilihan.length >= nOpsi ? { pilihan: soal.pilihan.slice(), benar: soal.benar } : tambahOpsiPilihan(rng, soal, nOpsi);
     const benar = teksNilai(soal, soal.jawab), pil = [{ t: benar, q: soal.jawab }], pakai = new Set([benar]);
-    CP.pengecohNumerik(rng, soal).forEach((q) => { if (pil.length >= 4) return; const t = teksNilai(soal, q); if (!pakai.has(t)) { pakai.add(t); pil.push({ t, q }); } });
-    if (pil.length < 4) throw new Error('pengecoh kurang: ' + soal.teks);
+    CP.pengecohNumerik(rng, soal).forEach((q) => { if (pil.length >= nOpsi) return; const t = teksNilai(soal, q); if (!pakai.has(t)) { pakai.add(t); pil.push({ t, q }); } });
+    if (pil.length < nOpsi) throw new Error('pengecoh kurang: ' + soal.teks);
     const urut = rng.kocok(pil);
     return { pilihan: urut.map((x) => x.t), benar: urut.findIndex((x) => x.q === soal.jawab), nilai: urut.map((x) => x.q) };
   };
@@ -85,8 +112,8 @@
   }
   const pendek = (s) => (s.tipe === 'angka' || s.tipe === 'pecahan') && !s.gambar && s.teks.length <= 105;
   function buatPG(cfg, el, rng, pakai) {
-    const s = soalBiasa(cfg, el, rng, pakai);
-    const o = CP.jadikanPilihan(rng, s);
+    const s = soalBiasa(cfg, el, rng, pakai, (x) => x.tipe !== 'pilihan' || x.pilihan.length >= cfg.opsi || x.pilihan.some((t) => /\d/.test(t)));
+    const o = CP.jadikanPilihan(rng, s, cfg.opsi);
     return { tipe: 'pg', elemen: el.id, modul: s.modul, level: s.level, teks: s.teks, gambar: s.gambar ? s.modulObj.gambar(s) : '', pilihan: o.pilihan, benar: o.benar, langkah: s.langkah, nilai: o.nilai, soal: { tipe: s.tipe, jawab: s.jawab } };
   }
   function pernyataan(cfg, el, rng, pakai, benar) {
@@ -96,13 +123,167 @@
     return { teks: s.teks + ' Jawabannya ' + teksNilai(s, tampil) + '.', benar: tertulis, kunciNilai: teksNilai(s, s.jawab), modul: s.modul, level: s.level, langkah: s.langkah };
   }
   function buatKompleks(cfg, el, rng, pakai, jenis) {
-    const n = jenis === 'mcma' ? 4 : 3;
+    const n = jenis === 'mcma' ? cfg.opsi : 3;
     let t;
     do { t = []; for (let i = 0; i < n; i++) t.push(rng.peluang(0.5)); } while (!t.some((x) => x) || !t.some((x) => !x) || (jenis === 'mcma' && t.every((x) => !x)));
     const st = t.map((b) => pernyataan(cfg, el, rng, pakai, b));
     if (jenis === 'mcma') return { tipe: 'mcma', elemen: el.id, teks: 'Pilih SEMUA pernyataan yang benar.', pilihan: st.map((x) => x.teks), benar: st.map((x, i) => (x.benar ? i : -1)).filter((i) => i >= 0), langkah: st.map((x) => x.langkah), kunciNilai: st.map((x) => x.kunciNilai), modul: st.map((x) => x.modul) };
     return { tipe: 'kategori', elemen: el.id, teks: 'Tentukan apakah setiap pernyataan berikut benar atau salah.', pernyataan: st.map((x) => x.teks), kunci: st.map((x) => x.benar), langkah: st.map((x) => x.langkah), kunciNilai: st.map((x) => x.kunciNilai), modul: st.map((x) => x.modul) };
   }
+  /* ===================== KELUARGA SOAL KHAS TKA =====================
+     Meniru jenis soal pada contoh resmi: himpunan, operasi biner, peluruhan persen, kedudukan rusuk kubus,
+     kecukupan data, dan grafik garis. Semua dibuat dari angka acak; tidak ada soal yang disalin. */
+  const KHAS = {};
+  const sf = (n) => { n = Math.round(n * 100) / 100; return String(n).replace('.', ','); };
+  const hurufOpsi = 'ABCDE';
+  const laluPrima = (x) => { if (x < 2) return false; for (let i = 2; i * i <= x; i++) if (x % i === 0) return false; return true; };
+  const buatPilihanKhas = (rng, benar, salahKandidat, n) => {
+    const pil = [benar], pakai = new Set([benar]);
+    rng.kocok(salahKandidat).forEach((t) => { if (pil.length < n && !pakai.has(t)) { pakai.add(t); pil.push(t); } });
+    if (pil.length < n) throw new Error('opsi khas kurang');
+    const urut = rng.kocok(pil);
+    return { pilihan: urut, benar: urut.indexOf(benar) };
+  };
+
+  /* --- himpunan --- */
+  const strHimp = (a) => '{' + (a.length ? a.join(', ') : '') + '}';
+  KHAS.himpunan = function (cfg, el, rng) {
+    const a = rng.bulat(5, 9), c = rng.pilih([8, 10, 12, 13]);
+    const B = rng.pilih([['bilangan genap', (x) => x % 2 === 0], ['bilangan ganjil', (x) => x % 2 === 1], ['kelipatan 3', (x) => x % 3 === 0]]);
+    const U = [...Array(61).keys()];
+    const A = U.filter((x) => x >= 1 && x < a), Bs = U.filter(B[1]), C = U.filter((x) => x <= c && laluPrima(x));
+    const dalam = (x, l) => l.indexOf(x) >= 0;
+    const bentuk = [
+      ['(A ∩ B) ∪ C', () => U.filter((x) => (dalam(x, A) && dalam(x, Bs)) || dalam(x, C))],
+      ['A ∩ (B ∪ C)', () => U.filter((x) => dalam(x, A) && (dalam(x, Bs) || dalam(x, C)))],
+      ['(A ∪ C) ∩ B', () => U.filter((x) => (dalam(x, A) || dalam(x, C)) && dalam(x, Bs))],
+      ['(A ∩ C) ∪ (B ∩ C)', () => U.filter((x) => (dalam(x, A) && dalam(x, C)) || (dalam(x, Bs) && dalam(x, C)))]
+    ];
+    const k = rng.bulat(0, bentuk.length - 1), hasil = bentuk[k][1]();
+    const salah = new Set(); const benar = strHimp(hasil);
+    bentuk.forEach((b, i) => { if (i !== k) salah.add(strHimp(b[1]())); });
+    [...hasil].forEach((x) => salah.add(strHimp(hasil.filter((y) => y !== x))));
+    [0, 1, hasil.length ? hasil[hasil.length - 1] + 1 : 2, 11, 6].forEach((x) => { if (!dalam(x, hasil)) salah.add(strHimp(U.filter((y) => dalam(y, hasil) || y === x))); });
+    const o = buatPilihanKhas(rng, benar, [...salah].filter((t) => t !== benar), cfg.opsi);
+    return { tipe: 'pg', khas: 'himpunan', elemen: el.id, teks: 'Diberikan tiga himpunan bilangan berikut.\nA = {x | x < ' + a + ', x ∈ bilangan asli}\nB = {x | x ' + B[0] + ', x ∈ bilangan cacah}\nC = {x | x ≤ ' + c + ', x ∈ bilangan prima}\nHasil dari ' + bentuk[k][0] + ' adalah …', gambar: '', pilihan: o.pilihan, benar: o.benar, langkah: [
+      CP.st('A = ' + strHimp(A) + '. C = ' + strHimp(C) + '. B = himpunan ' + B[0] + ' (' + strHimp(Bs.slice(0, 5)) + ', …).'),
+      CP.st('Kerjakan ' + bentuk[k][0] + ' sesuai urutan kurung.'),
+      CP.st('Hasilnya ' + benar + '.', benar)], param: { a, c, tipeB: B[0], k, hasil } };
+  };
+
+  /* --- operasi biner (benar/salah) --- */
+  KHAS.biner = function (cfg, el, rng) {
+    for (let t = 0; t < 200; t++) {
+      const p = rng.bulat(2, 4), q = rng.bulat(1, 3), r0 = rng.bulat(-3, 4), a0 = rng.bulat(2, 13), k = rng.bulat(1, 4), m = rng.bulat(2, 6);
+      const op = (a, b) => p * a + q * b + r0, R = op(a0, k);
+      const wA = [a0 % m === 0, laluPrima(a0)], V = op(a0, 0), tampilV = rng.peluang(0.5) ? V : V + rng.pilih([-2, -1, 1, 2, 3]);
+      const kunci = [wA[0], wA[1], tampilV === V];
+      if (!kunci.some((x) => x) || !kunci.some((x) => !x) || R < 0 || V < 0 || tampilV < 0) continue;
+      const rumus = (p === 1 ? '' : p) + 'a + ' + (q === 1 ? '' : q) + 'b ' + (r0 < 0 ? CP.MIN + ' ' + Math.abs(r0) : '+ ' + r0);
+      return { tipe: 'kategori', khas: 'biner', elemen: el.id, teks: 'Operasi ⊙ didefinisikan sebagai a ⊙ b = ' + rumus + ' untuk setiap bilangan bulat tak negatif a dan b. Jika a ⊙ ' + k + ' = ' + R + ', tentukan benar atau salah pada setiap pernyataan berikut.', pernyataan: ['a merupakan kelipatan dari ' + m + '.', 'a merupakan bilangan prima.', 'a ⊙ 0 = ' + tampilV + '.'], kunci,
+        langkah: [[CP.st('Dari a ⊙ ' + k + ' = ' + R + ': ' + p + 'a + ' + (q * k) + ' ' + (r0 < 0 ? CP.MIN + ' ' + Math.abs(r0) : '+ ' + r0) + ' = ' + R + ', maka a = ' + a0 + '.')], [CP.st('a = ' + a0 + (laluPrima(a0) ? ' adalah bilangan prima.' : ' bukan bilangan prima.'))], [CP.st('a ⊙ 0 = ' + p + ' × ' + a0 + ' + ' + r0 + ' = ' + V + '.')]],
+        kunciNilai: ['a = ' + a0 + (kunci[0] ? ', kelipatan ' + m : ', bukan kelipatan ' + m), 'a = ' + a0 + (kunci[1] ? ', prima' : ', bukan prima'), 'a ⊙ 0 = ' + V], param: { p, q, r0, a0, k, m, R, V, tampilV } };
+    }
+    throw new Error('biner gagal');
+  };
+
+  /* --- peluruhan persen (pilih semua yang benar) --- */
+  KHAS.peluruhan = function (cfg, el, rng, konteks) {
+    for (let t = 0; t < 300; t++) {
+      const K0 = rng.bulat(10, 20), pr = rng.pilih([20, 25, 30]), f = 1 - pr / 100, nilai = [K0]; for (let i = 1; i < 8; i++) nilai.push(nilai[i - 1] * f);
+      const d1 = rng.bulat(2, 3), d2 = d1 + rng.bulat(1, 3);
+      const T1 = Math.ceil(nilai[d1 - 1] + 0.05), T2 = Math.ceil(nilai[d2 - 1] + 0.05);
+      if (!(T1 <= nilai[d1 - 2] - 0.05) || !(T2 <= nilai[d2 - 2] - 0.05) || !(T2 < T1)) continue;
+      const ok = [2, 3, 4, 5, 6].map((h) => nilai[h - 1] < T1 && nilai[h - 1] >= T2);
+      const dekat = [2, 3, 4, 5, 6].some((h) => Math.abs(nilai[h - 1] - T1) < 0.03 || Math.abs(nilai[h - 1] - T2) < 0.03);
+      if (dekat || !ok.some((x) => x) || ok.every((x) => x)) continue;
+      const vok = konteks === 'vokasi';
+      const teks = (vok ? 'Sebuah bak penampung limbah memiliki kadar zat pencemar ' + K0 + ' mg/L pada hari pertama. Setelah penyaringan, kadar turun ' + pr + '% setiap hari secara konsisten. ' : 'Seorang pasien memiliki kadar asam urat ' + K0 + ' mg/dL pada hari pertama. Obat menurunkan kadar sebesar ' + pr + '% setiap hari secara konsisten. ') + 'Kondisi ' + (vok ? 'dianggap aman' : 'pasien terasa nyaman') + ' jika kadar di bawah ' + T1 + ' mg' + (vok ? '/L' : '/dL') + ', dan ' + (vok ? 'dianggap bersih' : 'pasien dianggap sembuh') + ' jika kadar kurang dari ' + T2 + '. Pada hari keberapa ' + (vok ? 'kondisi aman tetapi belum bersih' : 'pasien nyaman tetapi belum dianggap sembuh') + '? Pilih semua jawaban yang benar.';
+      return { tipe: 'mcma', khas: 'peluruhan', elemen: el.id, teks, pilihan: [2, 3, 4, 5, 6].map((h) => 'Hari ke-' + h), benar: ok.map((x, i) => (x ? i : -1)).filter((i) => i >= 0),
+        langkah: [2, 3, 4, 5, 6].map((h) => [CP.st('Kadar hari ke-' + h + ' = ' + K0 + ' × ' + (f).toString().replace('.', ',') + '^' + (h - 1) + ' = ' + sf(nilai[h - 1]) + (ok[h - 2] ? ' (antara ' + T2 + ' dan ' + T1 + ')' : ' (di luar rentang)') + '.')]),
+        kunciNilai: [2, 3, 4, 5, 6].map((h) => 'kadar ' + sf(nilai[h - 1])), param: { K0, pr, T1, T2, nilai } };
+    }
+    throw new Error('peluruhan gagal');
+  };
+
+  /* --- kedudukan rusuk pada kubus --- */
+  const KUBUS = { A: [0, 0, 0], B: [1, 0, 0], C: [1, 1, 0], D: [0, 1, 0], E: [0, 0, 1], F: [1, 0, 1], G: [1, 1, 1], H: [0, 1, 1] };
+  const RUSUK = []; Object.keys(KUBUS).forEach((u) => Object.keys(KUBUS).forEach((v) => { if (u < v) { const d = KUBUS[u].map((x, i) => Math.abs(x - KUBUS[v][i])); if (d[0] + d[1] + d[2] === 1) RUSUK.push([u, v, d.indexOf(1)]); } }));
+  CP.KUBUS_RUSUK = RUSUK;
+  KHAS.ruang = function (cfg, el, rng) {
+    const e = rng.pilih(RUSUK), nama = e[0] + e[1], sejajar = RUSUK.filter((r) => r !== e && r[2] === e[2]).length;
+    const berpotongan = RUSUK.filter((r) => r !== e && r[2] !== e[2] && (r[0] === e[0] || r[0] === e[1] || r[1] === e[0] || r[1] === e[1])).length;
+    const bersilangan = RUSUK.filter((r) => r[2] !== e[2] && !(r[0] === e[0] || r[0] === e[1] || r[1] === e[0] || r[1] === e[1])).length;
+    const pilih = rng.bulat(0, 5);
+    const Q = [
+      ['Pada kubus ABCD.EFGH, berapa banyak rusuk yang sejajar dengan rusuk ' + nama + ' (selain ' + nama + ' sendiri)?', sejajar, 'Rusuk sejajar memiliki arah yang sama: ada 4 rusuk pada tiap arah, jadi 4 − 1 = ' + sejajar + '.'],
+      ['Pada kubus ABCD.EFGH, berapa banyak rusuk yang bersilangan dengan rusuk ' + nama + '?', bersilangan, 'Rusuk bersilangan: tidak sejajar dan tidak berpotongan. Dari 8 rusuk berarah lain, 4 berpotongan di titik ' + e[0] + ' atau ' + e[1] + ', sisanya ' + bersilangan + ' bersilangan.'],
+      ['Pada kubus ABCD.EFGH, berapa banyak rusuk yang berpotongan dengan rusuk ' + nama + '?', berpotongan, 'Di setiap titik sudut bertemu 3 rusuk. Selain ' + nama + ', ada 2 rusuk di ' + e[0] + ' dan 2 rusuk di ' + e[1] + ': total ' + berpotongan + '.'],
+      ['Berapa banyak diagonal ruang pada kubus ABCD.EFGH?', 4, 'Diagonal ruang menghubungkan titik sudut yang berseberangan lewat bagian dalam kubus: 8 titik ÷ 2 = 4.'],
+      ['Berapa banyak diagonal bidang (diagonal sisi) pada kubus ABCD.EFGH?', 12, 'Tiap sisi memiliki 2 diagonal dan ada 6 sisi: 6 × 2 = 12.'],
+      ['Berapa banyak bidang diagonal pada kubus ABCD.EFGH?', 6, 'Bidang diagonal melalui dua rusuk yang sejajar dan berseberangan: ada 6 bidang.']
+    ][pilih];
+    const salah = []; for (let d = -3; d <= 8; d++) if (d !== 0 && Q[1] + d >= 0) salah.push(String(Q[1] + d));
+    const o = buatPilihanKhas(rng, String(Q[1]), salah.sort((x, y) => Math.abs(x - Q[1]) - Math.abs(y - Q[1])).slice(0, 7), cfg.opsi);
+    return { tipe: 'pg', khas: 'ruang', elemen: el.id, teks: Q[0], gambar: '', pilihan: o.pilihan, benar: o.benar, langkah: [CP.st(Q[2]), CP.st('Jawabannya ' + Q[1] + '.', Q[1])], param: { rusuk: nama, pilih, jawab: Q[1] } };
+  };
+
+  /* --- kecukupan data --- */
+  const OPSI_DS = ['Pernyataan (1) SAJA cukup untuk menjawab pertanyaan, tetapi pernyataan (2) SAJA tidak cukup.', 'Pernyataan (2) SAJA cukup untuk menjawab pertanyaan, tetapi pernyataan (1) SAJA tidak cukup.', 'Dua pernyataan BERSAMA-SAMA cukup untuk menjawab pertanyaan, tetapi SATU pernyataan SAJA tidak cukup.', 'Pernyataan (1) SAJA cukup dan pernyataan (2) SAJA juga cukup untuk menjawab pertanyaan.', 'Pernyataan (1) dan pernyataan (2) tidak cukup untuk menjawab pertanyaan.'];
+  KHAS.cukup = function (cfg, el, rng) {
+    const jenis = rng.bulat(0, 4), x = rng.bulat(3, 9), y = rng.bulat(4, 12), u = 1000 * rng.bulat(2, 9), n1 = rng.bulat(2, 4), n2 = n1 + rng.bulat(1, 3);
+    let teks, s1, s2, why;
+    if (jenis === 2) { // C: dua informasi berbeda
+      const k = rng.bulat(0, 1); teks = k ? 'Berapakah luas sebuah persegi panjang?' : 'Berapakah volume sebuah balok dengan alas persegi panjang yang tingginya sudah diketahui 5 cm?'; s1 = k ? 'Panjang persegi panjang itu ' + x + ' cm.' : 'Panjang alas ' + x + ' cm.'; s2 = k ? 'Lebar persegi panjang itu ' + y + ' cm.' : 'Lebar alas ' + y + ' cm.'; why = 'Luas (atau volume) memerlukan panjang dan lebar sekaligus. Masing-masing pernyataan hanya memberi satu ukuran, jadi keduanya harus digabung.';
+    } else if (jenis === 0 || jenis === 1) { // A atau B: satu pernyataan cukup
+      teks = 'Berapakah harga satu buku tulis?'; const cuk = n1 + ' buku tulis harganya Rp' + CP.angka(n1 * u) + ',00.', tak = 'Harga satu buku tulis lebih mahal dari harga satu pensil.';
+      s1 = jenis === 0 ? cuk : tak; s2 = jenis === 0 ? tak : cuk; why = 'Harga satu buku = total ÷ jumlah buku = ' + CP.rp(u) + ' hanya dari pernyataan yang menyebut total harga. Pernyataan lain hanya membandingkan harga, tanpa angka.';
+    } else if (jenis === 3) { // D: dua-duanya cukup
+      teks = 'Berapakah harga satu pensil?'; s1 = n1 + ' pensil harganya Rp' + CP.angka(n1 * u) + ',00.'; s2 = n2 + ' pensil harganya Rp' + CP.angka(n2 * u) + ',00.'; why = 'Pernyataan (1) memberi harga satuan ' + CP.rp(u) + ' (total ÷ ' + n1 + '), dan pernyataan (2) juga ' + CP.rp(u) + ' (total ÷ ' + n2 + '). Masing-masing sudah cukup.';
+    } else { // E: tidak cukup
+      const k = rng.bulat(0, 1); teks = k ? 'Berapakah umur Dina sekarang?' : 'Berapakah jumlah siswa laki-laki di sebuah kelas?'; s1 = k ? 'Dina lebih muda dari Eka.' : 'Jumlah siswa di kelas itu ' + (x + y + 20) + ' orang.'; s2 = k ? 'Jumlah umur Dina dan Eka ' + (x + y + 20) + ' tahun.' : 'Siswa perempuan di kelas itu lebih banyak dari siswa laki-laki.'; why = 'Kedua pernyataan hanya memberi perbandingan dan jumlah. Dengan dua tak-diketahui, tetap tidak bisa ditentukan satu nilai pasti, bahkan jika keduanya digabung.';
+    }
+    const benar = jenis; // A,B,C,D,E berurutan
+    return { tipe: 'pg', khas: 'cukup', elemen: el.id, teks: teks + '\nPutuskan apakah pernyataan (1) dan pernyataan (2) berikut cukup untuk menjawab pertanyaan.\n(1) ' + s1 + '\n(2) ' + s2, gambar: '', pilihan: OPSI_DS.slice(), benar, langkah: [CP.st(why), CP.st('Jadi jawabannya: ' + hurufOpsi[benar] + '.', OPSI_DS[benar])], param: { jenis, why } };
+  };
+
+  /* --- grafik garis (pilih semua yang benar) --- */
+  function gbrGarisData(tahun, seri) {
+    const X0 = 40, X1 = 250, Y0 = 18, Y1 = 118, semua = [].concat(...seri.map((s) => s.v)), lo = Math.min(...semua) - 5, hi = Math.max(...semua) + 5;
+    const mx = (i) => X0 + (i * (X1 - X0)) / (tahun.length - 1), my = (v) => Y1 - ((v - lo) / (hi - lo)) * (Y1 - Y0);
+    const el = [CP.H.l(X0, Y0, X0, Y1, 'garis'), CP.H.l(X0, Y1, X1, Y1, 'garis')];
+    tahun.forEach((t, i) => el.push(CP.H.t(mx(i), Y1 + 14, t, 'middle', 'kecil')));
+    [lo, (lo + hi) / 2, hi].forEach((v) => { el.push(CP.H.l(X0, my(v), X1, my(v), 'tipis'), CP.H.t(X0 - 4, my(v) + 4, Math.round(v), 'end', 'kecil')); });
+    const kelas = ['garis', 'merah', 'putus'], ujung = [];
+    seri.forEach((s, k) => { el.push(CP.H.d('M' + s.v.map((v, i) => mx(i).toFixed(1) + ' ' + my(v).toFixed(1)).join(' L'), kelas[k % 3])); s.v.forEach((v, i) => el.push(CP.H.o(mx(i), my(v), 3, 'titik'))); ujung.push({ y: my(s.v[s.v.length - 1]), t: s.nama, k }); });
+    ujung.sort((a, b) => a.y - b.y); for (let i = 1; i < ujung.length; i++) if (ujung[i].y - ujung[i - 1].y < 13) ujung[i].y = ujung[i - 1].y + 13;
+    ujung.forEach((u) => el.push(CP.H.t(X1 + 8, u.y + 4, u.t, 'start', 'tebal')));
+    return { tipe: 'gambar', alt: 'Grafik garis: ' + seri.map((s) => s.nama + ' ' + s.v.join(', ')).join('; '), lebar: 320, tinggi: 140, el };
+  }
+  KHAS.grafikGaris = function (cfg, el, rng, konteks) {
+    const nama = konteks === 'vokasi' ? ['Cabang A', 'Cabang B', 'Cabang C'] : ['SMA 1', 'SMA 2', 'SMK 3'];
+    for (let t = 0; t < 400; t++) {
+      const th = [2019, 2020, 2021, 2022, 2023], seri = nama.map((nm) => { let v = rng.bulat(20, 60); const arr = [v]; for (let i = 1; i < 5; i++) { v += rng.pilih([-8, -4, 0, 0, 4, 8, 12]); arr.push(Math.max(5, v)); } return { nama: nm, v: arr }; });
+      const naik = (s, a, b) => { for (let i = a; i < b; i++) if (!(s.v[i + 1] > s.v[i])) return false; return true; };
+      const turun23 = (s) => s.v[4] < s.v[3];
+      const tetap = (s) => s.v[2] === s.v[3] && s.v[3] === s.v[4];
+      const mulai = rng.bulat(1, 2), s1 = rng.bulat(0, 2), s2 = (s1 + 1) % 3;
+      const P = [
+        [nama[s1] + ' bertambah setiap tahun mulai ' + th[mulai] + '.', naik(seri[s1], mulai, 4)],
+        ['Pada tahun ' + th[1] + '–' + th[3] + ', banyaknya ketiganya selalu bertambah.', seri.every((s) => naik(s, 1, 3))],
+        [nama[s2] + ' konsisten naik selama lima tahun terakhir.', naik(seri[s2], 0, 4)],
+        [nama[(s1 + 2) % 3] + ' tidak berubah selama tiga tahun terakhir.', tetap(seri[(s1 + 2) % 3])],
+        ['Pada tahun ' + th[4] + ', ketiganya menurun dibandingkan tahun sebelumnya.', seri.every(turun23)]
+      ];
+      const ok = P.map((x) => x[1]); if (!ok.some((x) => x) || ok.filter((x) => x).length > 3) continue;
+      const vok = konteks === 'vokasi';
+      return { tipe: 'mcma', khas: 'grafikGaris', elemen: el.id, teks: (vok ? 'Grafik berikut menunjukkan jumlah pesanan per tahun di tiga cabang toko.' : 'Grafik berikut menunjukkan banyak lulusan per tahun di tiga sekolah milik sebuah yayasan.') + ' Pernyataan mana saja yang tepat menggambarkan data pada grafik? Pilih semua jawaban yang benar.', gambar: CP.gambarSVG(gbrGarisData(th, seri)), pilihan: P.map((x) => x[0]), benar: ok.map((x, i) => (x ? i : -1)).filter((i) => i >= 0),
+        langkah: P.map((x) => [CP.st('Periksa nilai pada grafik: ' + seri.map((s) => s.nama + ' ' + s.v.join(', ')).join('; ') + '.')]), kunciNilai: P.map((x) => (x[1] ? 'benar' : 'salah')), param: { th, seri, mulai, s1, s2 } };
+    }
+    throw new Error('grafik gagal');
+  };
+  CP.TKA_KHAS = KHAS;
+
   // alokasi proporsional (sisa terbesar)
   CP.alokasiTKA = function (elemen, n) {
     const tot = elemen.reduce((a, e) => a + e.bobot, 0), dasar = elemen.map((e) => Math.floor((e.bobot * n) / tot));
@@ -120,6 +301,10 @@
       for (let i = 0; i < alok[k]; i++) {
         const r = rng.acak();
         const jenis = o.bentuk === 'pg' ? 'pg' : r < 0.68 ? 'pg' : r < 0.84 ? 'mcma' : 'kategori';
+        if (!o.tanpaKhas && e.khas && e.khas.length && rng.peluang(0.34)) {
+          const fam = rng.pilih(e.khas);
+          try { const it = KHAS[fam](cfg, e, rng, cfg.konteks); const kunciTeks = it.teks; if (!pakai.has(kunciTeks)) { pakai.add(kunciTeks); items.push(it); continue; } } catch (x) { /* jatuh ke soal biasa */ }
+        }
         try { items.push(jenis === 'pg' ? buatPG(cfg, e, rng, pakai) : buatKompleks(cfg, e, rng, pakai, jenis)); }
         catch (x) { items.push(buatPG(cfg, e, rng, pakai)); }
       }
