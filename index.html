@@ -251,6 +251,22 @@ input:focus,textarea:focus,button:focus-visible{outline:3px solid var(--aksen);o
 details summary{cursor:pointer;font-weight:800;min-height:44px;display:flex;align-items:center}
 details[open] summary{margin-bottom:6px}
 
+.tka-daftar{margin:0 0 8px}
+.tka-daftar summary{font-weight:800;color:var(--ink2)}
+.tka-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0}
+.tka-grid button{min-height:44px;border-radius:10px;border:2px solid var(--garis);background:var(--kartu);font-weight:800}
+.tka-grid button.jawab{background:var(--aksen);color:var(--aksen-teks)}
+.tka-grid button.ragu{border-color:var(--emas);box-shadow:inset 0 0 0 3px var(--emas)}
+.tka-grid button.aktif{outline:3px solid var(--ink);outline-offset:1px}
+.kat{display:grid;gap:10px}
+.kat-baris{background:var(--kartu);border:2px solid var(--garis);border-radius:12px;padding:10px 12px;box-shadow:var(--bayang)}
+.kat-teks{font-size:16px;font-weight:600;margin-bottom:8px}
+.kat-baris button{min-height:46px;border-radius:10px;border:2px solid var(--garis);background:var(--kartu);font-weight:800;font-size:16px}
+.kat-baris button[aria-pressed="true"]{background:var(--aksen);color:var(--aksen-teks)}
+button[aria-pressed="true"][data-a="tkaRagu"]{background:var(--emas);color:#101B3C}
+.tka-tinjau{background:var(--kartu);border:2px solid var(--garis);border-radius:12px;padding:6px 12px;margin-bottom:8px}
+.tka-tinjau.ok{border-left:8px solid var(--benar)}.tka-tinjau.no{border-left:8px solid var(--salah)}.tka-tinjau.kos{border-left:8px solid var(--ink2)}
+.tka-tinjau[open] summary{margin-bottom:6px}
 @keyframes kedip{50%{opacity:0}}
 @keyframes muncul{from{opacity:0;transform:scale(.94) translateY(6px)}to{opacity:1;transform:none}}
 @keyframes naikmuncul{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
@@ -278,6 +294,7 @@ details[open] summary{margin-bottom:6px}
 <script src="js/kelas9.js"></script>
 <script src="js/kelas11.js"></script>
 <script src="js/kelas12.js"></script>
+<script src="js/tka.js"></script>
 <script>
 (function () {
 'use strict';
@@ -356,7 +373,7 @@ function render() {
   const peta = {
     '': layarBeranda, beranda: layarBeranda, topik: layarTopik, belajar: layarBelajar, latihan: layarLatihan, progres: layarProgres,
     pengaturan: layarPengaturan, profilbaru: layarProfilBaru, ganti: layarGanti, ubah: layarUbah, naik: layarNaik, cadangan: layarCadangan,
-    laporan: layarLaporan, ortu: layarOrtu, riwayat: layarRiwayat, tentang: layarTentang, pulih: layarPulih
+    laporan: layarLaporan, ortu: layarOrtu, riwayat: layarRiwayat, tentang: layarTentang, pulih: layarPulih, tka: layarTKA, tkasesi: layarTKASesi, tkahasil: layarTKAHasil
   };
   (peta[r.nama] || layarBeranda)(r.arg);
 }
@@ -431,8 +448,92 @@ function layarBeranda() {
     (lanjut.length ? '<div class="kecil tebal" style="margin-bottom:8px">Matematika Umum</div>' : '') + umum.map(barisM).join('') +
     (lanjut.length ? '<div class="kecil tebal" style="margin:14px 0 8px">Tingkat Lanjut</div>' + lanjut.map(barisM).join('') : '') +
     '<div class="bagian-judul"><h2>Hitung Cepat</h2><span class="kecil">Semua kelas</span></div><div class="ubin">' + ubin + '</div>' +
+    '<div class="bagian-judul"><h2>Simulasi TKA</h2><span class="kecil">SMP, SMA, SMK</span></div><button class="baris-topik" data-a="pergi" data-r="tka"><span class="kode" style="min-width:52px">TKA</span><span class="isi"><div class="jdl">Tes Kemampuan Akademik</div><div class="meta">' + ((pr.tka && pr.tka[0]) ? 'Terakhir: ' + esc(CP.TKA[pr.tka[0].jenjang].nama) + ', skor ' + pr.tka[0].skor : 'Simulasi penuh dan latihan per elemen') + '</div></span></button>' +
     (pr.riwayatKelas.length ? '<div class="gap3"></div><button class="btn kecil-btn" data-a="pergi" data-r="riwayat">Lihat kelas sebelumnya</button>' : ''), { nav: 'beranda' });
   if (window.__streakNaik) { const s = $('#strk'); if (s) s.classList.add('naik'); window.__streakNaik = false; }
+}
+
+/* ====================== LAYAR: SIMULASI TKA ====================== */
+let tka = null;
+const NAMA_BENTUK = { pg: 'Pilihan ganda', mcma: 'Pilihan ganda kompleks: pilih semua yang benar', kategori: 'Pilihan ganda kompleks: benar atau salah' };
+function tkaCfgTeks(j) { const c = CP.TKA[j]; return c.jumlah + ' soal · ' + c.durasi + ' menit'; }
+function layarTKA() {
+  const pr = profilAktif(); const urut = ['SMP', 'SMA', 'SMK'].sort((a, b) => (a === pr.jenjang ? -1 : b === pr.jenjang ? 1 : 0));
+  const kartu = urut.map((j) => {
+    const c = CP.TKA[j];
+    return '<div class="kartu" style="margin-bottom:14px"><div class="baris" style="align-items:center"><h3 style="flex:2">' + esc(c.nama) + '</h3>' + (pr.jenjang === j ? '<span class="chip aksen">Untukmu</span>' : '') + '</div><p class="kecil" style="margin:4px 0 10px">Matematika · ' + tkaCfgTeks(j) + (c.pasti ? '' : ' (perkiraan)') + (j === 'SMK' ? ' · soal cerita berkonteks vokasi' : '') + '</p><button class="btn utama" data-a="tkaMulai" data-j="' + j + '" data-mode="simulasi">' + svgI('kilat') + 'Simulasi penuh</button><details style="margin-top:6px"><summary>Latihan per elemen (10 soal, tanpa batas waktu)</summary><div class="pilih-chip">' + c.elemen.map((e) => '<button data-a="tkaMulai" data-j="' + j + '" data-mode="latihan" data-e="' + e.id + '">' + esc(e.nama) + '</button>').join('') + '</div></details></div>';
+  }).join('');
+  const riw = (pr.tka || []).slice(0, 5).map((x) => '<div class="baris" style="align-items:center;padding:6px 0;border-top:2px dashed var(--lembut)"><span style="flex:3"><b>' + esc(CP.TKA[x.jenjang].nama) + (x.mode === 'simulasi' ? '' : ' · ' + esc((CP.TKA[x.jenjang].elemen.find((e) => e.id === x.elemen) || { nama: 'latihan' }).nama)) + '</b><div class="kecil">' + x.tgl + ' · ' + x.b + '/' + x.n + ' benar · ' + waktuStr(x.detik) + '</div></span><b style="flex:1;text-align:right">' + x.skor + '</b></div>').join('');
+  tampil(atasSub('Simulasi TKA', 'beranda') + '<div class="info" style="margin-bottom:14px">Latihan ini meniru bentuk Tes Kemampuan Akademik: pilihan ganda, pilihan ganda kompleks (pilih semua yang benar), dan pilihan ganda kompleks benar/salah. Kamu bisa membuka versi jenjang mana pun. Soal kelas yang belum kamu pelajari bisa terasa sulit; itu wajar.<br><span class="kecil">Acuan: Perka BSKAP 045/H/AN/2025. Jumlah soal SMP belum diumumkan pasti, jadi angkanya perkiraan. Cek pengumuman resmi sekolah/Pusmendik.</span></div>' + kartu + '<div class="bagian-judul"><h2>Riwayat TKA</h2></div><div class="kartu">' + (riw || '<p class="kecil" style="margin:0">Belum ada simulasi.</p>') + '</div>', { nav: 'beranda' });
+}
+function tkaMulai(j, mode, elemen) {
+  const c = CP.TKA[j];
+  let items;
+  try { items = CP.susunTKA(j, CP.rngUmum, mode === 'simulasi' ? {} : { jumlah: 10, elemen }); } catch (e) { toast('Soal TKA belum bisa dibuat: ' + e.message); return; }
+  tka = { j, mode, elemen: elemen || '', cfg: c, items, jaw: items.map(() => null), ragu: {}, i: 0, mulai: Date.now(), batas: mode === 'simulasi' ? c.durasi * 60 : 0, timer: 0, hasil: null };
+  pergi('tkasesi');
+}
+function tkaSisa() { return tka.batas ? Math.max(0, Math.ceil(tka.batas - (Date.now() - tka.mulai) / 1000)) : Math.floor((Date.now() - tka.mulai) / 1000); }
+function layarTKASesi() {
+  if (!tka || tka.hasil) return pergi('tka');
+  bersihkan = () => { if (tka) clearInterval(tka.timer); };
+  tkaTampil();
+  clearInterval(tka.timer);
+  tka.timer = setInterval(() => {
+    const w = $('#tkaW'); const s = tkaSisa();
+    if (w) { w.textContent = waktuStr(s); w.classList.toggle('habis', !!tka.batas && s <= 300); }
+    if (tka.batas && s <= 0) { clearInterval(tka.timer); toast('Waktu habis. Jawabanmu dikumpulkan.'); tkaAkhiri(); }
+  }, 1000);
+}
+function tkaTerjawab(i) { return CP.itemTerjawab(tka.items[i], tka.jaw[i]); }
+function tkaTampil() {
+  const it = tka.items[tka.i], n = tka.items.length, j = tka.jaw[tka.i];
+  const grid = tka.items.map((x, k) => '<button data-a="tkaLompat" data-i="' + k + '" class="' + (k === tka.i ? 'aktif ' : '') + (tkaTerjawab(k) ? 'jawab ' : '') + (tka.ragu[k] ? 'ragu' : '') + '" aria-label="Soal ' + (k + 1) + '">' + (k + 1) + '</button>').join('');
+  let isi = '';
+  if (it.tipe === 'pg') isi = '<div class="opsi" role="group">' + it.pilihan.map((p, k) => '<button data-a="tkaPilih" data-k="' + k + '" aria-pressed="' + (j === k) + '"><b>' + 'ABCD'[k] + '</b><span>' + fmt(p) + '</span></button>').join('') + '</div>';
+  else if (it.tipe === 'mcma') isi = '<div class="opsi" role="group">' + it.pilihan.map((p, k) => '<button data-a="tkaToggle" data-k="' + k + '" aria-pressed="' + ((j || []).indexOf(k) >= 0) + '"><b>' + ((j || []).indexOf(k) >= 0 ? '✓' : '') + '</b><span style="font-size:17px">' + fmt(p) + '</span></button>').join('') + '</div>';
+  else isi = '<div class="kat">' + it.pernyataan.map((p, k) => '<div class="kat-baris"><div class="kat-teks">' + fmt(p) + '</div><div class="baris"><button data-a="tkaKat" data-k="' + k + '" data-v="1" aria-pressed="' + ((j || [])[k] === true) + '">Benar</button><button data-a="tkaKat" data-k="' + k + '" data-v="0" aria-pressed="' + ((j || [])[k] === false) + '">Salah</button></div></div>').join('') + '</div>';
+  const el = tka.cfg.elemen.find((e) => e.id === it.elemen);
+  const akhir = tka.i === n - 1;
+  tampil('<div class="atas"><button class="ikon-tombol" data-a="tkaKeluar" aria-label="Keluar">' + svgI('silang') + '</button><span class="pen" style="flex:1;text-align:left">Soal ' + (tka.i + 1) + '/' + n + '</span><span class="waktu" id="tkaW" style="font-size:18px">' + waktuStr(tkaSisa()) + '</span></div><!--PERINGATAN-->' +
+    '<details class="tka-daftar"><summary>Daftar soal (' + tka.items.filter((x, k) => tkaTerjawab(k)).length + ' dari ' + n + ' dijawab)</summary><div class="tka-grid">' + grid + '</div></details>' +
+    '<div class="kartu soal-kartu"><div class="baris" style="flex-wrap:wrap;gap:6px;margin-bottom:8px"><span class="chip">' + esc(el ? el.nama : it.elemen) + '</span><span class="chip aksen">' + esc(NAMA_BENTUK[it.tipe]) + '</span></div><div class="soal ' + kelasTeks(it.teks) + '">' + fmt(it.teks) + '</div>' + (it.gambar ? '<div class="gambar">' + it.gambar + '</div>' : '') + '</div><div style="margin-top:10px">' + isi + '</div>' +
+    '<div class="baris" style="margin-top:12px"><button class="btn" data-a="tkaNav" data-d="-1"' + (tka.i === 0 ? ' disabled' : '') + '>Sebelumnya</button><button class="btn" data-a="tkaRagu" aria-pressed="' + !!tka.ragu[tka.i] + '">' + (tka.ragu[tka.i] ? 'Hapus tanda ragu' : 'Tandai ragu') + '</button></div><div class="gap2"></div>' +
+    (akhir ? '<button class="btn utama" data-a="tkaSelesai">Selesai dan lihat hasil</button>' : '<button class="btn utama" data-a="tkaNav" data-d="1">Berikutnya' + svgI('panah') + '</button>'), { tanpaNav: true });
+}
+function tkaAkhiri() {
+  if (!tka || tka.hasil) return;
+  clearInterval(tka.timer);
+  const hasil = CP.nilaiTKA(tka.items, tka.jaw), detik = tka.batas ? Math.min(tka.batas, (Date.now() - tka.mulai) / 1000) : (Date.now() - tka.mulai) / 1000;
+  tka.hasil = hasil; tka.detik = detik;
+  const pr = profilAktif(); CP.catatTKA(pr, hasil, { tgl: hariIni(), jenjang: tka.j, mode: tka.mode, elemen: tka.elemen, detik }); simpan();
+  pergi('tkahasil');
+}
+function tkaJawabanKamu(it, j) {
+  if (!CP.itemTerjawab(it, j)) return 'Tidak dijawab';
+  if (it.tipe === 'pg') return 'ABCD'[j] + '. ' + it.pilihan[j];
+  if (it.tipe === 'mcma') return (j || []).slice().sort((a, b) => a - b).map((k) => 'nomor ' + (k + 1)).join(', ');
+  return j.map((v) => (v ? 'Benar' : 'Salah')).join(', ');
+}
+function tkaKunci(it) {
+  if (it.tipe === 'pg') return 'ABCD'[it.benar] + '. ' + it.pilihan[it.benar];
+  if (it.tipe === 'mcma') return it.benar.map((k) => 'nomor ' + (k + 1)).join(', ');
+  return it.kunci.map((v) => (v ? 'Benar' : 'Salah')).join(', ');
+}
+function layarTKAHasil() {
+  if (!tka || !tka.hasil) return pergi('tka');
+  const h = tka.hasil, c = tka.cfg;
+  const per = Object.keys(h.perElemen).map((id) => { const e = c.elemen.find((x) => x.id === id) || { nama: id }, v = h.perElemen[id], p = persen(v.n, v.b); return '<div style="margin-bottom:10px"><div class="baris" style="align-items:center"><span style="flex:3;font-weight:700">' + esc(e.nama) + '</span><b style="flex:1;text-align:right">' + v.b + '/' + v.n + '</b></div><div class="batang"><i class="' + (p < 60 ? 'rendah' : p < 80 ? 'sedang' : '') + '" style="width:' + p + '%"></i></div></div>'; }).join('');
+  const tinjau = tka.items.map((it, i) => {
+    const ok = CP.itemBenar(it, tka.jaw[i]), kos = !CP.itemTerjawab(it, tka.jaw[i]);
+    let pemb = '';
+    if (it.tipe === 'pg') pemb = langkahHtml({ langkah: it.langkah });
+    else if (it.tipe === 'mcma') pemb = '<ul class="salah-daftar">' + it.pilihan.map((p, k) => '<li><b>' + (it.benar.indexOf(k) >= 0 ? 'Benar' : 'Salah') + '.</b> ' + fmt(p) + '<div class="kecil">Jawaban sebenarnya: ' + fmt(it.kunciNilai[k]) + '</div></li>').join('') + '</ul>';
+    else pemb = '<ul class="salah-daftar">' + it.pernyataan.map((p, k) => '<li><b>' + (it.kunci[k] ? 'Benar' : 'Salah') + '.</b> ' + fmt(p) + '<div class="kecil">Jawaban sebenarnya: ' + fmt(it.kunciNilai[k]) + '</div></li>').join('') + '</ul>';
+    return '<details class="tka-tinjau ' + (ok ? 'ok' : kos ? 'kos' : 'no') + '"><summary><b>' + (i + 1) + '</b>&nbsp;' + (ok ? 'Benar' : kos ? 'Tidak dijawab' : 'Salah') + ' · ' + esc((c.elemen.find((e) => e.id === it.elemen) || { nama: it.elemen }).nama) + '</summary><div class="soal panjang" style="margin-bottom:6px">' + fmt(it.teks) + '</div>' + (it.gambar ? '<div class="gambar">' + it.gambar + '</div>' : '') + '<p class="kecil" style="margin:6px 0 2px">Jawabanmu: <b>' + fmt(tkaJawabanKamu(it, tka.jaw[i])) + '</b></p><p class="kecil" style="margin:0 0 6px">Kunci: <b>' + fmt(tkaKunci(it)) + '</b></p>' + pemb + '</details>';
+  }).join('');
+  tampil('<div class="atas"><h2>Hasil ' + esc(c.nama) + '</h2></div><!--PERINGATAN-->' + '<div class="kartu tengah"><div class="skor">' + h.benar + '<small>/' + h.n + '</small></div><p class="tebal" style="margin:6px 0 0">Skor latihan ' + h.skor + ' dari 100</p><p class="kecil" style="margin:4px 0 0">' + h.kosong + ' soal tidak dijawab · waktu ' + waktuStr(tka.detik) + (tka.batas ? ' dari ' + waktuStr(tka.batas) : '') + '</p></div><div class="gap"></div><div class="kartu"><h3 style="margin-bottom:10px">Per elemen</h3>' + per + '</div><div class="gap"></div><div class="info">Soal pilihan ganda kompleks dihitung benar hanya jika semua pilihan atau semua pernyataan tepat. Skor ini untuk latihan, bukan nilai resmi TKA.</div><div class="bagian-judul"><h2>Tinjau jawaban</h2></div>' + tinjau +
+    '<div class="gap"></div><button class="btn utama" data-a="tkaMulai" data-j="' + tka.j + '" data-mode="' + tka.mode + '" data-e="' + esc(tka.elemen) + '">' + svgI('kilat') + 'Ulangi (soal baru)</button><div class="gap2"></div><div class="baris"><button class="btn" data-a="pergi" data-r="tka">Menu TKA</button><button class="btn" data-a="pergi" data-r="beranda">Beranda</button></div>', { tanpaNav: true });
 }
 
 /* ====================== LAYAR: TOPIK ====================== */
@@ -674,6 +775,7 @@ function layarProgres() {
     '<div class="bagian-judul"><h2>14 hari terakhir</h2></div><div class="kartu">' + grafikSVG(pr) + '</div>' +
     '<div class="bagian-judul"><h2>Per topik</h2></div><div class="kartu">' + tabel + '</div>' +
     '<div class="bagian-judul"><h2>Topik terlemah</h2></div><div class="kartu">' + (lemah.length ? lemah.map((x) => '<div class="baris" style="align-items:center;margin-bottom:6px"><span style="flex:3">' + esc(CP.judulModul(x.id)) + '</span><b style="flex:1;text-align:right">' + x.persen + '%</b></div>').join('') + '<p class="kecil">Dihitung dari topik dengan minimal 10 soal.</p>' : '<p class="kecil" style="margin:0">Belum ada topik dengan minimal 10 soal.</p>') + '</div>' +
+    ((pr.tka && pr.tka.length) ? '<div class="bagian-judul"><h2>Simulasi TKA</h2></div><div class="kartu">' + pr.tka.slice(0, 5).map((x) => '<div class="baris" style="align-items:center;padding:6px 0;border-top:2px dashed var(--lembut)"><span style="flex:3"><b>' + esc(CP.TKA[x.jenjang].nama) + '</b><div class="kecil">' + x.tgl + ' \u00B7 ' + x.b + '/' + x.n + ' benar</div></span><b style="flex:1;text-align:right">' + x.skor + '</b></div>').join('') + '</div>' : '') +
     '<div class="bagian-judul"><h2>5 sesi terakhir</h2></div><div class="kartu">' + (pr.sesi.length ? pr.sesi.slice(0, 5).map((x) => '<div class="baris" style="align-items:center;padding:6px 0;border-top:2px dashed var(--lembut)"><span style="flex:3"><b>' + esc(CP.judulModul(x.modul)) + '</b><div class="kecil">' + x.tgl + ' · Level ' + x.level + '</div></span><b style="flex:1;text-align:right">' + x.b + '/' + x.n + '</b></div>').join('') : '<p class="kecil" style="margin:0">Belum ada sesi.</p>') + '</div>', { nav: 'progres' });
 }
 function layarRiwayat() {
@@ -829,6 +931,15 @@ const AKSI = {
     if (h.galat) return setGalat(h.galat);
     CP.terimaLaporan(data, h.lap, hariIni()); simpan(); toast('Laporan ' + h.lap.u + ' tersimpan'); layarOrtu();
   },
+  tkaMulai(d) { tkaMulai(d.j, d.mode, d.e || ''); },
+  tkaPilih(d) { tka.jaw[tka.i] = +d.k; tkaTampil(); },
+  tkaToggle(d) { const a = (tka.jaw[tka.i] || []).slice(), k = +d.k, p = a.indexOf(k); if (p >= 0) a.splice(p, 1); else a.push(k); tka.jaw[tka.i] = a.length ? a : null; tkaTampil(); },
+  tkaKat(d) { const a = (tka.jaw[tka.i] || tka.items[tka.i].kunci.map(() => null)).slice(); a[+d.k] = d.v === '1'; tka.jaw[tka.i] = a; tkaTampil(); },
+  tkaNav(d) { tka.i = Math.max(0, Math.min(tka.items.length - 1, tka.i + (+d.d))); tkaTampil(); window.scrollTo(0, 0); },
+  tkaLompat(d) { tka.i = +d.i; tkaTampil(); window.scrollTo(0, 0); },
+  tkaRagu() { tka.ragu[tka.i] = !tka.ragu[tka.i]; tkaTampil(); },
+  tkaSelesai() { const k = tka.items.filter((x, i) => !tkaTerjawab(i)).length; konfirmasi('Selesaikan tes?', k ? k + ' soal belum dijawab. Setelah selesai, jawaban tidak bisa diubah.' : 'Semua soal sudah dijawab.', 'Selesai', tkaAkhiri); },
+  tkaKeluar() { if (tka && tka.hasil) return pergi('tka'); konfirmasi('Keluar dari tes?', 'Jawaban tes ini tidak disimpan jika kamu keluar sekarang.', 'Keluar', () => { if (tka) clearInterval(tka.timer); tka = null; pergi('tka'); }, true); },
   hapusLaporan(d) { konfirmasi('Hapus laporan ' + d.u + '?', 'Laporan ini dihapus dari HP ini.', 'Hapus', () => { delete data.ortu.laporan[d.u]; simpan(); layarOrtu(); }, true); }
 };
 function buatProfilSelesai(tl) {

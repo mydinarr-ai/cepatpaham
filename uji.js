@@ -5,7 +5,7 @@ const path = require('path');
 const muat = (f) => require(path.join(__dirname, 'js', f));
 muat('inti.js'); muat('peta.js');
 if (fs.existsSync(path.join(__dirname, 'js', 'materi.js'))) muat('materi.js');
-muat('sekolah.js'); muat('hitung.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js'); muat('kelas9.js'); muat('kelas11.js'); muat('kelas12.js');
+muat('sekolah.js'); muat('hitung.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js'); muat('kelas9.js'); muat('kelas11.js'); muat('kelas12.js'); muat('tka.js');
 const CP = globalThis.CP;
 
 let lulus = 0, gagal = 0;
@@ -509,6 +509,72 @@ bagian('8. Cadangan');
   cek(pulih.data && JSON.stringify(pulih.data) === JSON.stringify(data), 'salin lalu tempel mengembalikan data persis sama');
   cek(CP.pulihkan('tidak ada').galat && CP.pulihkan('CPB1:xyz!').galat && CP.pulihkan('CPB1:' + CP.b64e('[1,2]')).galat, 'cadangan salah ditolak');
   console.log('  ukuran kode cadangan contoh: ' + kode.length + ' karakter');
+}
+
+/* ---------- 9. Simulasi TKA ---------- */
+bagian('9. Simulasi TKA (SMP, SMA, SMK)');
+{
+  // pengubah soal angka -> pilihan ganda, pada banyak soal acak dari semua modul aktif
+  const rng0 = CP.buatRng(31337); let n = 0, bermasalah = 0;
+  CP.REG.filter((m) => m.status === 'aktif').forEach((m) => {
+    for (let level = 1; level <= m.level.length; level++) for (let i = 0; i < Math.max(20, Math.floor(BANYAK / 10)); i++) {
+      const soal = m.generator(level, i % 2 ? 'vokasi' : 'umum', rng0); n++;
+      if (soal.tipe === 'pilihan') continue;
+      let o; try { o = CP.jadikanPilihan(rng0, soal); } catch (e) { bermasalah++; cek(false, 'TKA jadikanPilihan gagal ' + m.id + ' L' + level + ': ' + e.message); continue; }
+      const id = m.id + ' L' + level + ' "' + soal.teks.slice(0, 50) + '"';
+      cek(o.pilihan.length === 4 && new Set(o.pilihan).size === 4, id + ' opsi TKA tidak 4 berbeda');
+      cek(o.pilihan[o.benar] === CP.tampilJawab(soal), id + ' opsi benar "' + o.pilihan[o.benar] + '" != "' + CP.tampilJawab(soal) + '"');
+      cek(o.nilai.every((q, k) => (k === o.benar) === CP.pSama(q, soal.jawab)), id + ' hanya satu opsi bernilai sama dengan jawaban');
+      if (!(soal.izin && soal.izin.minus)) cek(o.nilai.every((q) => q.n >= 0), id + ' pengecoh negatif di topik non-negatif');
+    }
+  });
+  console.log('  soal diuji untuk konversi pilihan ganda: ' + n);
+}
+['SMP', 'SMA', 'SMK'].forEach((j) => {
+  const cfg = CP.TKA[j]; const ulang = Math.max(6, Math.floor(BANYAK / 50)); let bentuk = { pg: 0, mcma: 0, kategori: 0 };
+  for (let rep = 0; rep < ulang; rep++) {
+    const items = CP.susunTKA(j, CP.buatRng(500 + rep));
+    cek(items.length === cfg.jumlah, j + ' jumlah soal ' + items.length);
+    cek(items.every((it, i) => it.no === i + 1), j + ' penomoran');
+    const alok = CP.alokasiTKA(cfg.elemen, cfg.jumlah);
+    cfg.elemen.forEach((e, k) => cek(items.filter((it) => it.elemen === e.id).length === alok[k], j + ' alokasi elemen ' + e.id));
+    cek(new Set(items.filter((it) => it.tipe === 'pg').map((it) => it.teks)).size === items.filter((it) => it.tipe === 'pg').length, j + ' ada soal pg kembar');
+    items.forEach((it) => {
+      bentuk[it.tipe]++;
+      const id = j + ' #' + it.no + ' ' + it.tipe + ' ' + it.elemen;
+      cek(['pg', 'mcma', 'kategori'].indexOf(it.tipe) >= 0 && typeof it.teks === 'string' && it.teks.length > 5, id + ' teks');
+      if (it.tipe === 'pg') {
+        cek(it.pilihan.length === 4 && new Set(it.pilihan).size === 4 && it.benar >= 0 && it.benar < 4, id + ' opsi pg');
+        cek(Array.isArray(it.langkah) && it.langkah.length >= 1, id + ' tanpa langkah');
+      } else if (it.tipe === 'mcma') {
+        cek(it.pilihan.length === 4 && it.benar.length >= 1 && it.benar.length < 4, id + ' mcma jumlah benar ' + it.benar.length);
+        it.pilihan.forEach((t, i) => cek(t.indexOf(' Jawabannya ' + it.kunciNilai[i] + '.') >= 0 === (it.benar.indexOf(i) >= 0), id + ' pernyataan ' + i + ' tidak konsisten dengan kunci'));
+      } else {
+        cek(it.pernyataan.length === 3 && it.kunci.some((k) => k) && it.kunci.some((k) => !k), id + ' kategori harus campuran benar/salah');
+        it.pernyataan.forEach((t, i) => cek(t.indexOf(' Jawabannya ' + it.kunciNilai[i] + '.') >= 0 === it.kunci[i], id + ' pernyataan kategori ' + i + ' tidak konsisten'));
+      }
+    });
+    // penilaian
+    const semuaBenar = items.map((it) => (it.tipe === 'pg' ? it.benar : it.tipe === 'mcma' ? it.benar.slice() : it.kunci.slice()));
+    const h1 = CP.nilaiTKA(items, semuaBenar); cek(h1.benar === items.length && h1.skor === 100 && h1.kosong === 0, j + ' semua benar -> 100');
+    const kosong = CP.nilaiTKA(items, items.map(() => null)); cek(kosong.benar === 0 && kosong.kosong === items.length && kosong.skor === 0, j + ' semua kosong -> 0');
+    const salah = items.map((it) => (it.tipe === 'pg' ? (it.benar + 1) % 4 : it.tipe === 'mcma' ? [] : it.kunci.map((k) => !k)));
+    cek(CP.nilaiTKA(items, salah).benar === 0, j + ' semua salah -> 0');
+    const sebagian = semuaBenar.map((x, i) => (i % 2 ? null : x)); const h2 = CP.nilaiTKA(items, sebagian);
+    cek(h2.benar === Math.ceil(items.length / 2), j + ' separuh benar');
+    const mc = items.find((it) => it.tipe === 'mcma');
+    if (mc && mc.benar.length > 1) cek(!CP.itemBenar(mc, [mc.benar[0]]), j + ' mcma sebagian benar tidak dihitung benar');
+    cek(Object.keys(h1.perElemen).length === cfg.elemen.length, j + ' ringkasan per elemen');
+  }
+  console.log('  ' + j + ': ' + ulang + ' set x ' + cfg.jumlah + ' soal; bentuk ' + JSON.stringify(bentuk) + '; durasi ' + cfg.durasi + ' menit');
+  cek(bentuk.pg > 0 && bentuk.mcma > 0 && bentuk.kategori > 0, j + ' ketiga bentuk soal muncul');
+  // latihan per elemen
+  cfg.elemen.forEach((e) => { const it = CP.susunTKA(j, CP.buatRng(77), { jumlah: 10, elemen: e.id }); cek(it.length === 10 && it.every((x) => x.elemen === e.id), j + ' latihan elemen ' + e.id); });
+});
+cek(CP.TKA.SMK.konteks === 'vokasi' && CP.TKA.SMA.konteks === 'umum' && CP.TKA.SMA.durasi === 75 && CP.TKA.SMA.jumlah === 25 && CP.TKA.SMK.jumlah === 25, 'konfigurasi TKA SMA/SMK: 25 soal, 75 menit, SMK vokasi');
+{
+  const pr = { tka: [] }; for (let i = 0; i < 25; i++) CP.catatTKA(pr, { n: 25, benar: i, skor: 4 * i, perElemen: {} }, { tgl: '2026-10-' + (10 + (i % 15)), jenjang: 'SMA', mode: 'simulasi', detik: 1000 });
+  cek(pr.tka.length === 20 && pr.tka[0].b === 24, 'riwayat TKA maksimal 20, terbaru di depan');
 }
 
 /* ---------- ringkasan ---------- */

@@ -17,6 +17,7 @@ Dokumen ini untuk sesi Claude Code berikutnya. Baca juga `spesifikasi-aplikasi-h
 | `js/kelas9.js` | Kelas IX: IX-1 (SPLDV), IX-2 (bangun ruang), IX-3 (transformasi geometri), IX-4 (peluang dan sampel). Berisi penggambar bangun ruang dan bidang koordinat. |
 | `js/kelas11.js` | Kelas XI Umum: XI-1 (komposisi dan invers fungsi), XI-2 (lingkaran), XI-3 (statistika: pencar, regresi, korelasi). |
 | `js/kelas12.js` | Kelas XII Umum: XII-1 (transformasi fungsi), XII-2 (busur dan juring), XII-3 (kombinatorik). |
+| `js/tka.js` | Simulasi TKA SMP/SMA/SMK: konfigurasi (`CP.TKA`: jumlah soal, durasi, elemen dan modul sumber), pembuat soal (`CP.susunTKA`), pengubah soal angka ke pilihan ganda (`CP.jadikanPilihan`), penilaian (`CP.nilaiTKA`). UI-nya ada di `index.html` (fungsi `layarTKA*`). |
 | `js/gambar.js` | Penggambar SVG umum (`CP.gambarUmum`): persegi panjang, segitiga, parabola, diagram batang/lingkaran/kotak-garis dibuat dari daftar elemen (`CP.H`). Gambar balok H3 tetap di `cerita.js`. |
 | `js/hitung.js` | Hitung Cepat H1, H2, H4, H5, H6. |
 | `js/cerita.js` | H3 Soal Cerita Model Bar + penggambar SVG balok + templat cerita. |
@@ -25,7 +26,7 @@ Dokumen ini untuk sesi Claude Code berikutnya. Baca juga `spesifikasi-aplikasi-h
 | `uji.js` | Pengujian otomatis. Jalankan: `node uji.js` (cepat: `BANYAK=100 node uji.js`). |
 | `serve.js` | Server lokal untuk mencoba: `node serve.js` lalu buka `http://localhost:5173`. |
 
-Urutan muat skrip di `index.html` dan `uji.js` harus tetap: `inti` → `peta` → `materi` → `sekolah` → `hitung` → `cerita` → `gambar` → `kelas7b` → `kelas10b` → `kelas8` → `kelas9` → `kelas11` → `kelas12`. File modul baru (mis. `kelas11tl.js` untuk Tingkat Lanjut) ditambahkan **setelah** `kelas12.js` dan didaftarkan di tiga tempat: tag `<script>` di `index.html`, daftar `ASET` di `sw.js`, dan baris `muat(...)` di `uji.js`.
+Urutan muat skrip di `index.html` dan `uji.js` harus tetap: `inti` → `peta` → `materi` → `sekolah` → `hitung` → `cerita` → `gambar` → `kelas7b` → `kelas10b` → `kelas8` → `kelas9` → `kelas11` → `kelas12` → `tka`. File modul bab baru (mis. `kelas11tl.js` untuk Tingkat Lanjut) ditambahkan **sebelum** `tka.js`, karena TKA memakai generator semua modul dan didaftarkan di tiga tempat: tag `<script>` di `index.html`, daftar `ASET` di `sw.js`, dan baris `muat(...)` di `uji.js`.
 
 ## 2. Cara mengaktifkan satu bab (langkah demi langkah)
 
@@ -104,3 +105,11 @@ GitHub Pages memperbarui dalam 1-2 menit. File `.nojekyll` sudah ada. Setelah me
 ## 7. Urutan pengerjaan
 
 Atas permintaan pemilik, bab dikerjakan **berurutan menurut kelas (VII → XII)**, bukan menurut nomor tahap di spesifikasi. Selesai: VII, VIII, IX, X, XI Umum, XII Umum. Berikutnya: lalu Tingkat Lanjut XI dan XII, lalu modul TKA/UTBK dan akun online.
+
+## 8. Simulasi TKA
+
+- Konfigurasi di `CP.TKA` (`js/tka.js`). **SMA/SMK: 25 soal, 75 menit** (Matematika wajib 2026, sumber pemberitaan Kemendikdasmen; dasar hukum Perka BSKAP 045/H/AN/2025). **SMP: jumlah soal dan durasi belum dipastikan** dari sumber resmi (portal Pusmendik tidak dapat dibuka dari sesi pengembangan); angka 25 soal dan 60 menit adalah perkiraan dan ditandai `pasti: false`. Ubah di satu tempat itu bila juknis resmi sudah ada.
+- Tiga bentuk soal: pilihan ganda, pilihan ganda kompleks (pilih semua yang benar), pilihan ganda kompleks kategori (benar/salah per pernyataan). Soal kompleks dihitung benar hanya jika semua bagian tepat (aturan penilaian resmi belum diketahui).
+- SMK memakai konteks `vokasi` pada semua generator. Spesifikasi resmi menyebut tiga konteks SMK (teknik/kesehatan, bisnis/ekonomi, seni/pariwisata); generator vokasi saat ini berfokus pada bisnis dan produksi.
+- Menambah bab ke TKA: tambahkan id modul ke `modul` pada elemen yang sesuai di `CP.TKA`. Setelah menambah bab Tingkat Lanjut, putuskan apakah ikut dalam TKA SMA (kemungkinan tidak, karena TKA Matematika wajib memakai Matematika Umum).
+- UTBK belum dikerjakan. Cek format dan cakupan terbaru dari sumber resmi sebelum mengerjakannya.
