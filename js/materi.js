@@ -167,6 +167,42 @@
       contoh: { level: 4, seed: 7 }, cobaMaks: 3,
       kenapa: 'Makin banyak percobaan, frekuensi relatif cenderung mendekati peluang teoretis. Itu sebabnya hasil survei besar bisa dipakai untuk memperkirakan kejadian berikutnya.'
     },
+    'IX-1': {
+      konsep: [
+        { judul: 'Penyelesaian sebagai titik potong', teks: 'Penyelesaian sistem dua persamaan linear adalah titik potong kedua garisnya. Jika y = 2x + 1 dan y = −x + 4, samakan: 2x + 1 = −x + 4 → 3x = 3 → x = 1, y = 3.' },
+        { judul: 'Eliminasi dan substitusi', teks: 'Eliminasi: kalikan agar koefisien salah satu variabel sama, lalu kurangkan atau jumlahkan. Substitusi: nyatakan satu variabel dari persamaan lain lalu masukkan.\nPersamaan berpecahan: kalikan seluruh persamaan dengan KPK penyebut lebih dulu.' },
+        { judul: 'Memodelkan soal cerita', teks: 'Misalkan dua hal yang dicari dengan x dan y, tulis satu persamaan untuk tiap kalimat. Jika ada konstanta yang belum diketahui, gunakan penyelesaian yang sudah diberikan untuk mencarinya.' }
+      ],
+      contoh: { level: 2, seed: 3 }, cobaMaks: 3,
+      kenapa: 'Titik yang memenuhi kedua persamaan harus berada di kedua garis sekaligus, sehingga hanya titik potongnya yang cocok.'
+    },
+    'IX-2': {
+      konsep: [
+        { judul: 'Volume dan luas permukaan', teks: 'Kubus: V = s³, luas = 6s². Balok: V = p × l × t, luas = 2(pl + pt + lt).\nPrisma: V = luas alas × tinggi. Limas: V = ⅓ × luas alas × tinggi.' },
+        { judul: 'Bangun sisi lengkung', teks: 'Dengan π = 22/7: tabung V = πr²t, selimut = 2πrt. Kerucut V = ⅓πr²t, selimut = πrs. Bola V = 4/3 πr³, luas = 4πr².\nGaris pelukis kerucut s = √(r² + t²).' },
+        { judul: 'Satuan dan gabungan', teks: '1 liter = 1.000 cm³ = 1 dm³. Untuk bangun gabungan, hitung tiap bagian lalu jumlahkan. Pilih r atau t yang membuat 22/7 habis dibagi (kelipatan 7).' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Volume prisma dan tabung sama dengan luas alas × tinggi karena bangun itu tersusun dari lapisan-lapisan alas yang identik. Limas dan kerucut muat tepat tiga kali dalam prisma atau tabung yang alas dan tingginya sama.'
+    },
+    'IX-3': {
+      konsep: [
+        { judul: 'Translasi dan refleksi', teks: 'Translasi T(a, b): (x, y) → (x + a, y + b).\nRefleksi: sumbu x → (x, −y); sumbu y → (−x, y); y = x → (y, x); y = −x → (−y, −x).' },
+        { judul: 'Rotasi dan dilatasi', teks: 'Rotasi pusat O berlawanan arah jarum jam: 90° → (−y, x); 180° → (−x, −y); 270° → (y, −x).\nDilatasi pusat O faktor k: (x, y) → (kx, ky). Untuk pusat (a, b): (a + k(x − a), b + k(y − b)).' },
+        { judul: 'Komposisi dan luas', teks: 'Komposisi: kerjakan transformasi satu per satu sesuai urutan.\nDilatasi faktor k memperbesar panjang k kali dan luas k² kali. Translasi, refleksi, dan rotasi tidak mengubah ukuran.' }
+      ],
+      contoh: { level: 2, seed: 4 }, cobaMaks: 3,
+      kenapa: 'Luas dikalikan k² karena dilatasi memperbesar panjang dan lebar masing-masing k kali, lalu keduanya dikalikan.'
+    },
+    'IX-4': {
+      konsep: [
+        { judul: 'Populasi dan sampel', teks: 'Populasi: seluruh objek yang diteliti. Sampel: sebagian populasi yang diamati dan harus mewakili populasi.\nSistematis: ambil setiap k-an, k = N ÷ n. Berstrata: jumlah sampel tiap kelompok sebanding dengan ukuran kelompoknya.' },
+        { judul: 'Peluang tanpa pengembalian', teks: 'Tanpa pengembalian, jumlah benda berkurang satu pada pengambilan berikutnya.\nContoh 3 merah, 2 biru: P(dua merah) = 3/5 × 2/4 = 3/10.' },
+        { judul: 'Paling sedikit satu dan perkiraan', teks: 'P(paling sedikit satu) = 1 − P(tidak ada).\nPerkiraan populasi = proporsi sampel × banyak populasi. Frekuensi harapan = banyak percobaan × peluang.' }
+      ],
+      contoh: { level: 3, seed: 6 }, cobaMaks: 3,
+      kenapa: 'Sampel acak yang cukup besar cenderung memiliki proporsi mendekati populasi, sehingga proporsi sampel dapat dipakai untuk memperkirakan populasi.'
+    },
     H1: {
       konsep: [
         { judul: 'Pecah per tempat', teks: 'Pisahkan puluhan dan satuan. 48 + 37 = (40 + 30) + (8 + 7) = 70 + 15 = 85.\nKerjakan dari bagian besar dulu supaya mudah dicek.' },
