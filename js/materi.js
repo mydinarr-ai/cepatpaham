@@ -347,6 +347,18 @@
       contoh: { level: 3, seed: 8 }, cobaMaks: 3,
       kenapa: 'Kombinasi adalah permutasi yang dibagi r! karena setiap kelompok r unsur yang sama dihitung r! kali dalam permutasi (semua urutannya).'
     },
+    H0: {
+      konsep: [
+        { judul: 'Mulai dari yang paling mudah: ×2, ×5, ×10', teks: 'Kali 2 = dua kali lipat (7 × 2 = 7 + 7 = 14).\nKali 10 = tambah angka 0 di belakang (7 × 10 = 70).\nKali 5 = setengah dari kali 10 (7 × 5 → 70 ÷ 2 = 35).\nKamu tidak perlu menghafal semuanya sekaligus. Tiga tabel ini sudah jadi bekal untuk tabel lain.' },
+        { judul: '×3 dan ×4', teks: 'Kali 3 = kali 2 ditambah satu kali lagi. 7 × 3 = 14 + 7 = 21.\nKali 4 = dua kali lipat, lalu dua kali lipat lagi. 7 × 4: 7 → 14 → 28.' },
+        { judul: '×9 dan ×11', teks: 'Kali 9 = kali 10 lalu kurangi satu kali. 7 × 9 = 70 − 7 = 63.\nKali 11 untuk angka 1 sampai 9: tulis angkanya dua kali. 7 × 11 = 77, 4 × 11 = 44.' },
+        { judul: '×6, ×7, dan ×8', teks: 'Kali 6 = kali 5 ditambah satu kali lagi. 7 × 6 = 35 + 7 = 42.\nKali 7 = kali 5 ditambah kali 2. 8 × 7 = 40 + 16 = 56.\nKali 8 = kali 10 dikurangi kali 2. 7 × 8 = 70 − 14 = 56.\nIngat juga pola 5-6-7-8: 56 = 7 × 8.' },
+        { judul: 'Kali bilangan besar: dipecah', teks: 'Pecah bilangan menjadi puluhan dan satuan, kali satu per satu, lalu jumlahkan.\n47 × 6 = (40 × 6) + (7 × 6) = 240 + 42 = 282.\nKamu hanya memakai tabel kecil yang sudah dilatih.' },
+        { judul: 'Pangkat: kali berulang, kerjakan satu per satu', teks: 'Pangkat berarti kali berulang. 6⁴ = 6 × 6 × 6 × 6.\nJangan langsung mencoba menghitung semuanya. Buat tangga: 6¹ = 6, 6² = 36, 6³ = 36 × 6 = 216, 6⁴ = 216 × 6 = 1.296.\nTiap langkah hanya mengalikan dengan 6. Untuk 6 × 216, pecah: 200 × 6 = 1.200, 10 × 6 = 60, 6 × 6 = 36, jumlahnya 1.296.\nDi menu "Tabel bantu" ada daftar pangkat sampai 9, termasuk 6⁹ = 10.077.696.' }
+      ],
+      contoh: { level: 4, seed: 3 }, cobaMaks: 3,
+      kenapa: 'Semua tabel perkalian bisa dibangun dari tabel ×2, ×5, ×10 yang paling mudah. Dengan memecah bilangan, kamu tidak perlu menghafal ratusan hasil.'
+    },
     H1: {
       konsep: [
         { judul: 'Pecah per tempat', teks: 'Pisahkan puluhan dan satuan. 48 + 37 = (40 + 30) + (8 + 7) = 70 + 15 = 85.\nKerjakan dari bagian besar dulu supaya mudah dicek.' },

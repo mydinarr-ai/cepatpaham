@@ -5,7 +5,7 @@ const path = require('path');
 const muat = (f) => require(path.join(__dirname, 'js', f));
 muat('inti.js'); muat('peta.js');
 if (fs.existsSync(path.join(__dirname, 'js', 'materi.js'))) muat('materi.js');
-muat('sekolah.js'); muat('hitung.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js'); muat('kelas9.js'); muat('kelas11.js'); muat('kelas12.js'); muat('kelas11tl.js'); muat('kelas12tl.js'); muat('tka.js');
+muat('sekolah.js'); muat('hitung.js'); muat('dasar.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js'); muat('kelas9.js'); muat('kelas11.js'); muat('kelas12.js'); muat('kelas11tl.js'); muat('kelas12tl.js'); muat('tka.js');
 const CP = globalThis.CP;
 
 let lulus = 0, gagal = 0;
@@ -394,7 +394,7 @@ cek(CP.REG.filter((m) => m.kelas === 'XI' && m.kategori === 'umum').length === 3
 cek(CP.REG.filter((m) => m.kelas === 'XII' && m.kategori === 'umum').length === 3, 'bab XII umum');
 cek(CP.REG.filter((m) => m.kelas === 'XI' && m.kategori === 'lanjut').length === 5, 'bab XI TL');
 cek(CP.REG.filter((m) => m.kelas === 'XII' && m.kategori === 'lanjut').length === 5, 'bab XII TL');
-cek(CP.REG.filter((m) => m.kategori === 'hitungCepat').length === 6, 'H1-H6');
+cek(CP.REG.filter((m) => m.kategori === 'hitungCepat').length === 7, 'H0-H6');
 cek(new Set(CP.REG.map((m) => m.id)).size === CP.REG.length, 'id modul unik');
 CP.KONFIG.urutKelas.forEach((kelas) => {
   ['SMP', 'SMA', 'SMK'].forEach((jenjang) => {
@@ -502,7 +502,7 @@ cek(['XII-TL-1', 'XII-TL-2', 'XII-TL-3', 'XII-TL-4', 'XII-TL-5'].every((id) => C
 const BAB_SEGERA = CP.REG.filter((m) => m.status === 'segera');
 BAB_SEGERA.forEach((m) => { cek(typeof m.generator !== 'function', 'bab segera tidak boleh punya generator: ' + m.id); });
 cek(['VII-1', 'VII-2', 'VII-3', 'X-1', 'X-2', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 1 aktif');
-cek(CP.REG.filter((m) => m.status === 'aktif').length === 44, 'tepat 44 modul aktif (VII-XII Umum + TL XI dan XII)');
+cek(CP.REG.filter((m) => m.status === 'aktif').length === 45, 'tepat 45 modul aktif (VII-XII Umum + TL XI dan XII)');
 cek(['XII-1', 'XII-2', 'XII-3'].every((id) => CP.peta[id].status === 'aktif'), 'bab Kelas XII aktif');
 cek(['XI-1', 'XI-2', 'XI-3'].every((id) => CP.peta[id].status === 'aktif'), 'bab Kelas XI aktif');
 cek(['IX-1', 'IX-2', 'IX-3', 'IX-4'].every((id) => CP.peta[id].status === 'aktif'), 'bab Kelas IX aktif');
@@ -604,6 +604,21 @@ bagian('8. Cadangan');
 }
 
 /* ---------- 9. Simulasi TKA ---------- */
+contoh('H0', 1, { jenis: 'k5', b: 6, balik: 0 }, '30', 'H0 6x5');
+contoh('H0', 1, { jenis: 'k2', b: 7, balik: 1 }, '14', 'H0 7x2');
+contoh('H0', 1, { jenis: 'k10', b: 12, balik: 0 }, '120', 'H0 10x12');
+contoh('H0', 2, { jenis: 'k3', b: 7, balik: 0 }, '21', 'H0 3x7');
+contoh('H0', 2, { jenis: 'k4', b: 7, balik: 0 }, '28', 'H0 4x7');
+contoh('H0', 3, { jenis: 'k9', b: 7, balik: 0 }, '63', 'H0 9x7');
+contoh('H0', 3, { jenis: 'k11', b: 7, balik: 0 }, '77', 'H0 11x7');
+contoh('H0', 4, { jenis: 'k6', b: 7, balik: 0 }, '42', 'H0 6x7');
+contoh('H0', 4, { jenis: 'k7', b: 8, balik: 0 }, '56', 'H0 7x8');
+contoh('H0', 4, { jenis: 'k8', b: 7, balik: 1 }, '56', 'H0 7x8 (8)');
+contoh('H0', 5, { n: 47, m: 6, balik: 0 }, '282', 'H0 47x6');
+contoh('H0', 6, { a: 6, t: 7 }, '10077696', 'H0 6 pangkat 9');
+contoh('H0', 6, { a: 2, t: 0 }, '4', 'H0 2 pangkat 2');
+cek(CP.caraKali(1296, 6).indexOf('7.776') >= 0 && CP.tanggaPangkat(6, 4).length === 4, 'H0 cara kali dan tangga pangkat');
+cek(CP.tanggaPangkat(6, 9)[8].indexOf('10.077.696') >= 0, 'H0 tangga 6 pangkat 9');
 bagian('8b. Gabung data dari HP lain');
 {
   const A = CP.dataBaru(), B = CP.dataBaru();

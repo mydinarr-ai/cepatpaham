@@ -7,7 +7,7 @@
   CP.KONFIG = {
     nama: 'CepatPaham',
     tagline: 'Hitung cepat. Paham konsep.',
-    versiApp: '1.13.0',
+    versiApp: '1.14.0',
     versiData: 1,
     kunciSimpan: 'cepatpaham:data',
     soalPerSesi: 10,
@@ -25,7 +25,7 @@
       SMK: { nama: 'SMK', kelas: ['X', 'XI', 'XII'] }
     },
     urutKelas: ['VII', 'VIII', 'IX', 'X', 'XI', 'XII'],
-    disarankan: { SMP: ['H1', 'H2', 'H3'], SMA: ['H4', 'H5', 'H6'], SMK: ['H4', 'H5', 'H6'] }
+    disarankan: { SMP: ['H0', 'H1', 'H2'], SMA: ['H4', 'H5', 'H6'], SMK: ['H4', 'H5', 'H6'] }
   };
 
   /* ===================== 2. ACAK BER-SEED ===================== */

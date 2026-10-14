@@ -33,7 +33,7 @@
 
   /* ---- Hitung Cepat ---- */
   const semua = ['SMP', 'SMA', 'SMK'];
-  [['H1', 'Drill Berjenjang'], ['H2', 'Hitung Mental'], ['H3', 'Soal Cerita Model Bar'], ['H4', 'Vedic Math'], ['H5', 'Trachtenberg'], ['H6', 'Latihan Kecepatan']].forEach((x) => {
+  [['H0', 'Dasar Perkalian'], ['H1', 'Drill Berjenjang'], ['H2', 'Hitung Mental'], ['H3', 'Soal Cerita Model Bar'], ['H4', 'Vedic Math'], ['H5', 'Trachtenberg'], ['H6', 'Latihan Kecepatan']].forEach((x) => {
     CP.daftar({ id: x[0], judul: x[1], kelas: null, jenjang: semua, kategori: 'hitungCepat', tahap: 1, level: [], status: 'segera' });
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

@@ -136,3 +136,8 @@ Tiga subtes hitungan ada di `CP.TKA.UTBK_PM`, `UTBK_PK`, `UTBK_PU` (js/tka.js). 
 ## Pindah HP dan gabung data (v1.13.0)
 
 Tanpa server. Menu Pengaturan > Pindah HP dan cadangan: kirim kode (Web Share), salin, simpan berkas .txt; terima lewat tempel kode atau pilih berkas, lalu **Gabungkan** (`CP.gabung`, tidak menghapus apa pun; per bab dipakai catatan dengan jumlah soal terbanyak, sesi dan riwayat TKA disatukan, kelas yang lebih maju menang) atau **Timpa** (cara lama). Akun online dan pembayaran sengaja belum dibuat (butuh server dan persetujuan orang tua untuk data anak).
+
+
+## Dasar Perkalian dan Tabel bantu (v1.14.0)
+
+Masukan pemilik: penjelasan masih membingungkan bagi siswa yang belum hafal perkalian (contoh 6 pangkat 9). Dibuat: modul **H0 Dasar Perkalian** (js/dasar.js; level: x2/x5/x10, x3/x4, x9/x11, x6/x7/x8, kali 2 digit dipecah, pangkat langkah demi langkah), langkah pangkat di X-1 sekarang berupa tangga (tiap langkah hanya kali bilangan pokok, dengan perkalian dipecah per tempat; `CP.tanggaPangkat`, `CP.caraKali`), dan layar **Tabel bantu** (rute #/tabel/kali, pangkat, trik) yang bisa dibuka dari beranda dan tiap halaman topik.

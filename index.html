@@ -80,6 +80,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pilih-chip{display:flex;flex-wrap:wrap;gap:10px}
 .pilih-chip button{min-height:48px;padding:0 18px;border-radius:12px;border:2px solid var(--garis);background:var(--kartu);font-weight:800;font-size:16px;box-shadow:var(--bayang)}
 .pilih-chip button[aria-pressed="true"]{background:var(--aksen);color:var(--aksen-teks)}
+.tabel-kali{border-collapse:collapse;width:100%;font-size:13px;text-align:center}.tabel-kali th,.tabel-kali td{border:1px solid var(--lembut);padding:0;height:40px;min-width:0}.tabel-kali th{background:var(--lembut);font-weight:800}.tabel-kali th button{width:100%;min-height:40px;padding:0;border:0;border-radius:0;box-shadow:none;background:transparent;font-weight:800;font-size:14px;color:var(--ink)}.tabel-kali tr.sel td,.tabel-kali tr.sel th{background:var(--aksen);color:var(--aksen-teks)}.tabel-kali tr.sel th button{color:var(--aksen-teks)}.daftar-kali{margin:0;padding:0;list-style:none}.daftar-kali li{display:flex;justify-content:space-between;padding:8px 0;border-top:2px dashed var(--lembut);font-size:18px}.daftar-kali li:first-child{border-top:0}.daftar-kali b{font-weight:800}
 .pilih-besar{display:grid;gap:12px}
 .pilih-besar button{min-height:72px;text-align:left;padding:10px 16px;border-radius:var(--radius);border:2px solid var(--garis);background:var(--kartu);box-shadow:var(--bayang);display:flex;flex-direction:column;gap:2px}
 .pilih-besar b{font-size:20px}
@@ -287,6 +288,7 @@ button[aria-pressed="true"][data-a="tkaRagu"]{background:var(--emas);color:#101B
 <script src="js/materi.js"></script>
 <script src="js/sekolah.js"></script>
 <script src="js/hitung.js"></script>
+<script src="js/dasar.js"></script>
 <script src="js/cerita.js"></script>
 <script src="js/gambar.js"></script>
 <script src="js/kelas7b.js"></script>
@@ -376,7 +378,7 @@ function render() {
   const peta = {
     '': layarBeranda, beranda: layarBeranda, topik: layarTopik, belajar: layarBelajar, latihan: layarLatihan, progres: layarProgres,
     pengaturan: layarPengaturan, profilbaru: layarProfilBaru, ganti: layarGanti, ubah: layarUbah, naik: layarNaik, cadangan: layarCadangan,
-    laporan: layarLaporan, ortu: layarOrtu, riwayat: layarRiwayat, tentang: layarTentang, pulih: layarPulih, tka: layarTKA, tkasesi: layarTKASesi, tkahasil: layarTKAHasil
+    laporan: layarLaporan, ortu: layarOrtu, riwayat: layarRiwayat, tentang: layarTentang, pulih: layarPulih, tka: layarTKA, tabel: layarTabel, tkasesi: layarTKASesi, tkahasil: layarTKAHasil
   };
   (peta[r.nama] || layarBeranda)(r.arg);
 }
@@ -451,6 +453,7 @@ function layarBeranda() {
     (lanjut.length ? '<div class="kecil tebal" style="margin-bottom:8px">Matematika Umum</div>' : '') + umum.map(barisM).join('') +
     (lanjut.length ? '<div class="kecil tebal" style="margin:14px 0 8px">Tingkat Lanjut</div>' + lanjut.map(barisM).join('') : '') +
     '<div class="bagian-judul"><h2>Hitung Cepat</h2><span class="kecil">Semua kelas</span></div><div class="ubin">' + ubin + '</div>' +
+    '<button class="baris-topik" data-a="pergi" data-r="tabel/kali"><span class="kode" style="min-width:52px">Tabel</span><span class="isi"><div class="jdl">Tabel bantu</div><div class="meta">Perkalian, pangkat, dan cara cepat. Boleh dibuka kapan saja.</div></span></button>' +
     '<div class="bagian-judul"><h2>Simulasi TKA</h2><span class="kecil">SMP, SMA, SMK, UTBK</span></div><button class="baris-topik" data-a="pergi" data-r="tka"><span class="kode" style="min-width:52px">TKA</span><span class="isi"><div class="jdl">Tes Kemampuan Akademik</div><div class="meta">' + ((pr.tka && pr.tka[0]) ? 'Terakhir: ' + esc(CP.TKA[pr.tka[0].jenjang].nama) + ', skor ' + pr.tka[0].skor : 'Simulasi penuh dan latihan per elemen') + '</div></span></button>' +
     (pr.riwayatKelas.length ? '<div class="gap3"></div><button class="btn kecil-btn" data-a="pergi" data-r="riwayat">Lihat kelas sebelumnya</button>' : ''), { nav: 'beranda' });
   if (window.__streakNaik) { const s = $('#strk'); if (s) s.classList.add('naik'); window.__streakNaik = false; }
@@ -553,7 +556,7 @@ function layarTopik(id) {
   }
   const r = rec(id), L = m.level[r.level - 1], a = CP.akurasiTujuhHari(r, hariIni());
   const bw = m.batasWaktu ? '<div class="info" style="margin-top:12px">Ada batas waktu tiap soal. Jika waktu habis, soal dihitung salah.</div>' : '';
-  tampil(atasSub(m.judul) + '<div class="kartu"><div class="baris" style="align-items:center"><span class="chip aksen">' + esc(m.id) + '</span>' + pips(r.level) + '</div><div class="gap2"></div><h3>Level ' + r.level + ': ' + esc(L.judul) + '</h3><p class="kecil" style="margin-top:4px">Contoh: ' + fmt(L.isi) + '</p><div class="statistik" style="margin-top:12px"><div class="kartu"><b>' + (a ? a.persen + '%' : '-') + '</b><span class="kecil">Akurasi 7 hari</span></div><div class="kartu"><b>' + (r.n ? waktuStr(r.detik / r.n) : '-') + '</b><span class="kecil">Waktu rata-rata</span></div></div>' + bw + '</div><div class="gap"></div><button class="btn utama" data-a="pergi" data-r="latihan/' + esc(id) + '">' + svgI('kilat') + 'Latihan ' + K.soalPerSesi + ' soal</button><div class="gap2"></div><button class="btn" data-a="pergi" data-r="belajar/' + esc(id) + '">' + svgI('buku') + 'Belajar dulu</button>', { nav: 'beranda' });
+  tampil(atasSub(m.judul) + '<div class="kartu"><div class="baris" style="align-items:center"><span class="chip aksen">' + esc(m.id) + '</span>' + pips(r.level) + '</div><div class="gap2"></div><h3>Level ' + r.level + ': ' + esc(L.judul) + '</h3><p class="kecil" style="margin-top:4px">Contoh: ' + fmt(L.isi) + '</p><div class="statistik" style="margin-top:12px"><div class="kartu"><b>' + (a ? a.persen + '%' : '-') + '</b><span class="kecil">Akurasi 7 hari</span></div><div class="kartu"><b>' + (r.n ? waktuStr(r.detik / r.n) : '-') + '</b><span class="kecil">Waktu rata-rata</span></div></div>' + bw + '</div><div class="gap"></div><button class="btn utama" data-a="pergi" data-r="latihan/' + esc(id) + '">' + svgI('kilat') + 'Latihan ' + K.soalPerSesi + ' soal</button><div class="gap2"></div><button class="btn" data-a="pergi" data-r="belajar/' + esc(id) + '">' + svgI('buku') + 'Belajar dulu</button><div class="gap2"></div><button class="btn kecil-btn" data-a="pergi" data-r="tabel/kali">Tabel bantu perkalian dan pangkat</button>', { nav: 'beranda' });
 }
 
 /* ====================== KOMPONEN JAWAB (keypad / pilihan) ====================== */
@@ -880,6 +883,30 @@ function layarPulih() {
   pasangBerkas();
 }
 
+/* ====================== LAYAR: TABEL BANTU ====================== */
+let tabelN = 7, tabelB = 6;
+const TRIK_KALI = { 1: 'Hasilnya sama dengan angka itu sendiri.', 2: 'Dua kali lipat: angka + angka yang sama.', 3: 'Kali 2, lalu tambah satu kali lagi.', 4: 'Dua kali lipat, lalu dua kali lipat lagi.', 5: 'Setengah dari kali 10.', 6: 'Kali 5, lalu tambah satu kali lagi.', 7: 'Kali 5 ditambah kali 2.', 8: 'Kali 10 dikurangi kali 2.', 9: 'Kali 10 dikurangi satu kali.', 10: 'Tambahkan angka 0 di belakang.', 11: 'Untuk 1 sampai 9, tulis angkanya dua kali (7 × 11 = 77).', 12: 'Kali 10 ditambah kali 2.' };
+function layarTabel(arg) {
+  const mode = arg === 'pangkat' ? 'pangkat' : arg === 'trik' ? 'trik' : 'kali';
+  const pilihMode = '<div class="pilih-chip" style="margin-bottom:14px">' + [['kali', 'Perkalian'], ['pangkat', 'Pangkat'], ['trik', 'Cara cepat']].map((x) => '<button data-a="pergi" data-r="tabel/' + x[0] + '" aria-pressed="' + (mode === x[0]) + '">' + x[1] + '</button>').join('') + '</div>';
+  let isi = '';
+  if (mode === 'kali') {
+    const baris = [];
+    for (let i = 1; i <= 10; i++) { let t = '<tr' + (i === tabelN ? ' class="sel"' : '') + '><th scope="row"><button data-a="tabelN" data-n="' + i + '" aria-label="Tabel ' + i + '">' + i + '</button></th>'; for (let j = 1; j <= 10; j++) t += '<td>' + i * j + '</td>'; baris.push(t + '</tr>'); }
+    let kepala = '<tr><th></th>'; for (let j = 1; j <= 10; j++) kepala += '<th>' + j + '</th>';
+    const n = tabelN, daftar = []; for (let j = 1; j <= 12; j++) daftar.push('<li><span>' + n + ' × ' + j + '</span><b>' + n * j + '</b></li>');
+    isi = '<div class="kartu" style="padding:10px"><p class="kecil" style="margin:0 0 8px">Ketuk angka di kolom kiri untuk melihat tabelnya.</p><table class="tabel-kali">' + kepala + '</tr>' + baris.join('') + '</table></div><div class="gap"></div><div class="kartu"><h3>Tabel ×' + n + '</h3><div class="info" style="margin:8px 0">Cara mengingat: ' + esc(TRIK_KALI[n]) + '</div><ul class="daftar-kali">' + daftar.join('') + '</ul></div>';
+  } else if (mode === 'pangkat') {
+    const a = tabelB, baris = []; let x = 1;
+    for (let k = 1; k <= 9; k++) { const y = x * a; baris.push('<li><span>' + a + CP.sup(k) + (k > 1 ? '<span class="kecil"> = ' + CP.angka(x) + ' × ' + a + '</span>' : '') + '</span><b>' + CP.angka(y) + '</b></li>'); x = y; }
+    isi = '<div class="kartu"><h3>Pilih bilangan pokok</h3><div class="pilih-chip" style="margin-top:8px">' + [2, 3, 4, 5, 6, 7, 8, 9, 10].map((b) => '<button data-a="tabelB" data-b="' + b + '" aria-pressed="' + (b === a) + '">' + b + '</button>').join('') + '</div></div><div class="gap"></div><div class="kartu"><h3>Pangkat dari ' + a + '</h3><div class="info" style="margin:8px 0">Tiap baris adalah baris di atasnya dikali ' + a + '. Tidak perlu menghafal.</div><ul class="daftar-kali">' + baris.join('') + '</ul></div>';
+  } else {
+    const kartu = [['×2, ×5, ×10', 'Kali 2 = dua kali lipat. Kali 10 = tambah angka 0. Kali 5 = setengah dari kali 10.'], ['×3 dan ×4', 'Kali 3 = kali 2 lalu tambah satu kali lagi. Kali 4 = dua kali lipat dua kali.'], ['×9 dan ×11', 'Kali 9 = kali 10 dikurangi satu kali. Kali 11 (angka 1 sampai 9) = tulis angkanya dua kali.'], ['×6, ×7, ×8', 'Kali 6 = kali 5 + satu kali. Kali 7 = kali 5 + kali 2. Kali 8 = kali 10 − kali 2.'], ['Kali bilangan besar', 'Pecah jadi puluhan dan satuan. 47 × 6 = 40 × 6 + 7 × 6 = 240 + 42 = 282.'], ['Pangkat', 'Kali satu per satu. 6⁴: 6, lalu 6 × 6 = 36, lalu 36 × 6 = 216, lalu 216 × 6 = 1.296. Tiap langkah hanya kali 6.']];
+    isi = kartu.map((k) => '<div class="kartu" style="margin-bottom:12px"><h3>' + esc(k[0]) + '</h3><p style="margin:6px 0 0">' + esc(k[1]) + '</p></div>').join('') + '<button class="btn utama" data-a="pergi" data-r="topik/H0">Latihan Dasar Perkalian</button>';
+  }
+  tampil(atasSub('Tabel bantu', 'beranda') + pilihMode + isi, { nav: 'beranda' });
+}
+
 /* ====================== AKSI ====================== */
 function setGalat(t) { const g = $('#gal'); if (g) g.textContent = t; }
 const AKSI = {
@@ -949,6 +976,8 @@ const AKSI = {
     if (h.galat) return setGalat(h.galat);
     CP.terimaLaporan(data, h.lap, hariIni()); simpan(); toast('Laporan ' + h.lap.u + ' tersimpan'); layarOrtu();
   },
+  tabelN(d) { tabelN = +d.n; layarTabel('kali'); },
+  tabelB(d) { tabelB = +d.b; layarTabel('pangkat'); },
   tkaMulai(d) { tkaMulai(d.j, d.mode, d.e || ''); },
   tkaKey(d) { const k = d.k, it = tka.items[tka.i]; if (!it || it.tipe !== 'isian') return; let v = String(tka.jaw[tka.i] || ''); if (k === 'hapus') v = v.slice(0, -1); else if (k === 'C') v = ''; else if (k === '-') { if (v === '') v = '-'; } else if (/^[0-9]$/.test(k) && v.replace('-', '').length < 9) v += k; tka.jaw[tka.i] = v === '' ? null : v; tkaTampil(); },
   tkaPilih(d) { tka.jaw[tka.i] = +d.k; tkaTampil(); },
