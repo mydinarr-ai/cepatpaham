@@ -803,7 +803,7 @@ function layarPengaturan() {
     item('ubah', 'Ubah profil', 'Username, jenjang, kelas, Tingkat Lanjut', 'orang') + item('naik', 'Naik kelas', 'Pindah ke kelas berikutnya, progres lama tetap ada', 'panah') + item('ganti', 'Ganti profil', 'Satu HP boleh punya beberapa profil', 'orang') +
     (pr.riwayatKelas.length ? item('riwayat', 'Kelas sebelumnya', 'Lihat progres kelas lama', 'buku') : '') +
     item('laporan', 'Kirim laporan ke orang tua', 'Ringkasan + kode untuk WhatsApp', 'salin') + item('ortu', 'Mode Orang Tua', 'Baca laporan anak (dilindungi PIN)', 'kunci') +
-    item('cadangan', 'Cadangkan data', 'Pindah HP atau simpan cadangan', 'salin') + item('tentang', 'Tentang aplikasi', K.nama + ' versi ' + K.versiApp, 'bintang'), { nav: 'pengaturan' });
+    item('cadangan', 'Pindah HP dan cadangan', 'Kirim, simpan, atau gabungkan data', 'salin') + item('tentang', 'Tentang aplikasi', K.nama + ' versi ' + K.versiApp, 'bintang'), { nav: 'pengaturan' });
 }
 function layarGanti() {
   const pr = profilAktif();
@@ -866,12 +866,18 @@ function layarPin() {
   tampil(atasSub('Mode Orang Tua', 'pengaturan') + '<div class="kartu tengah"><div style="width:44px;margin:0 auto">' + svgI('kunci') + '</div><h3>' + judul + '</h3><p class="kecil">' + (baru ? 'PIN ini melindungi laporan anak di HP ini.' : '') + '</p><div class="pin-titik">' + [0, 1, 2, 3].map((i) => '<i class="' + (i < pinBuf.length ? 'on' : '') + '"></i>').join('') + '</div><div id="gal" class="galat"></div></div><div class="gap"></div><div class="kp" style="max-width:340px;margin:0 auto">' +
     [1, 2, 3].map((d) => '<button data-a="pinKey" data-v="' + d + '">' + d + '</button>').join('') + '<button class="fn" data-a="pinKey" data-v="hapus" aria-label="Hapus">&#9003;</button>' + [4, 5, 6].map((d) => '<button data-a="pinKey" data-v="' + d + '">' + d + '</button>').join('') + '<span></span>' + [7, 8, 9].map((d) => '<button data-a="pinKey" data-v="' + d + '">' + d + '</button>').join('') + '<span></span><span></span><button data-a="pinKey" data-v="0">0</button><span></span><span></span></div>', { nav: 'pengaturan' });
 }
+function pasangBerkas() {
+  const f = $('#cadBerkas'); if (!f) return;
+  f.onchange = () => { const b = f.files && f.files[0]; if (!b) return; if (b.size > 5000000) { setGalat('Berkas terlalu besar.'); return; } const r = new FileReader(); r.onload = () => { $('#cadTempel').value = String(r.result || ''); toast('Berkas dibaca. Pilih Gabungkan atau Timpa.'); }; r.onerror = () => setGalat('Berkas tidak bisa dibaca.'); r.readAsText(b); };
+}
 function layarCadangan() {
   const kode = CP.buatCadangan(data);
-  tampil(atasSub('Cadangkan data', 'pengaturan') + '<div class="kartu"><h3>1. Salin data</h3><p class="kecil">Simpan kodenya di tempat aman (misalnya catatan WhatsApp ke diri sendiri). Jangan membagikannya ke orang lain.</p><textarea id="cadKode" readonly rows="5">' + esc(kode) + '</textarea><div class="gap2"></div><button class="btn utama" data-a="salinCad">' + svgI('salin') + 'Salin data</button></div><div class="gap"></div><div class="kartu"><h3>2. Tempel data</h3><p class="kecil">Untuk memulihkan atau pindah HP. <b>Ini menimpa semua data di HP ini.</b></p><textarea id="cadTempel" rows="4" placeholder="Tempel kode yang diawali CPB1:"></textarea><div id="gal" class="galat"></div><div class="gap2"></div><button class="btn" data-a="pulihkan">Tempel data</button></div>', { nav: 'pengaturan' });
+  tampil(atasSub('Pindah HP dan cadangan', 'pengaturan') + '<div class="info" style="margin-bottom:14px">Tanpa akun dan tanpa server: data pindah lewat kode atau berkas. Cocok untuk pindah HP, atau menyamakan data HP anak dan HP orang tua. Jangan bagikan kodenya ke orang lain.</div><div class="kartu"><h3>1. Kirim data dari HP ini</h3><p class="kecil">Kirim ke diri sendiri lewat WhatsApp, atau simpan sebagai berkas.</p><textarea id="cadKode" readonly rows="3">' + esc(kode) + '</textarea><div class="gap2"></div><button class="btn utama" data-a="kirimCad">' + svgI('salin') + 'Kirim lewat aplikasi lain</button><div class="gap2"></div><div class="baris"><button class="btn" data-a="salinCad">Salin kode</button><button class="btn" data-a="unduhCad">Simpan berkas</button></div></div><div class="gap"></div><div class="kartu"><h3>2. Terima data di HP ini</h3><p class="kecil">Tempel kode, atau pilih berkas dari HP lain.</p><textarea id="cadTempel" rows="3" placeholder="Tempel kode yang diawali CPB1:"></textarea><div class="gap2"></div><label class="btn" style="display:block;text-align:center;cursor:pointer">Pilih berkas<input id="cadBerkas" type="file" accept=".txt,.cepatpaham,text/plain" style="display:none"></label><div id="gal" class="galat"></div><div class="gap2"></div><button class="btn utama" data-a="gabungkan">Gabungkan dengan data di HP ini</button><p class="kecil" style="margin:4px 0 10px">Aman: tidak ada yang dihapus. Untuk tiap bab dipakai catatan yang soalnya paling banyak.</p><button class="btn" data-a="pulihkan">Timpa semua data di HP ini</button></div>', { nav: 'pengaturan' });
+  pasangBerkas();
 }
 function layarPulih() {
-  tampil(atasSub('Pulihkan dari cadangan', profilAktif() ? 'pengaturan' : 'mulai') + '<div class="kartu"><p class="kecil">Tempel kode cadangan (diawali CPB1:) dari HP lama.</p><textarea id="cadTempel" rows="5"></textarea><div id="gal" class="galat"></div><div class="gap2"></div><button class="btn utama" data-a="pulihkan">Pulihkan</button></div>', { tanpaNav: true });
+  tampil(atasSub('Pulihkan dari cadangan', profilAktif() ? 'pengaturan' : 'mulai') + '<div class="kartu"><p class="kecil">Tempel kode cadangan (diawali CPB1:) dari HP lama, atau pilih berkas cadangan.</p><textarea id="cadTempel" rows="5"></textarea><div class="gap2"></div><label class="btn" style="display:block;text-align:center;cursor:pointer">Pilih berkas<input id="cadBerkas" type="file" accept=".txt,.cepatpaham,text/plain" style="display:none"></label><div id="gal" class="galat"></div><div class="gap2"></div><button class="btn utama" data-a="pulihkan">Pulihkan</button></div>', { tanpaNav: true });
+  pasangBerkas();
 }
 
 /* ====================== AKSI ====================== */
@@ -913,6 +919,9 @@ const AKSI = {
     });
   },
   salinLap() { salin($('#lapTeks').value, $('#lapTeks')); },
+  kirimCad() { const kode = $('#cadKode').value, t = 'Cadangan CepatPaham (' + hariIni() + ')' + String.fromCharCode(10) + kode; if (navigator.share) navigator.share({ title: 'Cadangan CepatPaham', text: t }).catch(() => {}); else salin(kode, $('#cadKode')); },
+  unduhCad() { try { const b = new Blob([$('#cadKode').value], { type: 'text/plain' }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'cepatpaham-cadangan-' + hariIni() + '.txt'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('Berkas disimpan'); } catch (e) { toast('Tidak bisa menyimpan berkas. Pakai Salin kode.'); } },
+  gabungkan() { const h = CP.pulihkan(($('#cadTempel').value || '')); if (h.galat) return setGalat(h.galat); try { data = CP.gabung(data, h.data); simpanan.mem = data; simpan(); ortuAman = false; setTema(); toast('Data digabung: ' + Object.keys(data.profil).length + ' profil'); pergi('beranda'); } catch (e) { setGalat('Data tidak bisa digabung.'); } },
   salinCad() { salin($('#cadKode').value, $('#cadKode')); },
   pulihkan() {
     const h = CP.pulihkan(($('#cadTempel').value || ''));

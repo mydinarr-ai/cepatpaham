@@ -604,6 +604,33 @@ bagian('8. Cadangan');
 }
 
 /* ---------- 9. Simulasi TKA ---------- */
+bagian('8b. Gabung data dari HP lain');
+{
+  const A = CP.dataBaru(), B = CP.dataBaru();
+  const pa = CP.buatProfil(A, { username: 'rani', jenjang: 'SMP', kelas: 'VII', tl: false });
+  const pb = CP.buatProfil(B, { username: 'rani', jenjang: 'SMP', kelas: 'VII', tl: false });
+  CP.buatProfil(B, { username: 'adik', jenjang: 'SMA', kelas: 'X', tl: false });
+  pa.topik['VII-1'] = { level: 2, riwayat: [], n: 10, b: 8, detik: 100, harian: {}, salah: [] };
+  pb.topik['VII-1'] = { level: 4, riwayat: [], n: 30, b: 25, detik: 300, harian: {}, salah: [] };
+  pa.topik['VII-2'] = { level: 3, riwayat: [], n: 40, b: 30, detik: 300, harian: {}, salah: [] };
+  pb.topik['H1'] = { level: 1, riwayat: [], n: 5, b: 5, detik: 20, harian: {}, salah: [] };
+  CP.catatSesi(pa, { modul: 'VII-2', n: 10, b: 8, level: 3 }, '2026-10-10');
+  CP.catatSesi(pb, { modul: 'VII-1', n: 10, b: 9, level: 4 }, '2026-10-12');
+  pb.tka = [{ tgl: '2026-10-11', jenjang: 'SMA', mode: 'simulasi', n: 25, b: 10, skor: 40, detik: 100, per: {} }];
+  const salinA = JSON.stringify(A), salinB = JSON.stringify(B);
+  const G = CP.gabung(A, B);
+  cek(JSON.stringify(A) === salinA && JSON.stringify(B) === salinB, 'gabung tidak mengubah data asli');
+  cek(Object.keys(G.profil).sort().join() === 'adik,rani', 'gabung: profil dari kedua HP ada');
+  cek(G.profil.rani.topik['VII-1'].n === 30 && G.profil.rani.topik['VII-2'].n === 40 && G.profil.rani.topik['H1'].n === 5, 'gabung: catatan dengan soal terbanyak dipakai per bab');
+  cek(G.profil.rani.sesi.length === 2 && G.profil.rani.sesi[0].tgl === '2026-10-12', 'gabung: sesi digabung, terbaru di depan');
+  cek(G.profil.rani.hariSesi['2026-10-10'] === 1 && G.profil.rani.hariSesi['2026-10-12'] === 1, 'gabung: hari sesi digabung');
+  cek(G.profil.rani.tka.length === 1, 'gabung: riwayat TKA digabung');
+  const G2 = CP.gabung(G, B); cek(JSON.stringify(G2.profil.rani.topik) === JSON.stringify(G.profil.rani.topik) && G2.profil.rani.sesi.length === 2, 'gabung dua kali tidak menggandakan');
+  const Z = CP.dataBaru(); CP.buatProfil(Z, { username: 'rani', jenjang: 'SMP', kelas: 'VIII', tl: false }); Z.profil.rani.riwayatKelas = [{ jenjang: 'SMP', kelas: 'VII', tl: false, sampai: '2026-10-01' }];
+  cek(CP.gabung(A, Z).profil.rani.kelas === 'VIII', 'gabung: kelas yang lebih maju dipakai');
+  const rt = CP.pulihkan(CP.buatCadangan(G)); cek(!rt.galat && Object.keys(CP.gabung(CP.dataBaru(), rt.data).profil).length === 2, 'gabung ke data kosong');
+}
+
 bagian('9. Simulasi TKA (SMP, SMA, SMK)');
 {
   // pengubah soal angka -> pilihan ganda, pada banyak soal acak dari semua modul aktif

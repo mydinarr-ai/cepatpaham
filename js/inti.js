@@ -7,7 +7,7 @@
   CP.KONFIG = {
     nama: 'CepatPaham',
     tagline: 'Hitung cepat. Paham konsep.',
-    versiApp: '1.12.0',
+    versiApp: '1.13.0',
     versiData: 1,
     kunciSimpan: 'cepatpaham:data',
     soalPerSesi: 10,
@@ -467,6 +467,31 @@
       if (!o || typeof o !== 'object' || typeof o.profil !== 'object') return { galat: 'Kode cadangan tidak valid.' };
       return { data: CP.migrasi(o) };
     } catch (e) { return { galat: 'Kode cadangan rusak atau terpotong.' }; }
+  };
+
+  // gabungkan data dari HP lain ke data di HP ini tanpa menghapus apa pun: per modul dipakai catatan dengan jumlah soal terbanyak
+  CP.gabung = function (lokal, luar) {
+    const d = CP.migrasi(JSON.parse(JSON.stringify(lokal))), o = CP.migrasi(JSON.parse(JSON.stringify(luar)));
+    const tglAkhir = (p) => ((p.sesi && p.sesi[0] && p.sesi[0].tgl) || '');
+    const satukan = (a, b, cap) => { const ada = new Set(a.map((x) => JSON.stringify(x))); b.forEach((x) => { const k = JSON.stringify(x); if (!ada.has(k)) { ada.add(k); a.push(x); } }); a.sort((x, y) => (x.tgl < y.tgl ? 1 : x.tgl > y.tgl ? -1 : 0)); return a.slice(0, cap); };
+    Object.keys(o.profil).forEach((u) => {
+      const q = o.profil[u], p = d.profil[u];
+      if (!p) { d.profil[u] = q; return; }
+      Object.keys(q.topik || {}).forEach((id) => { const x = p.topik[id], y = q.topik[id]; if (!x || (y.n || 0) > (x.n || 0)) p.topik[id] = y; });
+      Object.keys(q.harian || {}).forEach((tg) => { const x = p.harian[tg], y = q.harian[tg]; if (!x || y.n > x.n) p.harian[tg] = y; });
+      Object.keys(q.hariSesi || {}).forEach((tg) => { p.hariSesi[tg] = Math.max(p.hariSesi[tg] || 0, q.hariSesi[tg]); });
+      const terbaruLuar = tglAkhir(q) > tglAkhir(p);
+      p.sesi = satukan(p.sesi || [], q.sesi || [], 20);
+      p.tka = satukan(p.tka || [], q.tka || [], 20);
+      if ((q.riwayatKelas || []).length > (p.riwayatKelas || []).length) { p.jenjang = q.jenjang; p.kelas = q.kelas; p.tl = q.tl; p.riwayatKelas = q.riwayatKelas; }
+      if (terbaruLuar && q.terakhir) p.terakhir = q.terakhir;
+      if (q.dibuat && (!p.dibuat || q.dibuat < p.dibuat)) p.dibuat = q.dibuat;
+    });
+    if (!d.ortu.pin && o.ortu.pin) d.ortu.pin = o.ortu.pin;
+    Object.keys(o.ortu.laporan).forEach((u) => { if (!d.ortu.laporan[u]) d.ortu.laporan[u] = o.ortu.laporan[u]; });
+    Object.keys(o).forEach((k) => { if (d[k] === undefined) d[k] = o[k]; });
+    if (!d.aktif || !d.profil[d.aktif]) d.aktif = Object.keys(d.profil)[0] || null;
+    return d;
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = CP;

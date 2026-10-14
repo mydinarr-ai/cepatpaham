@@ -131,3 +131,8 @@ Pemilik membagikan PDF "Soal TKA Matematika Wajib SMA/SMK" (contoh resmi 2025). 
 ## Simulasi UTBK-SNBT (v1.12.0)
 
 Tiga subtes hitungan ada di `CP.TKA.UTBK_PM`, `UTBK_PK`, `UTBK_PU` (js/tka.js). Angka dari halaman kerangka resmi SNPMB (snpmb.id/fr), dicek 2026-10-14: Penalaran Matematika 20 soal 42,5 menit; Penalaran Kuantitatif 10 soal 10 menit; Pengetahuan Kuantitatif 20 soal 20 menit. Bentuk soal: pilihan ganda 5 opsi, pilihan ganda kompleks, dan isian singkat (bilangan bulat, tipe `isian` dengan keypad sendiri). Soal tetap dibuat dari generator sendiri; tidak ada soal UTBK asli yang disalin. Jika SNPMB mengubah jumlah soal atau waktu, ubah angka di satu tempat itu (`CP.TKA.UTBK_*`). Bobot bentuk soal (`BENTUK_UTBK`) adalah perkiraan, bukan angka resmi.
+
+
+## Pindah HP dan gabung data (v1.13.0)
+
+Tanpa server. Menu Pengaturan > Pindah HP dan cadangan: kirim kode (Web Share), salin, simpan berkas .txt; terima lewat tempel kode atau pilih berkas, lalu **Gabungkan** (`CP.gabung`, tidak menghapus apa pun; per bab dipakai catatan dengan jumlah soal terbanyak, sesi dan riwayat TKA disatukan, kelas yang lebih maju menang) atau **Timpa** (cara lama). Akun online dan pembayaran sengaja belum dibuat (butuh server dan persetujuan orang tua untuk data anak).
