@@ -275,6 +275,51 @@
       contoh: { level: 3, seed: 5 }, cobaMaks: 3,
       kenapa: 'Logaritma adalah kebalikan pangkat: ia menjawab "dipangkatkan berapa?". Tanpa logaritma, kita sulit mencari waktu pada model pertumbuhan.'
     },
+    'XII-TL-1': {
+      konsep: [
+        { judul: 'Jarak dan titik pembagi', teks: 'Jarak A(x₁, y₁) ke B(x₂, y₂): d = √((x₂−x₁)² + (y₂−y₁)²).\nJika AP : PB = m : n maka P = (n·A + m·B) / (m + n).' },
+        { judul: 'Garis lurus', teks: 'Gradien melalui dua titik: m = (y₂−y₁)/(x₂−x₁). Garis sejajar punya gradien sama; garis tegak lurus punya m₁ × m₂ = −1.\nJarak titik (x₀, y₀) ke garis ax + by + c = 0 adalah |ax₀ + by₀ + c| / √(a² + b²).' },
+        { judul: 'Parabola dan elips', teks: 'Parabola y² = 4px: fokus (p, 0), direktriks x = −p.\nElips x²/a² + y²/b² = 1 dengan a > b: sumbu mayor 2a, fokus pada sumbu x berjarak c dari pusat dengan c² = a² − b².' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Geometri analitik mengubah bangun menjadi angka dan persamaan, sehingga jarak, titik tengah, dan garis bisa dihitung tanpa menggambar.'
+    },
+    'XII-TL-2': {
+      konsep: [
+        { judul: 'Limit dan substitusi', teks: 'lim x→a f(x) adalah nilai yang didekati f(x) saat x mendekati a. Jika substitusi langsung memberi angka, itulah limitnya.\nJika memberi 0/0, faktorkan lalu coret faktor yang sama.' },
+        { judul: 'Limit tak hingga dan bentuk akar', teks: 'Untuk x → ∞, bandingkan pangkat tertinggi: sama → perbandingan koefisien; pembilang lebih rendah → 0.\nBentuk √ selisih: kalikan dengan sekawan.' },
+        { judul: 'Trigonometri dan kekontinuan', teks: 'lim sin(ax)/(bx) = a/b (juga untuk tan). lim (1 − cos ax)/x² = a²/2.\nFungsi kontinu di a jika lim f(x) = f(a); gunakan ini untuk mencari konstanta yang membuat grafik tidak putus.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Limit menjawab "ke mana nilai ini menuju?" walau nilainya di titik itu tidak ada. Itulah dasar dari turunan dan integral.'
+    },
+    'XII-TL-3': {
+      konsep: [
+        { judul: 'Aturan turunan', teks: 'Turunan axⁿ adalah n·axⁿ⁻¹.\nHasil kali: (uv)′ = u′v + uv′. Hasil bagi: (u/v)′ = (u′v − uv′)/v².\nAturan rantai: (px + q)ⁿ memiliki turunan n·p·(px + q)ⁿ⁻¹.' },
+        { judul: 'Garis singgung', teks: 'Gradien garis singgung di x₀ adalah f′(x₀). Persamaannya y − y₀ = m(x − x₀).' },
+        { judul: 'Nilai ekstrem dan optimasi', teks: 'Titik stasioner: f′(x) = 0. Jika f″ < 0 maksimum lokal, jika f″ > 0 minimum lokal.\nOptimasi: buat rumus besaran yang dicari dalam satu variabel, turunkan, samakan dengan 0.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Turunan adalah laju perubahan. Saat laju berubah dari naik menjadi turun (turunan 0), di situlah nilai terbesar atau terkecil.'
+    },
+    'XII-TL-4': {
+      konsep: [
+        { judul: 'Integral tak tentu dan tentu', teks: '∫ axⁿ dx = a/(n+1) · xⁿ⁺¹ + C.\nIntegral tentu: ∫ dari a sampai b f(x) dx = F(b) − F(a), dengan F antiturunan f.' },
+        { judul: 'Luas dan volume', teks: 'Luas daerah di bawah kurva di atas sumbu x = ∫ f(x) dx.\nVolume benda putar mengelilingi sumbu x: V = π ∫ [f(x)]² dx.' },
+        { judul: 'Dari kecepatan ke jarak', teks: 'Jarak yang ditempuh = integral kecepatan terhadap waktu: s = ∫ v(t) dt.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Integral menjumlahkan potongan yang sangat kecil. Kalau luas persegi panjang dipotong sangat tipis dan dijumlah, hasilnya luas di bawah kurva.'
+    },
+    'XII-TL-5': {
+      konsep: [
+        { judul: 'Peluang gabungan dan bersyarat', teks: 'P(A∪B) = P(A) + P(B) − P(A∩B).\nPeluang A diketahui B sudah terjadi: P(A|B) = n(A∩B)/n(B).' },
+        { judul: 'Binomial', teks: 'Percobaan diulang n kali, peluang sukses p. E(X) = np, Var(X) = np(1−p).\nUntuk p = ½: P(X = k) = C(n, k) / 2ⁿ.' },
+        { judul: 'Normal dan penyebaran data', teks: 'Aturan empiris distribusi normal: 68% data dalam μ ± σ, 95% dalam μ ± 2σ.\nRagam = rata-rata kuadrat simpangan dari rata-rata; simpangan baku = akar ragam; jangkauan = terbesar − terkecil.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Rata-rata saja tidak cukup. Dua kelas bisa sama rata-ratanya tetapi sebaran nilainya berbeda; ragam dan simpangan baku mengukur sebaran itu.'
+    },
     'XII-1': {
       konsep: [
         { judul: 'Translasi dan refleksi grafik', teks: 'Grafik y = f(x) digeser a ke kanan dan b ke atas menjadi y = f(x \u2212 a) + b.\nRefleksi terhadap sumbu x: y = \u2212f(x). Terhadap sumbu y: y = f(\u2212x).' },
