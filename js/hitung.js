@@ -30,7 +30,7 @@
       const v = op === '+' ? (pa + pb) + (sa + sb) : (pa - pb) + (sa - sb);
       return S.angka(F(a) + ' ' + (op === '+' ? '+' : MIN) + ' ' + F(b) + ' = …', op === '+' ? a + b : a - b, { jenis: op === '+' ? 'tambah' : 'kurang', langkah: [
         st('Pisahkan puluhan dan satuan: ' + a + ' = ' + pa + ' + ' + sa + ' dan ' + b + ' = ' + pb + ' + ' + sb + '.'),
-        st('Puluhan: ' + pa + (op === '+' ? ' + ' : ' − ') + pb + ' = ' + (op === '+' ? pa + pb : pa - pb) + '. Satuan: ' + sa + (op === '+' ? ' + ' : ' − ') + sb + ' = ' + (op === '+' ? sa + sb : sa - sb) + '.'),
+        st('Puluhan: ' + pa + (op === '+' ? ' + ' : ' − ') + pb + ' = ' + (op === '+' ? pa + pb : pa - pb) + '. Satuan: ' + sa + (op === '+' ? ' + ' : ' − ') + sb + ' = ' + (op === '+' ? sa + sb : sa - sb) + '.', undefined, op === '+' ? CP.vGaris([a, a + pb, a + pb + sb], ['+' + pb, '+' + sb]) : CP.vGaris([a, a - pb, a - pb - sb], ['−' + pb, '−' + sb])),
         st('Gabungkan: ' + v + '.', v)] });
     });
   h1[1] = lv('Perkalian 1 digit × 2 digit', '7 × 46 = 322', 'angka',
@@ -39,7 +39,7 @@
       const t = b - (b % 10), s = b % 10; const v = a * t + a * s;
       return S.angka(a + ' × ' + b + ' = …', a * b, { jenis: 'kali1', langkah: [
         st('Pecah ' + b + ' = ' + t + ' + ' + s + '.'),
-        st(a + ' × ' + t + ' = ' + (a * t) + ' dan ' + a + ' × ' + s + ' = ' + (a * s) + '.'),
+        st(a + ' × ' + t + ' = ' + (a * t) + ' dan ' + a + ' × ' + s + ' = ' + (a * s) + '.', undefined, CP.vKotak([{ v: t }, { v: s }], [{ v: a }])),
         st('Jumlahkan: ' + (a * t) + ' + ' + (a * s) + ' = ' + F(v) + '.', v)] });
     });
   h1[2] = lv('Operasi bilangan bulat negatif', '−47 + 25 = −22', 'angka',
@@ -85,7 +85,7 @@
       else if (a === 40) { t = b + ' × 4 = ' + (b * 4) + ', lalu × 10 = ' + (b * 40) + '.'; v = b * 4 * 10; }
       else { t = b + ' × 100 = ' + (b * 100) + ', lalu ÷ 2 = ' + (b * 50) + '.'; v = (b * 100) / 2; dibagi = [{ a: b * 100, b: 2 }]; }
       const s = S.angka(a + ' × ' + b + ' = …', a * b, { jenis: 'ramah' + a, langkah: [
-        st('Bilangan ' + a + ' itu ramah: pecah menjadi langkah mudah.'), st(t), st('Hasilnya ' + F(v) + '.', v)] });
+        st('Bilangan ' + a + ' itu ramah: pecah menjadi langkah mudah.'), st(t, undefined, a === 11 ? CP.vKotak([{ v: 10 }, { v: 1 }], [{ v: b }]) : a === 12 ? CP.vKotak([{ v: 10 }, { v: 2 }], [{ v: b }]) : undefined), st('Hasilnya ' + F(v) + '.', v)] });
       if (dibagi) s.dibagi = dibagi;
       return s;
     });
@@ -120,13 +120,13 @@
         const x = dekat, lingkar = x + e, v1 = lingkar + b, v2 = v1 - e;
         return S.angka(x + ' + ' + b + ' = …', x + b, { jenis: 'bulat+', langkah: [
           st('Bulatkan ' + x + ' menjadi ' + lingkar + ' (kelebihan ' + e + ').'),
-          st(lingkar + ' + ' + b + ' = ' + v1 + '.'), st('Kurangi kelebihannya: ' + v1 + ' − ' + e + ' = ' + v2 + '.', v2)] });
+          st(lingkar + ' + ' + b + ' = ' + v1 + '.', undefined, CP.vGaris([x, lingkar, v1, v2], ['+' + e, '+' + b, '−' + e])), st('Kurangi kelebihannya: ' + v1 + ' − ' + e + ' = ' + v2 + '.', v2)] });
       }
       const x = 10 * t + b + 10; const y = dekat; const lingkar = y + e;
       const v1 = x - lingkar, v2 = v1 + e;
       return S.angka(x + ' − ' + y + ' = …', x - y, { jenis: 'bulat-', langkah: [
         st('Bulatkan ' + y + ' menjadi ' + lingkar + ' (kelebihan ' + e + ').'),
-        st(x + ' − ' + lingkar + ' = ' + v1 + '.'), st('Kurangi terlalu banyak, jadi tambahkan ' + e + ': ' + v1 + ' + ' + e + ' = ' + v2 + '.', v2)] });
+        st(x + ' − ' + lingkar + ' = ' + v1 + '.', undefined, CP.vGaris([x, v1, v2], ['−' + lingkar, '+' + e])), st('Kurangi terlalu banyak, jadi tambahkan ' + e + ': ' + v1 + ' + ' + e + ' = ' + v2 + '.', v2)] });
     });
   h2[1] = lv('Pecah angka', '46 × 7 = 280 + 42 = 322', 'angka',
     (r) => { let a; do { a = r.bulat(12, 99); } while (a % 10 === 0); return { a, b: r.bulat(3, 9) }; },
@@ -134,7 +134,7 @@
       const t = a - (a % 10), s = a % 10, v = t * b + s * b;
       return S.angka(a + ' × ' + b + ' = …', a * b, { jenis: 'pecah', langkah: [
         st('Pecah ' + a + ' menjadi ' + t + ' + ' + s + '.'),
-        st(t + ' × ' + b + ' = ' + (t * b) + ' dan ' + s + ' × ' + b + ' = ' + (s * b) + '.'),
+        st(t + ' × ' + b + ' = ' + (t * b) + ' dan ' + s + ' × ' + b + ' = ' + (s * b) + '.', undefined, CP.vKotak([{ v: t }, { v: s }], [{ v: b }])),
         st('Jumlahkan: ' + (t * b) + ' + ' + (s * b) + ' = ' + v + '.', v)] });
     });
   h2[2] = lv('Gandakan dan bagi dua', '25 × 18 = 50 × 9 = 450', 'angka',
@@ -181,7 +181,7 @@
       const u = n * (n + 1), x = 10 * n + 5;
       return S.angka(x + '² = …', x * x, { jenis: 'kuadrat5', langkah: [
         st('Bilangan ' + x + ' berakhiran 5. Kalikan angka depannya (' + n + ') dengan angka berikutnya (' + (n + 1) + '): ' + n + ' × ' + (n + 1) + ' = ' + u + '.'),
-        st('Tulis 25 di belakangnya: ' + u + '25.'), st('Hasilnya ' + F(u * 100 + 25) + '.', u * 100 + 25)] });
+        st('Tulis 25 di belakangnya: ' + u + '25.', undefined, CP.vGabung([{ t: n + ' × ' + (n + 1), v: u }, { t: 'tulis', v: '25' }], F(u * 100 + 25))), st('Hasilnya ' + F(u * 100 + 25) + '.', u * 100 + 25)] });
     });
   h4[1] = lv('Kali 11 untuk 2 digit', '48 × 11 = 4 | 12 | 8 = 528', 'angka',
     (r) => ({ x: r.bulat(1, 9), y: r.bulat(1, 9) }),
@@ -189,7 +189,7 @@
       const a = 10 * x + y, v = gabung([x, x + y, y]);
       return S.angka(a + ' × 11 = …', a * 11, { jenis: 'kali11', langkah: [
         st('Tulis angka depan ' + x + ', jumlah kedua angka ' + x + ' + ' + y + ' = ' + (x + y) + ', dan angka belakang ' + y + ': ' + x + ' | ' + (x + y) + ' | ' + y + '.'),
-        st(x + y >= 10 ? 'Jumlah tengah dua angka (' + (x + y) + '): tulis ' + ((x + y) % 10) + ', simpan 1 ke kiri.' : 'Tidak ada simpanan.'),
+        st(x + y >= 10 ? 'Jumlah tengah dua angka (' + (x + y) + '): tulis ' + ((x + y) % 10) + ', simpan 1 ke kiri.' : 'Tidak ada simpanan.', undefined, CP.vTetangga([x, y], [x, x + y, y], ['depan', x + '+' + y, 'belakang'])),
         st('Hasilnya ' + F(v) + '.', v)] });
     });
   h4[2] = lv('Puluhan sama, satuan berjumlah 10', '43 × 47 = 20 | 21 = 2.021', 'angka',
@@ -199,7 +199,7 @@
       return S.angka(a + ' × ' + b + ' = …', a * b, { jenis: 'puluhanSama', langkah: [
         st('Puluhan sama (' + t + ') dan satuan berjumlah 10 (' + u + ' + ' + (10 - u) + '). Bagian depan: ' + t + ' × ' + (t + 1) + ' = ' + dep + '.'),
         st('Bagian belakang: ' + u + ' × ' + (10 - u) + ' = ' + bel + ' (tulis dua angka: ' + dua(bel) + ').'),
-        st('Gabungkan: ' + dep + ' | ' + dua(bel) + ' = ' + F(v) + '.', v)] });
+        st('Gabungkan: ' + dep + ' | ' + dua(bel) + ' = ' + F(v) + '.', v, CP.vGabung([{ t: 'depan: ' + t + '×' + (t + 1), v: dep }, { t: 'belakang: ' + u + '×' + (10 - u), v: dua(bel) }], F(v)))] });
     });
   h4[3] = lv('Pengurangan dari 1000', '1000 − 673 = 327', 'angka',
     (r) => { let n; do { n = r.bulat(101, 999); } while (n % 10 === 0); return { n }; },
@@ -207,7 +207,7 @@
       const [h, t, u] = digit(n), v = (9 - h) * 100 + (9 - t) * 10 + (10 - u);
       return S.angka('1000 − ' + n + ' = …', 1000 - n, { jenis: 'dari1000', langkah: [
         st('Dua angka pertama dikurangkan dari 9, angka terakhir dari 10.'),
-        st('9 − ' + h + ' = ' + (9 - h) + ', 9 − ' + t + ' = ' + (9 - t) + ', 10 − ' + u + ' = ' + (10 - u) + '.'),
+        st('9 − ' + h + ' = ' + (9 - h) + ', 9 − ' + t + ' = ' + (9 - t) + ', 10 − ' + u + ' = ' + (10 - u) + '.', undefined, CP.vGabung([{ t: '9 − ' + h, v: 9 - h }, { t: '9 − ' + t, v: 9 - t }, { t: '10 − ' + u, v: 10 - u }], F(v))),
         st('Hasilnya ' + F(v) + '.', v)] });
     });
   h4[4] = lv('Perkalian dekat basis 100', '97 × 94 = 91 | 18 = 9.118', 'angka',
@@ -217,7 +217,7 @@
       return S.angka(a + ' × ' + b + ' = …', a * b, { jenis: 'basis100', langkah: [
         st(a + ' kurang ' + x + ' dari 100, ' + b + ' kurang ' + y + ' dari 100.'),
         st('Bagian depan: silang ' + a + ' − ' + y + ' = ' + dep + '. Bagian belakang: ' + x + ' × ' + y + ' = ' + bel + ' (dua angka: ' + dua(bel) + ').'),
-        st('Gabungkan: ' + dep + ' | ' + dua(bel) + ' = ' + F(v) + '.', v)] });
+        st('Gabungkan: ' + dep + ' | ' + dua(bel) + ' = ' + F(v) + '.', v, CP.vGabung([{ t: 'depan: ' + a + ' − ' + y, v: dep }, { t: 'belakang: ' + x + ' × ' + y, v: dua(bel) }], F(v)))] });
     });
   h4[5] = lv('Perkalian silang 2 digit × 2 digit', '48 × 42 = 2.016', 'angka',
     (r) => ({ a: r.bulat(11, 99), b: r.bulat(11, 99) }),
@@ -230,7 +230,7 @@
         st('Satuan: ' + a0 + ' × ' + b0 + ' = ' + u + ' → tulis ' + d0 + (c1 ? ', simpan ' + c1 : '') + '.'),
         st('Silang: ' + a1 + ' × ' + b0 + ' + ' + a0 + ' × ' + b1 + (c1 ? ' + ' + c1 : '') + ' = ' + m + ' → tulis ' + d1 + (c2 ? ', simpan ' + c2 : '') + '.'),
         st('Puluhan: ' + a1 + ' × ' + b1 + (c2 ? ' + ' + c2 : '') + ' = ' + h + '.'),
-        st('Gabungkan: ' + h + ' | ' + d1 + ' | ' + d0 + ' = ' + F(v) + '.', v)] });
+        st('Gabungkan: ' + h + ' | ' + d1 + ' | ' + d0 + ' = ' + F(v) + '.', v, CP.vGabung([{ t: 'ratusan', v: h }, { t: 'puluhan', v: d1 }, { t: 'satuan', v: d0 }], F(v)))] });
     });
   CP.aktifkan('H4', { level: h4 });
 
@@ -259,7 +259,7 @@
     const v = gabung(j.komp);
     const adaSimpan = j.komp.some((x) => x > 9);
     return S.angka(F(n) + ' × ' + k + ' = …', n * k, { jenis: 'kali' + k, langkah: [
-      st(j.teks), st(adaSimpan ? 'Jika hasil suatu posisi lebih dari 9, tulis satuannya dan simpan puluhannya ke kiri.' : 'Tidak ada simpanan.'),
+      st(j.teks, undefined, CP.vTetangga(d, j.komp, j.komp.map((_, i) => (k === 11 ? (i === 0 ? 'depan' : i === d.length ? 'satuan' : d[i - 1] + '+' + d[i]) : '2×' + (i === 0 ? 0 : d[i - 1]) + '+' + (i === d.length ? 0 : d[i]))))), st(adaSimpan ? 'Jika hasil suatu posisi lebih dari 9, tulis satuannya dan simpan puluhannya ke kiri.' : 'Tidak ada simpanan.'),
       st('Hasilnya ' + F(v) + '.', v)] });
   };
   const h5 = [];

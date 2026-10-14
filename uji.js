@@ -5,7 +5,7 @@ const path = require('path');
 const muat = (f) => require(path.join(__dirname, 'js', f));
 muat('inti.js'); muat('peta.js');
 if (fs.existsSync(path.join(__dirname, 'js', 'materi.js'))) muat('materi.js');
-muat('sekolah.js'); muat('hitung.js'); muat('dasar.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js'); muat('kelas9.js'); muat('kelas11.js'); muat('kelas12.js'); muat('kelas11tl.js'); muat('kelas12tl.js'); muat('tka.js');
+muat('sekolah.js'); muat('hitung.js'); muat('dasar.js'); muat('cerita.js'); muat('gambar.js'); muat('visual.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js'); muat('kelas9.js'); muat('kelas11.js'); muat('kelas12.js'); muat('kelas11tl.js'); muat('kelas12tl.js'); muat('tka.js');
 const CP = globalThis.CP;
 
 let lulus = 0, gagal = 0;
@@ -94,6 +94,21 @@ bagian('1b. Templat cerita H3 (>=12 umum, >=8 vokasi per jenis)');
 });
 
 /* ---------- 2. Contoh tabel (kasus tetap) ---------- */
+bagian('1c. Gambar bantu pada langkah dan kartu konsep');
+{
+  let nStep = 0, nKonsep = 0; const rngV = CP.buatRng(2468);
+  const okSvg = (g, id) => { let s = ''; try { s = CP.gambarSVG(g); } catch (e) { cek(false, id + ' gambar galat ' + e.message); return; } cek(/<svg/.test(s) && !/NaN|undefined|Infinity/.test(s), id + ' gambar tidak valid'); };
+  aktif.forEach((m) => {
+    for (let level = 1; level <= m.level.length; level++) for (let i = 0; i < Math.max(15, Math.floor(BANYAK / 20)); i++) {
+      const soal = m.generator(level, i % 2 ? 'vokasi' : 'umum', rngV);
+      soal.langkah.forEach((l, k) => { if (l.g) { nStep++; okSvg(l.g, m.id + ' L' + level + ' langkah ' + (k + 1)); } });
+    }
+  });
+  Object.keys(CP.MATERI).forEach((id) => (CP.MATERI[id].konsep || []).forEach((k) => (k.vis || []).forEach((v) => { nKonsep++; let g; try { g = Array.isArray(v) ? CP[v[0]].apply(null, v[1]) : v; } catch (e) { cek(false, id + ' vis galat ' + e.message); return; } okSvg(g, id + ' konsep "' + k.judul + '"'); })));
+  console.log('  langkah bergambar: ' + nStep + '; kartu konsep bergambar: ' + nKonsep);
+  cek(nStep > 100 && nKonsep >= 25, 'jumlah gambar bantu cukup');
+}
+
 bagian('2. Contoh tetap dari tabel spesifikasi');
 function contoh(id, level, param, jawaban, ket, konteks) {
   const m = CP.peta[id];

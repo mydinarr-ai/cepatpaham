@@ -349,54 +349,61 @@
     },
     H0: {
       konsep: [
-        { judul: 'Mulai dari yang paling mudah: ×2, ×5, ×10', teks: 'Kali 2 = dua kali lipat (7 × 2 = 7 + 7 = 14).\nKali 10 = tambah angka 0 di belakang (7 × 10 = 70).\nKali 5 = setengah dari kali 10 (7 × 5 → 70 ÷ 2 = 35).\nKamu tidak perlu menghafal semuanya sekaligus. Tiga tabel ini sudah jadi bekal untuk tabel lain.' },
-        { judul: '×3 dan ×4', teks: 'Kali 3 = kali 2 ditambah satu kali lagi. 7 × 3 = 14 + 7 = 21.\nKali 4 = dua kali lipat, lalu dua kali lipat lagi. 7 × 4: 7 → 14 → 28.' },
-        { judul: '×9 dan ×11', teks: 'Kali 9 = kali 10 lalu kurangi satu kali. 7 × 9 = 70 − 7 = 63.\nKali 11 untuk angka 1 sampai 9: tulis angkanya dua kali. 7 × 11 = 77, 4 × 11 = 44.' },
-        { judul: '×6, ×7, dan ×8', teks: 'Kali 6 = kali 5 ditambah satu kali lagi. 7 × 6 = 35 + 7 = 42.\nKali 7 = kali 5 ditambah kali 2. 8 × 7 = 40 + 16 = 56.\nKali 8 = kali 10 dikurangi kali 2. 7 × 8 = 70 − 14 = 56.\nIngat juga pola 5-6-7-8: 56 = 7 × 8.' },
-        { judul: 'Kali bilangan besar: dipecah', teks: 'Pecah bilangan menjadi puluhan dan satuan, kali satu per satu, lalu jumlahkan.\n47 × 6 = (40 × 6) + (7 × 6) = 240 + 42 = 282.\nKamu hanya memakai tabel kecil yang sudah dilatih.' },
-        { judul: 'Pangkat: kali berulang, kerjakan satu per satu', teks: 'Pangkat berarti kali berulang. 6⁴ = 6 × 6 × 6 × 6.\nJangan langsung mencoba menghitung semuanya. Buat tangga: 6¹ = 6, 6² = 36, 6³ = 36 × 6 = 216, 6⁴ = 216 × 6 = 1.296.\nTiap langkah hanya mengalikan dengan 6. Untuk 6 × 216, pecah: 200 × 6 = 1.200, 10 × 6 = 60, 6 × 6 = 36, jumlahnya 1.296.\nDi menu "Tabel bantu" ada daftar pangkat sampai 9, termasuk 6⁹ = 10.077.696.' }
+        { judul: 'Mulai dari yang paling mudah: ×2, ×5, ×10', teks: 'Kali 2 = dua kali lipat. 7 × 2 → 7 + 7 = 14.\nKali 10 = tambah angka 0 di belakang. 7 × 10 = 70.\nKali 5 = setengah dari kali 10. 7 × 5 → 70 dibagi 2 = 35.\nTidak perlu hafal semuanya sekaligus. Tiga tabel ini jadi bekal tabel lain.', vis: [['vAlur', [[{ v: '7 × 10 = 70' }, { op: '÷ 2', v: '35' }]]]] },
+        { judul: '×3 dan ×4', teks: 'Kali 3 = kali 2, lalu tambah satu kali lagi. 7 × 3 → 14 + 7 = 21.\nKali 4 = dua kali lipat, lalu dua kali lipat lagi. 7 × 4: 7 → 14 → 28.', vis: [['vKotak', [[{ v: 2 }, { v: 1 }], [{ v: 7 }]]], ['vAlur', [[{ v: '7' }, { op: '× 2', v: '14' }, { op: '× 2', v: '28' }]]]] },
+        { judul: '×9 dan ×11', teks: 'Kali 9 = kali 10, lalu kurangi satu kali. 7 × 9 → 70 − 7 = 63.\nKali 11 untuk angka 1 sampai 9: tulis angkanya dua kali. 7 × 11 = 77.', vis: [['vKotak', [[{ v: 10 }, { v: -1 }], [{ v: 7 }]]], ['vGabung', [[{ t: 'angka', v: 7 }, { t: 'angka lagi', v: 7 }], '77']]] },
+        { judul: '×6, ×7, dan ×8', teks: 'Kali 6 = kali 5, lalu tambah satu kali lagi. 7 × 6 → 35 + 7 = 42.\nKali 7 = kali 5 ditambah kali 2. 8 × 7 → 40 + 16 = 56.\nKali 8 = kali 10 dikurangi kali 2. 7 × 8 → 70 − 14 = 56.', vis: [['vKotak', [[{ v: 5 }, { v: 2 }], [{ v: 8 }]]], ['vKotak', [[{ v: 10 }, { v: -2 }], [{ v: 7 }]]]] },
+        { judul: 'Kali bilangan besar: dipecah', teks: 'Pecah bilangan menjadi puluhan dan satuan.\nKali masing-masing, lalu jumlahkan.\n47 × 6 → 40 × 6 = 240 dan 7 × 6 = 42. Jumlah: 282.', vis: [['vKotak', [[{ v: 40 }, { v: 7 }], [{ v: 6 }]]]] },
+        { judul: 'Pangkat: kali berulang, kerjakan satu per satu', teks: 'Pangkat berarti kali berulang. 6⁴ = 6 × 6 × 6 × 6.\nJangan menghitung semuanya sekaligus. Buat tangga: tiap langkah hanya kali 6.\nUntuk 36 × 6: pecah jadi 30 × 6 = 180 dan 6 × 6 = 36. Jumlah: 216.\nDi menu "Tabel bantu" ada daftar pangkat sampai 9, termasuk 6⁹ = 10.077.696.', vis: [['vRantai', [6, 5]]] }
       ],
       contoh: { level: 4, seed: 3 }, cobaMaks: 3,
       kenapa: 'Semua tabel perkalian bisa dibangun dari tabel ×2, ×5, ×10 yang paling mudah. Dengan memecah bilangan, kamu tidak perlu menghafal ratusan hasil.'
     },
     H1: {
       konsep: [
-        { judul: 'Pecah per tempat', teks: 'Pisahkan puluhan dan satuan. 48 + 37 = (40 + 30) + (8 + 7) = 70 + 15 = 85.\nKerjakan dari bagian besar dulu supaya mudah dicek.' },
-        { judul: 'Bilangan ramah', teks: 'Beberapa bilangan mudah dikali: 10, 20, 25, 30, 40, 50.\n25 × 16: kali 100 lalu bagi 4 (karena 25 = 100/4) = 1.600 ÷ 4 = 400.' }
+        { judul: 'Pecah per tempat', teks: 'Pisahkan puluhan dan satuan, lalu hitung bagian demi bagian.\n48 + 37: tambah 30 dulu → 78. Lalu tambah 7 → 85.\nKerjakan dari bagian besar dulu supaya mudah dicek.', vis: [['vGaris', [[48, 78, 85], ['+30', '+7']]]] },
+        { judul: 'Bilangan ramah', teks: 'Beberapa bilangan mudah dikali: 10, 20, 25, 30, 40, 50.\n25 × 16: kali 100 lalu bagi 4, karena 25 = 100 ÷ 4.\n1.600 ÷ 4 = 400.', vis: [['vAlur', [[{ v: '16' }, { op: '× 100', v: '1.600' }, { op: '÷ 4', v: '400' }]]]] },
+        { judul: 'Kali 2 digit dengan 1 digit', teks: 'Pecah bilangan besarnya, kali masing-masing, jumlahkan.\n7 × 46 → 7 × 40 = 280 dan 7 × 6 = 42. Jumlah: 322.', vis: [['vKotak', [[{ v: 40 }, { v: 6 }], [{ v: 7 }]]]] }
       ],
       contoh: { level: 5, seed: 4 }, cobaMaks: 3,
       kenapa: 'Memecah bilangan memakai sifat distributif: a × (b + c) = a × b + a × c. Hasilnya sama, hanya langkahnya lebih ringan.'
     },
     H2: {
       konsep: [
-        { judul: 'Bulatkan lalu koreksi', teks: '48 + 37: bulatkan 48 jadi 50, hitung 50 + 37 = 87, lalu kurangi 2 yang tadi kelebihan: 85.' },
-        { judul: 'Pecah dan gandakan', teks: 'Pecah angka: 46 × 7 = 40 × 7 + 6 × 7 = 280 + 42 = 322.\nGandakan dan bagi dua: 25 × 18 = 50 × 9 = 450.' },
-        { judul: 'Persen dan selisih kuadrat', teks: 'Persen cepat: 15% = 10% + 5%. 10% dari 240 = 24, 5% = 12, jadi 36.\nPola (m − d)(m + d) = m² − d². 49 × 51 = 50² − 1 = 2.499.' }
+        { judul: 'Bulatkan lalu koreksi', teks: '48 + 37: bulatkan 48 jadi 50 (kelebihan 2).\n50 + 37 = 87. Karena tadi kelebihan 2, kurangi 2 → 85.', vis: [['vGaris', [[48, 50, 87, 85], ['+2', '+37', '−2']]]] },
+        { judul: 'Pecah angka', teks: '46 × 7: pecah 46 jadi 40 dan 6.\n40 × 7 = 280 dan 6 × 7 = 42. Jumlah: 322.', vis: [['vKotak', [[{ v: 40 }, { v: 6 }], [{ v: 7 }]]]] },
+        { judul: 'Gandakan dan bagi dua', teks: '25 × 18: gandakan 25 jadi 50, bagi dua 18 jadi 9.\nHasil kalinya tidak berubah. 50 × 9 = 450.', vis: [['vAlur', [[{ v: '25 × 18' }, { op: '×2 dan ÷2', v: '50 × 9' }, { op: 'hitung', v: '450' }]]]] },
+        { judul: 'Persen cepat', teks: '15% dari 240: pecah 15% = 10% + 5%.\n10% dari 240 = 24. 5% adalah setengahnya = 12.\nJumlah: 24 + 12 = 36.', vis: [['vAlur', [[{ v: '10% = 24' }, { op: 'setengah', v: '5% = 12' }, { op: 'jumlah', v: '36' }]]]] },
+        { judul: 'Pola selisih kuadrat', teks: '49 × 51: kedua bilangan berjarak 1 dari 50.\nRumusnya (m − d)(m + d) = m² − d².\n50² − 1² = 2.500 − 1 = 2.499.', vis: [['vAlur', [[{ v: '49 × 51' }, { op: '50 ± 1', v: '50² − 1²' }, { op: 'hitung', v: '2.499' }]]]] }
       ],
       contoh: { level: 3, seed: 9 }, cobaMaks: 3,
       kenapa: 'Semua trik ini menukar soal sulit dengan beberapa soal mudah yang hasil akhirnya sama persis.'
     },
     H3: {
       konsep: [
-        { judul: 'Membaca soal cerita dengan balok', teks: 'Gambar tiap besaran sebagai balok. Panjang balok mewakili banyaknya. Yang ditanyakan ditandai "?".\nBalok membantu melihat apakah kita perlu menjumlah, mengurangi, atau membagi.' },
-        { judul: 'Pecahan, rasio, persen', teks: 'Pecahan: bagi balok menjadi bagian sama besar, ambil bagian yang diminta.\nRasio: jumlah bagian dulu, lalu nilai satu bagian.\nPersen: 100% = seluruh balok; diskon 25% berarti sisa 75%.' }
+        { judul: 'Membaca soal cerita dengan balok', teks: 'Gambar tiap besaran sebagai balok. Panjang balok mewakili banyaknya.\nYang ditanyakan ditandai "?".\nBalok membantu melihat apakah kita perlu menjumlah, mengurangi, atau membagi.', vis: [{ tipe: 'bar', alt: 'Ani 12 ditambah Budi 8, jumlahnya ditanyakan', baris: [{ brace: 'Jumlah = ?', judul: 'Ani punya 12, Budi punya 8', segs: [{ w: 12, t: '12', c: 'a' }, { w: 8, t: '8', c: 'b' }] }] }] },
+        { judul: 'Pecahan, rasio, persen', teks: 'Pecahan: bagi balok menjadi bagian sama besar, ambil bagian yang diminta.\nRasio: jumlah bagian dulu, lalu nilai satu bagian.\nPersen: 100% = seluruh balok; diskon 25% berarti sisa 75%.', vis: [{ tipe: 'bar', alt: '3 per 4 dari 20 adalah 15', baris: [{ brace: '20', judul: '3 dari 4 bagian sama besar (tiap bagian 5) = 15', segs: [{ w: 5, t: '5', c: 'a' }, { w: 5, t: '5', c: 'a' }, { w: 5, t: '5', c: 'a' }, { w: 5, t: '5', c: 'd' }] }] }] }
       ],
       contoh: { level: 4, seed: 6 }, cobaMaks: 3,
       kenapa: 'Dengan balok, kita mengubah cerita menjadi gambar yang menampakkan hubungan antar bilangan, sehingga langkah hitungnya jadi jelas.'
     },
     H4: {
       konsep: [
-        { judul: 'Kuadrat berakhiran 5 dan kali 11', teks: '75²: angka depan 7, kalikan dengan 8 = 56, tulis 25 → 5.625.\n48 × 11: tulis 4 | (4 + 8) | 8; 12 lebih dari 9, simpan 1 → 528.' },
-        { judul: 'Dua pola cantik', teks: 'Puluhan sama, satuan berjumlah 10: 43 × 47 → 4 × 5 = 20 | 3 × 7 = 21 → 2.021.\n1000 − 673: 9−6, 9−7, 10−3 → 327.' },
-        { judul: 'Basis 100 dan silang', teks: '97 × 94: kurangnya 3 dan 6. 97 − 6 = 91 | 3 × 6 = 18 → 9.118.\nSilang 2 digit: satuan × satuan, silang, puluhan × puluhan, bawa simpanannya.' }
+        { judul: 'Kuadrat bilangan berakhiran 5', teks: '75²: ambil angka depan 7.\nKalikan 7 dengan angka berikutnya, 8. 7 × 8 = 56.\nTulis 25 di belakangnya. Hasil: 5.625.', vis: [['vGabung', [[{ t: '7 × 8', v: '56' }, { t: 'tulis', v: '25' }], '5.625']]] },
+        { judul: 'Kali 11: jumlahkan tetangga', teks: '48 × 11: angka depan 4 tetap di depan, angka belakang 8 tetap di belakang.\nDi tengah, jumlahkan keduanya: 4 + 8 = 12.\n12 lebih dari 9: tulis 2, simpan 1 ke kiri (4 + 1 = 5). Hasil: 528.', vis: [['vTetangga', [[4, 8], [4, 12, 8], ['depan', '4+8', 'belakang']]]] },
+        { judul: 'Puluhan sama, satuan berjumlah 10', teks: '43 × 47: puluhannya sama (4) dan satuannya 3 + 7 = 10.\nDepan: 4 × 5 = 20. Belakang: 3 × 7 = 21.\nGabungkan: 2.021.', vis: [['vGabung', [[{ t: 'depan: 4 × 5', v: '20' }, { t: 'belakang: 3 × 7', v: '21' }], '2.021']]] },
+        { judul: 'Pengurangan dari 1000', teks: '1000 − 673: dua angka pertama dikurangkan dari 9, angka terakhir dari 10.\n9 − 6 = 3, 9 − 7 = 2, 10 − 3 = 7.\nHasil: 327.', vis: [['vGabung', [[{ t: '9 − 6', v: 3 }, { t: '9 − 7', v: 2 }, { t: '10 − 3', v: 7 }], '327']]] },
+        { judul: 'Basis 100', teks: '97 × 94: 97 kurang 3 dari 100, 94 kurang 6 dari 100.\nDepan: silang, 97 − 6 = 91. Belakang: 3 × 6 = 18.\nGabungkan: 9.118.', vis: [['vGabung', [[{ t: 'depan: 97 − 6', v: '91' }, { t: 'belakang: 3 × 6', v: '18' }], '9.118']]] },
+        { judul: 'Perkalian silang 2 digit', teks: 'Cara lain melihatnya: pecah kedua bilangan (model kotak).\n48 × 42: 40 × 40, 8 × 40, 40 × 2, dan 8 × 2, lalu jumlahkan semuanya.', vis: [['vKotak', [[{ v: 40 }, { v: 8 }], [{ v: 40 }, { v: 2 }]]]] }
       ],
       contoh: { level: 3, seed: 2 }, cobaMaks: 4,
       kenapa: 'Trik ini berasal dari aljabar. (10n + 5)² = 100n(n + 1) + 25, itulah sebabnya "n × (n+1) disusul 25" selalu benar.'
     },
     H5: {
       konsep: [
-        { judul: 'Kali 11 dan 12', teks: '× 11: jumlahkan tiap angka dengan tetangga kanannya. 523 × 11 → 3 | 2+3=5 | 5+2=7 | 5 → 5.753.\n× 12: gandakan tiap angka lalu tambah tetangga kanannya. 213 × 12 → 6 | 2+3=5 | 4+1=5 | 2 → 2.556.' },
-        { judul: 'Kali 5 dan simpanan', teks: '× 5: kali 10 lalu bagi 2. 468 × 5 = 4.680 ÷ 2 = 2.340.\nJika hasil suatu posisi lebih dari 9, tulis satuannya dan simpan puluhannya ke posisi kiri.' }
+        { judul: 'Kali 11 untuk 3 digit', teks: '523 × 11: mulai dari kanan.\nSatuan: 3 tetap. Lalu 2 + 3 = 5. Lalu 5 + 2 = 7. Terakhir angka depan 5.\nHasil: 5.753.', vis: [['vTetangga', [[5, 2, 3], [5, 7, 5, 3], ['depan', '5+2', '2+3', 'satuan']]]] },
+        { judul: 'Kali 12', teks: '213 × 12: gandakan tiap angka, lalu tambah tetangga kanannya.\nDari kanan: 2×3 + 0 = 6. 2×1 + 3 = 5. 2×2 + 1 = 5. Depan: 2.\nHasil: 2.556.', vis: [['vTetangga', [[2, 1, 3], [2, 5, 5, 6], ['2×0+2', '2×2+1', '2×1+3', '2×3+0']]]] },
+        { judul: 'Kali 5 dan simpanan', teks: '468 × 5: kali 10 dulu, lalu bagi 2.\n4.680 ÷ 2 = 2.340.\nJika hasil suatu posisi lebih dari 9, tulis satuannya dan simpan puluhannya ke kiri.', vis: [['vAlur', [[{ v: '468' }, { op: '× 10', v: '4.680' }, { op: '÷ 2', v: '2.340' }]]]] }
       ],
       contoh: { level: 1, seed: 8 }, cobaMaks: 3,
       kenapa: 'N × 11 = N × 10 + N. Menjumlahkan tiap angka dengan tetangganya adalah cara menuliskan penjumlahan itu per tempat.'

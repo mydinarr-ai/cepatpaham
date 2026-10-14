@@ -7,7 +7,7 @@
   CP.KONFIG = {
     nama: 'CepatPaham',
     tagline: 'Hitung cepat. Paham konsep.',
-    versiApp: '1.14.0',
+    versiApp: '1.15.0',
     versiData: 1,
     kunciSimpan: 'cepatpaham:data',
     soalPerSesi: 10,
@@ -167,7 +167,7 @@
       return Object.assign({ tipe: 'pilihan', teks, pilihan: hasil.pilihan, benar: hasil.benar, kunci: hasil.kunci, nilai: hasil.nilai, langkah: [], izin: {} }, o || {});
     }
   };
-  CP.st = (t, v) => (v === undefined ? { t } : { t, v });
+  CP.st = (t, v, g) => { const o = { t }; if (v !== undefined) o.v = v; if (g) o.g = g; return o; };
   // item: {t, k, v}. benar + 3 salah berkunci beda
   CP.rakitPilihan = function (rng, benar, kandidatSalah) {
     const pakai = [benar];

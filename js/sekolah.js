@@ -527,7 +527,7 @@
             st('Bilangan tak nol yang dipangkatkan 0 selalu bernilai 1.'), st(p.a + sup(0) + ' = 1.', 1)] });
           let v = 1; const fak = []; for (let i = 0; i < p.n; i++) { v *= p.a; fak.push(p.a); }
           return S.angka('Hitunglah ' + p.a + sup(p.n) + '.', Math.pow(p.a, p.n), { jenis: 'pangkat', langkah: [
-            st('Pangkat berarti perkalian berulang: ' + p.a + sup(p.n) + ' = ' + fak.join(' × ') + '. Kerjakan satu per satu, tiap langkah hanya mengalikan dengan ' + p.a + '.')].concat(CP.tanggaPangkat(p.a, p.n).slice(1).map((t) => st(t)), [st('Hasilnya ' + F(v) + '.', v)]) });
+            st('Pangkat berarti perkalian berulang: ' + p.a + sup(p.n) + ' = ' + fak.join(' × ') + '. Kerjakan satu per satu, tiap langkah hanya mengalikan dengan ' + p.a + '.')].concat(CP.tanggaPangkat(p.a, p.n).slice(1).map((t, i) => st(t, undefined, i === 0 ? CP.vRantai(p.a, p.n) : undefined)), [st('Hasilnya ' + F(v) + '.', v)]) });
         }),
       lv('Perkalian dan pembagian pangkat', '2³ × 2⁴ = 128; 3⁶ ÷ 3⁴ = 9', 'angka',
         (r, c) => {

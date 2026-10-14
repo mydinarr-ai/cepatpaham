@@ -141,3 +141,8 @@ Tanpa server. Menu Pengaturan > Pindah HP dan cadangan: kirim kode (Web Share), 
 ## Dasar Perkalian dan Tabel bantu (v1.14.0)
 
 Masukan pemilik: penjelasan masih membingungkan bagi siswa yang belum hafal perkalian (contoh 6 pangkat 9). Dibuat: modul **H0 Dasar Perkalian** (js/dasar.js; level: x2/x5/x10, x3/x4, x9/x11, x6/x7/x8, kali 2 digit dipecah, pangkat langkah demi langkah), langkah pangkat di X-1 sekarang berupa tangga (tiap langkah hanya kali bilangan pokok, dengan perkalian dipecah per tempat; `CP.tanggaPangkat`, `CP.caraKali`), dan layar **Tabel bantu** (rute #/tabel/kali, pangkat, trik) yang bisa dibuka dari beranda dan tiap halaman topik.
+
+
+## Gambar bantu untuk siswa visual (v1.15.0)
+
+Masukan pemilik: penjelasan teks saja sulit dibayangkan anak visual, dan hampir semua bab begitu. js/visual.js berisi penggambar yang bisa dipakai ulang: `CP.vKotak` (model kotak perkalian), `vRantai` (tangga pangkat), `vTetangga` (kali 11/12 dengan simpanan), `vGabung` (bagian jadi hasil), `vGaris` (garis bilangan berlompatan), `vAlur` (kotak berpanah). Cara pakai: (1) pada langkah soal: `st(teks, nilai, gambar)` (argumen ketiga = gambar); (2) pada kartu konsep di js/materi.js: `vis: [["vKotak", [kolom, baris]], ...]` atau spesifikasi gambar langsung (mis. balok H3). Langkah penyelesaian kini tampil per kalimat, rumus di kotak, hasil disorot (`langkahIsi` di index.html). Sudah bergambar: H0-H5 (konsep dan langkah), pangkat X-1. **Belum**: bab sekolah lainnya; kerjakan bertahap per kelas.

@@ -149,6 +149,8 @@ input:focus,textarea:focus,button:focus-visible{outline:3px solid var(--aksen);o
 .bar-k{fill:var(--kartu);stroke:var(--garis);stroke-width:1.5;stroke-dasharray:4 3}
 .bar-brace{fill:none;stroke:var(--ink2);stroke-width:1.6}
 .g-isi{fill:var(--bar-a);stroke:var(--garis);stroke-width:1.5;stroke-linejoin:round}.g-isi2{fill:var(--bar-b);stroke:var(--garis);stroke-width:1.5;stroke-linejoin:round}.g-isi3{fill:var(--bar-d);stroke:var(--garis);stroke-width:1.5;stroke-linejoin:round}.g-kosong{fill:var(--kartu);stroke:var(--garis);stroke-width:1.5;stroke-linejoin:round}.g-garis{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.g-tipis{fill:none;stroke:var(--ink2);stroke-width:1;opacity:.7}.g-putus{fill:none;stroke:var(--ink2);stroke-width:1.5;stroke-dasharray:4 3}.g-merah{fill:none;stroke:var(--salah);stroke-width:3;stroke-linecap:round}.g-titik{fill:var(--emas);stroke:var(--garis);stroke-width:1.5}.g-teks{fill:var(--ink);font:600 13px var(--font)}.g-kecil{fill:var(--ink2);font:600 11px var(--font)}.g-tebal{fill:var(--ink);font:800 13px var(--font)}
+.langkah .ket{display:block;margin:2px 0}.langkah .pers{display:block;margin:5px 0;padding:6px 10px;background:var(--lembut);border-radius:10px;font-weight:700}.langkah .hasil{background:var(--emas);color:#101B3C;padding:0 6px;border-radius:6px}.langkah-gbr{margin:8px 0 4px}
+.g-minus{fill:var(--salah-bg);stroke:var(--salah);stroke-width:1.5;stroke-dasharray:4 3}.g-besar{fill:var(--ink);font:800 18px var(--font)}.g-merahteks{fill:var(--salah);font:800 12px var(--font)}
 .bar-teks{fill:var(--ink);font:600 13px var(--font)}
 .bar-tebal{font-weight:800}.bar-kecil{font-size:12px;fill:var(--ink2)}
 .latihan{display:flex;flex-direction:column;flex:1}
@@ -291,6 +293,7 @@ button[aria-pressed="true"][data-a="tkaRagu"]{background:var(--emas);color:#101B
 <script src="js/dasar.js"></script>
 <script src="js/cerita.js"></script>
 <script src="js/gambar.js"></script>
+<script src="js/visual.js"></script>
 <script src="js/kelas7b.js"></script>
 <script src="js/kelas10b.js"></script>
 <script src="js/kelas8.js"></script>
@@ -620,7 +623,24 @@ function pasangJawab(wadah, soal, onJawab) {
 }
 const gambarHtml = (m, soal) => { const g = m.gambar(soal); return g ? '<div class="gambar">' + g + '</div>' : ''; };
 const kelasTeks = (t) => (t.length > 80 ? 'panjang' : t.length > 28 ? 'sedang' : '');
-const langkahHtml = (soal, hingga) => '<ol class="langkah">' + soal.langkah.slice(0, hingga === undefined ? soal.langkah.length : hingga).map((l) => '<li>' + fmt(l.t) + '</li>').join('') + '</ol>';
+// satu langkah: kalimat dipisah per baris, rumus ditaruh di kotak, hasil akhir disorot, gambar bantu (jika ada) di bawahnya
+// gambar bantu pada kartu konsep: vis = [[namaFungsi, [argumen]] atau spesifikasi gambar langsung]
+function visKonsep(k) {
+  if (!k.vis) return '';
+  return k.vis.map((v) => { try { const g = Array.isArray(v) ? CP[v[0]].apply(null, v[1]) : v; return '<div class="gambar langkah-gbr">' + CP.gambarSVG(g) + '</div>'; } catch (e) { return ''; } }).join('');
+}
+function langkahIsi(l) {
+  const bagian = String(l.t).replace(/([.;])\s+(?=[A-Z0-9(\u2212])/g, '$1\u0001').split('\u0001');
+  const html = bagian.map((b) => {
+    const rumus = / = /.test(b) && b.length <= 90;
+    if (!rumus) return '<span class="ket">' + fmt(b) + '</span>';
+    const i = b.lastIndexOf(' = '), kiri = b.slice(0, i + 3), kanan = b.slice(i + 3);
+    const m = /^(.{1,18}?)([.;]?)$/.exec(kanan.replace(/\s+$/, ''));
+    return '<span class="pers">' + (m ? fmt(kiri) + '<b class="hasil">' + fmt(m[1]) + '</b>' + m[2] : fmt(b)) + '</span>';
+  }).join('');
+  return html + (l.g ? '<div class="gambar langkah-gbr">' + CP.gambarSVG(l.g) + '</div>' : '');
+}
+const langkahHtml = (soal, hingga) => '<ol class="langkah">' + soal.langkah.slice(0, hingga === undefined ? soal.langkah.length : hingga).map((l) => '<li>' + langkahIsi(l) + '</li>').join('') + '</ol>';
 const jawabBenarTeks = (soal) => CP.tampilJawab(soal);
 
 /* ====================== LAYAR: LATIHAN ====================== */
@@ -729,7 +749,7 @@ function layarBelajarKe() {
   const kepala = '<div class="atas"><button class="ikon-tombol" data-a="keluarBelajar" aria-label="Keluar">' + svgI('silang') + '</button><h2 style="font-size:17px">' + esc(m.judul) + '</h2></div><!--PERINGATAN-->' + titik;
   let isi = '', tombol = '';
   if (L.t === 'konsep') {
-    isi = '<div class="kartu"><div class="tahap-label">Konsep ' + (L.i + 1) + ' dari ' + b.mat.konsep.length + '</div><div class="gap2"></div><h2>' + esc(L.k.judul) + '</h2><div class="gap2"></div><div class="konsep">' + L.k.teks.split('\n').map((p) => '<p>' + fmt(p) + '</p>').join('') + '</div></div>';
+    isi = '<div class="kartu"><div class="tahap-label">Konsep ' + (L.i + 1) + ' dari ' + b.mat.konsep.length + '</div><div class="gap2"></div><h2>' + esc(L.k.judul) + '</h2><div class="gap2"></div><div class="konsep">' + L.k.teks.split('\n').map((p) => '<p>' + fmt(p) + '</p>').join('') + '</div>' + visKonsep(L.k) + '</div>';
     tombol = '<button class="btn utama" data-a="belLanjut">Lanjut' + svgI('panah') + '</button>';
   } else if (L.t === 'contoh') {
     const c = b.contoh, n = c.langkah.length, t = b.tampilLangkah;
