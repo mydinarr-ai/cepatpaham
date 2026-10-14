@@ -671,6 +671,36 @@ cek(CP.TKA.SMK.konteks === 'vokasi' && CP.TKA.SMA.konteks === 'umum' && CP.TKA.S
   cek(pr.tka.length === 20 && pr.tka[0].b === 24, 'riwayat TKA maksimal 20, terbaru di depan');
 }
 
+bagian('9a. Simulasi UTBK-SNBT (tiga subtes)');
+cek(CP.TKA.UTBK_PM.jumlah === 20 && CP.TKA.UTBK_PM.durasi === 42.5 && CP.TKA.UTBK_PK.jumlah === 20 && CP.TKA.UTBK_PK.durasi === 20 && CP.TKA.UTBK_PU.jumlah === 10 && CP.TKA.UTBK_PU.durasi === 10, 'konfigurasi UTBK sesuai kerangka resmi SNPMB');
+CP.UTBK_DAFTAR.forEach((j) => {
+  const cfg = CP.TKA[j]; const ulang = Math.max(8, Math.floor(BANYAK / 40)); const bentuk = { pg: 0, mcma: 0, kategori: 0, isian: 0 };
+  for (let rep = 0; rep < ulang; rep++) {
+    const items = CP.susunTKA(j, CP.buatRng(900 + rep));
+    cek(items.length === cfg.jumlah, j + ' jumlah soal ' + items.length);
+    const alok = CP.alokasiTKA(cfg.elemen, cfg.jumlah);
+    cfg.elemen.forEach((e, k) => cek(items.filter((it) => it.elemen === e.id).length === alok[k], j + ' alokasi elemen ' + e.id));
+    items.forEach((it) => {
+      bentuk[it.tipe]++;
+      const id = j + ' #' + it.no + ' ' + it.tipe;
+      cek(['pg', 'mcma', 'kategori', 'isian'].indexOf(it.tipe) >= 0 && it.teks.length > 5, id + ' teks');
+      if (it.tipe === 'pg') cek(it.pilihan.length === 5 && new Set(it.pilihan).size === 5 && it.benar >= 0 && it.benar < 5, id + ' 5 opsi berbeda');
+      if (it.tipe === 'isian') {
+        cek(Number.isInteger(it.jawab) && Array.isArray(it.langkah) && it.langkah.length >= 1, id + ' jawaban isian harus bilangan bulat');
+        const akhir = it.langkah[it.langkah.length - 1]; if (akhir && akhir.v !== undefined) cek(hampir(nilaiLangkah(akhir.v), it.jawab), id + ' langkah akhir ' + akhir.v + ' != jawaban ' + it.jawab);
+        cek(CP.itemBenar(it, String(it.jawab)) && !CP.itemBenar(it, String(it.jawab + 1)) && CP.itemBenar(it, String(it.jawab).replace('-', '−')), id + ' penilaian isian');
+        cek(!CP.itemTerjawab(it, null) && !CP.itemTerjawab(it, '-') && CP.itemTerjawab(it, '5'), id + ' status terjawab isian');
+      }
+    });
+    const benarSemua = items.map((it) => (it.tipe === 'pg' ? it.benar : it.tipe === 'mcma' ? it.benar.slice() : it.tipe === 'isian' ? String(it.jawab) : it.kunci.slice()));
+    const h = CP.nilaiTKA(items, benarSemua); cek(h.benar === items.length && h.skor === 100, j + ' semua benar -> 100');
+    cek(CP.nilaiTKA(items, items.map(() => null)).benar === 0, j + ' semua kosong -> 0');
+  }
+  console.log('  ' + j + ': ' + ulang + ' set x ' + cfg.jumlah + ' soal; bentuk ' + JSON.stringify(bentuk));
+  cek(bentuk.pg > 0 && bentuk.isian > 0 && bentuk.kategori > 0, j + ' bentuk soal muncul');
+  cfg.elemen.forEach((e) => { const it = CP.susunTKA(j, CP.buatRng(78), { jumlah: 10, elemen: e.id }); cek(it.length === 10 && it.every((x) => x.elemen === e.id), j + ' latihan elemen ' + e.id); });
+});
+
 bagian('9b. Keluarga soal khas TKA (dihitung ulang terpisah)');
 {
   const rngK = CP.buatRng(2468); const jum = {};

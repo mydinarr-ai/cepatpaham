@@ -451,23 +451,24 @@ function layarBeranda() {
     (lanjut.length ? '<div class="kecil tebal" style="margin-bottom:8px">Matematika Umum</div>' : '') + umum.map(barisM).join('') +
     (lanjut.length ? '<div class="kecil tebal" style="margin:14px 0 8px">Tingkat Lanjut</div>' + lanjut.map(barisM).join('') : '') +
     '<div class="bagian-judul"><h2>Hitung Cepat</h2><span class="kecil">Semua kelas</span></div><div class="ubin">' + ubin + '</div>' +
-    '<div class="bagian-judul"><h2>Simulasi TKA</h2><span class="kecil">SMP, SMA, SMK</span></div><button class="baris-topik" data-a="pergi" data-r="tka"><span class="kode" style="min-width:52px">TKA</span><span class="isi"><div class="jdl">Tes Kemampuan Akademik</div><div class="meta">' + ((pr.tka && pr.tka[0]) ? 'Terakhir: ' + esc(CP.TKA[pr.tka[0].jenjang].nama) + ', skor ' + pr.tka[0].skor : 'Simulasi penuh dan latihan per elemen') + '</div></span></button>' +
+    '<div class="bagian-judul"><h2>Simulasi TKA</h2><span class="kecil">SMP, SMA, SMK, UTBK</span></div><button class="baris-topik" data-a="pergi" data-r="tka"><span class="kode" style="min-width:52px">TKA</span><span class="isi"><div class="jdl">Tes Kemampuan Akademik</div><div class="meta">' + ((pr.tka && pr.tka[0]) ? 'Terakhir: ' + esc(CP.TKA[pr.tka[0].jenjang].nama) + ', skor ' + pr.tka[0].skor : 'Simulasi penuh dan latihan per elemen') + '</div></span></button>' +
     (pr.riwayatKelas.length ? '<div class="gap3"></div><button class="btn kecil-btn" data-a="pergi" data-r="riwayat">Lihat kelas sebelumnya</button>' : ''), { nav: 'beranda' });
   if (window.__streakNaik) { const s = $('#strk'); if (s) s.classList.add('naik'); window.__streakNaik = false; }
 }
 
 /* ====================== LAYAR: SIMULASI TKA ====================== */
 let tka = null;
-const NAMA_BENTUK = { pg: 'Pilihan ganda', mcma: 'Pilihan ganda kompleks: pilih semua yang benar', kategori: 'Pilihan ganda kompleks: benar atau salah' };
-function tkaCfgTeks(j) { const c = CP.TKA[j]; return c.jumlah + ' soal · ' + c.durasi + ' menit'; }
+const NAMA_BENTUK = { pg: 'Pilihan ganda', mcma: 'Pilihan ganda kompleks: pilih semua yang benar', kategori: 'Pilihan ganda kompleks: benar atau salah', isian: 'Isian singkat: ketik bilangan bulat' };
+function tkaCfgTeks(j) { const c = CP.TKA[j]; return c.jumlah + ' soal · ' + String(c.durasi).replace('.', ',') + ' menit'; }
 function layarTKA() {
   const pr = profilAktif(); const urut = ['SMP', 'SMA', 'SMK'].sort((a, b) => (a === pr.jenjang ? -1 : b === pr.jenjang ? 1 : 0));
+  const kartuUtbk = CP.UTBK_DAFTAR.map((j) => { const c = CP.TKA[j]; return '<div class="kartu" style="margin-bottom:14px"><h3>' + esc(c.pendek) + '</h3><p class="kecil" style="margin:4px 0 10px">UTBK-SNBT · ' + tkaCfgTeks(j) + '</p><button class="btn utama" data-a="tkaMulai" data-j="' + j + '" data-mode="simulasi">' + svgI('kilat') + 'Simulasi subtes</button><details style="margin-top:6px"><summary>Latihan per bagian (10 soal, tanpa batas waktu)</summary><div class="pilih-chip">' + c.elemen.map((e) => '<button data-a="tkaMulai" data-j="' + j + '" data-mode="latihan" data-e="' + e.id + '">' + esc(e.nama) + '</button>').join('') + '</div></details></div>'; }).join('');
   const kartu = urut.map((j) => {
     const c = CP.TKA[j];
     return '<div class="kartu" style="margin-bottom:14px"><div class="baris" style="align-items:center"><h3 style="flex:2">' + esc(c.nama) + '</h3>' + (pr.jenjang === j ? '<span class="chip aksen">Untukmu</span>' : '') + '</div><p class="kecil" style="margin:4px 0 10px">Matematika · ' + tkaCfgTeks(j) + (c.pasti ? '' : ' (perkiraan)') + (j === 'SMK' ? ' · soal cerita berkonteks vokasi' : '') + '</p><button class="btn utama" data-a="tkaMulai" data-j="' + j + '" data-mode="simulasi">' + svgI('kilat') + 'Simulasi penuh</button><details style="margin-top:6px"><summary>Latihan per elemen (10 soal, tanpa batas waktu)</summary><div class="pilih-chip">' + c.elemen.map((e) => '<button data-a="tkaMulai" data-j="' + j + '" data-mode="latihan" data-e="' + e.id + '">' + esc(e.nama) + '</button>').join('') + '</div></details></div>';
   }).join('');
   const riw = (pr.tka || []).slice(0, 5).map((x) => '<div class="baris" style="align-items:center;padding:6px 0;border-top:2px dashed var(--lembut)"><span style="flex:3"><b>' + esc(CP.TKA[x.jenjang].nama) + (x.mode === 'simulasi' ? '' : ' · ' + esc((CP.TKA[x.jenjang].elemen.find((e) => e.id === x.elemen) || { nama: 'latihan' }).nama)) + '</b><div class="kecil">' + x.tgl + ' · ' + x.b + '/' + x.n + ' benar · ' + waktuStr(x.detik) + '</div></span><b style="flex:1;text-align:right">' + x.skor + '</b></div>').join('');
-  tampil(atasSub('Simulasi TKA', 'beranda') + '<div class="info" style="margin-bottom:14px">Latihan ini meniru bentuk Tes Kemampuan Akademik: pilihan ganda, pilihan ganda kompleks (pilih semua yang benar), dan pilihan ganda kompleks benar/salah. Kamu bisa membuka versi jenjang mana pun. Soal kelas yang belum kamu pelajari bisa terasa sulit; itu wajar.<br><span class="kecil">Acuan: Perka BSKAP 045/H/AN/2025. Jumlah soal SMP belum diumumkan pasti, jadi angkanya perkiraan. Cek pengumuman resmi sekolah/Pusmendik.</span></div>' + kartu + '<div class="bagian-judul"><h2>Riwayat TKA</h2></div><div class="kartu">' + (riw || '<p class="kecil" style="margin:0">Belum ada simulasi.</p>') + '</div>', { nav: 'beranda' });
+  tampil(atasSub('Simulasi TKA', 'beranda') + '<div class="info" style="margin-bottom:14px">Latihan ini meniru bentuk Tes Kemampuan Akademik: pilihan ganda, pilihan ganda kompleks (pilih semua yang benar), dan pilihan ganda kompleks benar/salah. Kamu bisa membuka versi jenjang mana pun. Soal kelas yang belum kamu pelajari bisa terasa sulit; itu wajar.<br><span class="kecil">Acuan: Perka BSKAP 045/H/AN/2025. Jumlah soal SMP belum diumumkan pasti, jadi angkanya perkiraan. Cek pengumuman resmi sekolah/Pusmendik.</span></div>' + kartu + '<div class="bagian-judul"><h2>Simulasi UTBK-SNBT</h2><span class="kecil">untuk kelas XII dan lulusan</span></div><div class="info" style="margin-bottom:14px">Tiga subtes hitungan UTBK-SNBT, dengan jumlah soal dan waktu menurut kerangka resmi SNPMB (snpmb.id). Bentuk soal: pilihan ganda, pilihan ganda kompleks, dan isian singkat bilangan bulat. Soal dibuat sendiri oleh aplikasi, bukan soal asli. Skor di sini hanya untuk latihan.</div>' + kartuUtbk + '<div class="bagian-judul"><h2>Riwayat TKA dan UTBK</h2></div><div class="kartu">' + (riw || '<p class="kecil" style="margin:0">Belum ada simulasi.</p>') + '</div>', { nav: 'beranda' });
 }
 function tkaMulai(j, mode, elemen) {
   const c = CP.TKA[j];
@@ -496,6 +497,7 @@ function tkaTampil() {
   if (it.tipe === 'pg' && it.gambarOpsi) isi = '<div class="opsi gopsi" role="group">' + it.gambarOpsi.map((g, k) => '<button data-a="tkaPilih" data-k="' + k + '" aria-pressed="' + (j === k) + '" aria-label="Pilihan ' + 'ABCDE'[k] + '"><b>' + 'ABCDE'[k] + '</b><span class="gimg">' + g + '</span></button>').join('') + '</div>';
   else if (it.tipe === 'pg') isi = '<div class="opsi" role="group">' + it.pilihan.map((p, k) => '<button data-a="tkaPilih" data-k="' + k + '" aria-pressed="' + (j === k) + '"><b>' + 'ABCDE'[k] + '</b><span>' + fmt(p) + '</span></button>').join('') + '</div>';
   else if (it.tipe === 'mcma') isi = '<div class="opsi" role="group">' + it.pilihan.map((p, k) => '<button data-a="tkaToggle" data-k="' + k + '" aria-pressed="' + ((j || []).indexOf(k) >= 0) + '"><b>' + ((j || []).indexOf(k) >= 0 ? '✓' : '') + '</b><span style="font-size:17px">' + fmt(p) + '</span></button>').join('') + '</div>';
+  else if (it.tipe === 'isian') isi = '<div class="jawab" id="jwbBox" aria-live="polite">' + (it.awalan ? '<span class="sat">' + esc(it.awalan) + '</span>' : '') + '<span class="isi">' + esc(String(j || '').replace(/-/g, '−')) + '</span>' + (it.satuan ? '<span class="sat">' + esc(it.satuan) + '</span>' : '') + '</div><div class="kp" role="group" aria-label="Keypad">' + [7, 8, 9].map((d) => '<button data-a="tkaKey" data-k="' + d + '">' + d + '</button>').join('') + '<button class="fn" data-a="tkaKey" data-k="hapus" aria-label="Hapus">&#9003;</button>' + [4, 5, 6].map((d) => '<button data-a="tkaKey" data-k="' + d + '">' + d + '</button>').join('') + '<button class="fn" data-a="tkaKey" data-k="-" aria-label="Minus">−</button>' + [1, 2, 3].map((d) => '<button data-a="tkaKey" data-k="' + d + '">' + d + '</button>').join('') + '<button class="fn" data-a="tkaKey" data-k="C" aria-label="Kosongkan">C</button><button data-a="tkaKey" data-k="0">0</button></div>'
   else isi = '<div class="kat">' + it.pernyataan.map((p, k) => '<div class="kat-baris"><div class="kat-teks">' + fmt(p) + '</div><div class="baris"><button data-a="tkaKat" data-k="' + k + '" data-v="1" aria-pressed="' + ((j || [])[k] === true) + '">Benar</button><button data-a="tkaKat" data-k="' + k + '" data-v="0" aria-pressed="' + ((j || [])[k] === false) + '">Salah</button></div></div>').join('') + '</div>';
   const el = tka.cfg.elemen.find((e) => e.id === it.elemen);
   const akhir = tka.i === n - 1;
@@ -516,11 +518,13 @@ function tkaAkhiri() {
 function tkaJawabanKamu(it, j) {
   if (!CP.itemTerjawab(it, j)) return 'Tidak dijawab';
   if (it.tipe === 'pg') return 'ABCDE'[j] + '. ' + it.pilihan[j];
+  if (it.tipe === 'isian') return String(j).replace(/-/g, '−');
   if (it.tipe === 'mcma') return (j || []).slice().sort((a, b) => a - b).map((k) => 'nomor ' + (k + 1)).join(', ');
   return j.map((v) => (v ? 'Benar' : 'Salah')).join(', ');
 }
 function tkaKunci(it) {
   if (it.tipe === 'pg') return 'ABCDE'[it.benar] + '. ' + it.pilihan[it.benar];
+  if (it.tipe === 'isian') return CP.angka(it.jawab) + (it.satuan ? ' ' + it.satuan : '');
   if (it.tipe === 'mcma') return it.benar.map((k) => 'nomor ' + (k + 1)).join(', ');
   return it.kunci.map((v) => (v ? 'Benar' : 'Salah')).join(', ');
 }
@@ -531,7 +535,7 @@ function layarTKAHasil() {
   const tinjau = tka.items.map((it, i) => {
     const ok = CP.itemBenar(it, tka.jaw[i]), kos = !CP.itemTerjawab(it, tka.jaw[i]);
     let pemb = '';
-    if (it.tipe === 'pg') pemb = langkahHtml({ langkah: it.langkah });
+    if (it.tipe === 'pg' || it.tipe === 'isian') pemb = langkahHtml({ langkah: it.langkah });
     else if (it.tipe === 'mcma') pemb = '<ul class="salah-daftar">' + it.pilihan.map((p, k) => '<li><b>' + (it.benar.indexOf(k) >= 0 ? 'Benar' : 'Salah') + '.</b> ' + fmt(p) + '<div class="kecil">Jawaban sebenarnya: ' + fmt(it.kunciNilai[k]) + '</div></li>').join('') + '</ul>';
     else pemb = '<ul class="salah-daftar">' + it.pernyataan.map((p, k) => '<li><b>' + (it.kunci[k] ? 'Benar' : 'Salah') + '.</b> ' + fmt(p) + '<div class="kecil">Jawaban sebenarnya: ' + fmt(it.kunciNilai[k]) + '</div></li>').join('') + '</ul>';
     const kunciGbr = it.gambarOpsi ? '<div class="gambar" style="max-width:250px">' + it.gambarOpsi[it.benar] + '</div><p class="kecil" style="margin:0 0 6px">Gambar di atas adalah pilihan yang benar.</p>' : '';
@@ -937,6 +941,7 @@ const AKSI = {
     CP.terimaLaporan(data, h.lap, hariIni()); simpan(); toast('Laporan ' + h.lap.u + ' tersimpan'); layarOrtu();
   },
   tkaMulai(d) { tkaMulai(d.j, d.mode, d.e || ''); },
+  tkaKey(d) { const k = d.k, it = tka.items[tka.i]; if (!it || it.tipe !== 'isian') return; let v = String(tka.jaw[tka.i] || ''); if (k === 'hapus') v = v.slice(0, -1); else if (k === 'C') v = ''; else if (k === '-') { if (v === '') v = '-'; } else if (/^[0-9]$/.test(k) && v.replace('-', '').length < 9) v += k; tka.jaw[tka.i] = v === '' ? null : v; tkaTampil(); },
   tkaPilih(d) { tka.jaw[tka.i] = +d.k; tkaTampil(); },
   tkaToggle(d) { const a = (tka.jaw[tka.i] || []).slice(), k = +d.k, p = a.indexOf(k); if (p >= 0) a.splice(p, 1); else a.push(k); tka.jaw[tka.i] = a.length ? a : null; tkaTampil(); },
   tkaKat(d) { const a = (tka.jaw[tka.i] || tka.items[tka.i].kunci.map(() => null)).slice(); a[+d.k] = d.v === '1'; tka.jaw[tka.i] = a; tkaTampil(); },

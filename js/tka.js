@@ -31,6 +31,37 @@
     }
   };
   CP.TKA.SMK = Object.assign({}, CP.TKA.SMA, { nama: 'TKA SMK', konteks: 'vokasi' });
+  /* UTBK-SNBT: tiga subtes hitungan. Jumlah soal dan durasi dari halaman kerangka resmi SNPMB (snpmb.id/fr):
+     Penalaran Matematika 20 soal 42,5 menit; Penalaran Kuantitatif (bagian Penalaran Umum) 10 soal 10 menit;
+     Pengetahuan Kuantitatif 20 soal 20 menit. Bentuk soal: pilihan ganda 5 opsi, pilihan ganda kompleks, isian singkat (bilangan bulat). */
+  const BENTUK_UTBK = { pg: 0.55, mcma: 0.1, kategori: 0.15, isian: 0.2 };
+  CP.TKA.UTBK_PM = {
+    nama: 'UTBK Penalaran Matematika', pendek: 'Penalaran Matematika', kelompok: 'UTBK', durasi: 42.5, jumlah: 20, opsi: 5, konteks: 'umum', pasti: true, bentuk: BENTUK_UTBK, pKhas: 0.5,
+    elemen: [
+      { id: 'bilangan', nama: 'Bilangan dan aritmetika', bobot: 5, modul: ['H3', 'VII-2', 'VII-3', 'X-1', 'X-2'], khas: ['himpunan', 'biner', 'buket', 'peluruhan'] },
+      { id: 'aljabar', nama: 'Aljabar dan fungsi', bobot: 6, modul: ['VIII-1', 'VIII-2', 'IX-1', 'X-4', 'X-5', 'XI-1'], khas: ['peluruhan', 'daerah', 'buket', 'cukup'] },
+      { id: 'geometri', nama: 'Geometri dan pengukuran', bobot: 5, modul: ['VII-5', 'VIII-4', 'IX-2', 'IX-3', 'XI-2'], khas: ['ruang', 'kubus', 'pemuatan', 'cukup', 'transformasi'] },
+      { id: 'data', nama: 'Data dan peluang', bobot: 4, modul: ['VII-6', 'VIII-5', 'IX-4', 'X-6', 'X-7', 'XI-3'], khas: ['grafikGaris', 'tabelDistribusi'] }
+    ]
+  };
+  CP.TKA.UTBK_PK = {
+    nama: 'UTBK Pengetahuan Kuantitatif', pendek: 'Pengetahuan Kuantitatif', kelompok: 'UTBK', durasi: 20, jumlah: 20, opsi: 5, konteks: 'umum', pasti: true, bentuk: BENTUK_UTBK, pKhas: 0.2,
+    elemen: [
+      { id: 'bilangan', nama: 'Bilangan', bobot: 4, modul: ['X-1', 'X-2', 'H1', 'H2', 'XI-TL-1'], khas: ['himpunan', 'biner'] },
+      { id: 'aljabar', nama: 'Aljabar', bobot: 6, modul: ['X-4', 'X-5', 'XI-1', 'XII-1', 'XI-TL-2', 'XI-TL-3', 'XI-TL-5', 'XII-TL-2', 'XII-TL-3'], khas: ['peluruhan', 'cukup', 'daerah'] },
+      { id: 'geometri', nama: 'Geometri dan pengukuran', bobot: 5, modul: ['X-3', 'XI-2', 'XII-2', 'XII-TL-1'], khas: ['ruang', 'kubus', 'cukup', 'pemuatan'] },
+      { id: 'data', nama: 'Analisis data dan peluang', bobot: 5, modul: ['X-6', 'X-7', 'XI-3', 'XII-3', 'XII-TL-5'], khas: ['grafikGaris', 'tabelDistribusi'] }
+    ]
+  };
+  CP.TKA.UTBK_PU = {
+    nama: 'UTBK Penalaran Kuantitatif', pendek: 'Penalaran Kuantitatif', kelompok: 'UTBK', durasi: 10, jumlah: 10, opsi: 5, konteks: 'umum', pasti: true, bentuk: BENTUK_UTBK, pKhas: 0.25,
+    elemen: [
+      { id: 'hitung', nama: 'Operasi dan hubungan bilangan', bobot: 6, modul: ['H1', 'H2', 'H4', 'H5', 'VII-2', 'VII-3'], khas: ['biner', 'himpunan'] },
+      { id: 'cerita', nama: 'Hubungan kuantitas dalam cerita', bobot: 4, modul: ['H3', 'VII-3', 'X-1'], khas: ['cukup', 'buket'] }
+    ]
+  };
+  CP.TKA_DAFTAR = ['SMP', 'SMA', 'SMK'];
+  CP.UTBK_DAFTAR = ['UTBK_PM', 'UTBK_PK', 'UTBK_PU'];
   // bobot tingkat kesulitan: pemahaman (L1-2), aplikasi (L3-4), penalaran (L5-6)
   const BOBOT_LEVEL = [1, 1, 1.5, 1.5, 1, 1];
 
@@ -115,6 +146,11 @@
     const s = soalBiasa(cfg, el, rng, pakai, (x) => x.tipe !== 'pilihan' || x.pilihan.length >= cfg.opsi || x.pilihan.some((t) => /\d/.test(t)));
     const o = CP.jadikanPilihan(rng, s, cfg.opsi);
     return { tipe: 'pg', elemen: el.id, modul: s.modul, level: s.level, teks: s.teks, gambar: s.gambar ? s.modulObj.gambar(s) : '', pilihan: o.pilihan, benar: o.benar, langkah: s.langkah, nilai: o.nilai, soal: { tipe: s.tipe, jawab: s.jawab } };
+  }
+  // isian singkat: jawaban bilangan bulat yang diketik
+  function buatIsian(cfg, el, rng, pakai) {
+    const s = soalBiasa(cfg, el, rng, pakai, (x) => x.tipe === 'angka' && x.jawab.d === 1 && Math.abs(x.jawab.n) < 100000000 && !(x.izin && (x.izin.koma || x.izin.garis)));
+    return { tipe: 'isian', elemen: el.id, modul: s.modul, level: s.level, teks: s.teks, gambar: s.gambar ? s.modulObj.gambar(s) : '', jawab: s.jawab.n, minus: !!(s.izin && s.izin.minus), satuan: s.satuan || '', awalan: s.awalan || '', langkah: s.langkah };
   }
   function pernyataan(cfg, el, rng, pakai, benar) {
     const s = soalBiasa(cfg, el, rng, pakai, pendek);
@@ -529,12 +565,13 @@
     el.forEach((e, k) => {
       for (let i = 0; i < alok[k]; i++) {
         const r = rng.acak();
-        const jenis = o.bentuk === 'pg' ? 'pg' : r < 0.68 ? 'pg' : r < 0.84 ? 'mcma' : 'kategori';
-        if (!o.tanpaKhas && e.khas && e.khas.length && rng.peluang(0.34)) {
+        const w = cfg.bentuk || { pg: 0.68, mcma: 0.16, kategori: 0.16 };
+        let jenis = 'pg'; if (o.bentuk !== 'pg') { let a = 0; for (const k of ['pg', 'mcma', 'kategori', 'isian']) { a += w[k] || 0; if (r < a) { jenis = k; break; } } }
+        if (!o.tanpaKhas && e.khas && e.khas.length && rng.peluang(cfg.pKhas || 0.34)) {
           const fam = rng.pilih(e.khas);
           try { const it = KHAS[fam](cfg, e, rng, cfg.konteks); const kunciTeks = it.teks; if (!pakai.has(kunciTeks)) { pakai.add(kunciTeks); items.push(it); continue; } } catch (x) { /* jatuh ke soal biasa */ }
         }
-        try { items.push(jenis === 'pg' ? buatPG(cfg, e, rng, pakai) : buatKompleks(cfg, e, rng, pakai, jenis)); }
+        try { items.push(jenis === 'pg' ? buatPG(cfg, e, rng, pakai) : jenis === 'isian' ? buatIsian(cfg, e, rng, pakai) : buatKompleks(cfg, e, rng, pakai, jenis)); }
         catch (x) { items.push(buatPG(cfg, e, rng, pakai)); }
       }
     });
@@ -545,12 +582,14 @@
   CP.itemBenar = function (it, j) {
     if (j === null || j === undefined) return false;
     if (it.tipe === 'pg') return Number(j) === it.benar;
+    if (it.tipe === 'isian') return /[0-9]/.test(String(j)) && parseInt(String(j).replace(/−/g, '-'), 10) === it.jawab;
     if (it.tipe === 'mcma') { const a = (j || []).slice().sort((x, y) => x - y), b = it.benar.slice().sort((x, y) => x - y); return a.length === b.length && a.every((x, i) => x === b[i]); }
     return Array.isArray(j) && j.length === it.kunci.length && it.kunci.every((k, i) => j[i] === k);
   };
   CP.itemTerjawab = function (it, j) {
     if (j === null || j === undefined) return false;
     if (it.tipe === 'pg') return true;
+    if (it.tipe === 'isian') return typeof j === 'string' && /[0-9]/.test(j);
     if (it.tipe === 'mcma') return Array.isArray(j) && j.length > 0;
     return Array.isArray(j) && j.length === it.kunci.length && j.every((x) => x === true || x === false);
   };
