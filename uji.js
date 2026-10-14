@@ -5,7 +5,7 @@ const path = require('path');
 const muat = (f) => require(path.join(__dirname, 'js', f));
 muat('inti.js'); muat('peta.js');
 if (fs.existsSync(path.join(__dirname, 'js', 'materi.js'))) muat('materi.js');
-muat('sekolah.js'); muat('hitung.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js'); muat('kelas9.js'); muat('kelas11.js'); muat('kelas12.js'); muat('tka.js');
+muat('sekolah.js'); muat('hitung.js'); muat('cerita.js'); muat('gambar.js'); muat('kelas7b.js'); muat('kelas10b.js'); muat('kelas8.js'); muat('kelas9.js'); muat('kelas11.js'); muat('kelas12.js'); muat('kelas11tl.js'); muat('tka.js');
 const CP = globalThis.CP;
 
 let lulus = 0, gagal = 0;
@@ -407,19 +407,60 @@ cek(CP.modulUntukProfil({ jenjang: 'SMA', kelas: 'XI', tl: true }).sekolah.lengt
 cek(CP.modulUntukProfil({ jenjang: 'SMA', kelas: 'XI', tl: false }).sekolah.length === 3, 'SMA XI umum = 3 bab');
 cek(CP.modulUntukProfil({ jenjang: 'SMK', kelas: 'XI', tl: true }).sekolah.length === 3, 'SMK tidak punya TL');
 cek(CP.modulUntukProfil({ jenjang: 'SMP', kelas: 'VII', tl: false }).sekolah.length === 6, 'SMP VII = 6 bab');
+/* ---------- contoh tetap Tingkat Lanjut XI ---------- */
+contoh('XI-TL-1', 1, { n: 7, sd: 1 }, '−i', 'i pangkat 7');
+contoh('XI-TL-1', 2, { op: '+', a: 2, b: 3, cc: 1, d: -4, sd: 1 }, '3 − i', 'tambah kompleks');
+contoh('XI-TL-1', 3, { a: 2, b: 3, cc: 1, d: -1, sd: 1 }, '5 + i', 'kali kompleks');
+contoh('XI-TL-1', 4, { jenis: 'modulus', t: [3, 4, 5], sa: 1, sb: 1 }, '5', 'modulus');
+contoh('XI-TL-1', 4, { jenis: 'sekawan', a: 2, b: 3 }, '13', 'z kali sekawan');
+contoh('XI-TL-1', 5, { p: 2, q: 1, cc: 1, d: 1, sd: 1 }, '2 + i', 'bagi kompleks');
+contoh('XI-TL-1', 6, { p: 2, q: 3, a: 1, b: 1, cc: 1, d: 1, sd: 1 }, 'x = 2 + 3i atau x = 2 − 3i', 'akar kompleks');
+contoh('XI-TL-2', 1, { c: [1, 2, -3, 4], a: 2 }, '14', 'nilai P(2)');
+contoh('XI-TL-2', 2, { c: [2, -1, 3, 5], a: -1 }, '-1', 'sisa');
+contoh('XI-TL-2', 3, { a: 2, q: [1, 3, -2], sd: 1 }, 'x² + 3x − 2', 'hasil bagi');
+contoh('XI-TL-2', 4, { a: 2, p: 1, k: -3 }, '-3', 'teorema faktor');
+contoh('XI-TL-2', 5, { r: [1, 2, 3], A: 1, jenis: 'jumlah' }, '6', 'jumlah akar');
+contoh('XI-TL-2', 5, { r: [1, 2, 3], A: 1, jenis: 'kali' }, '6', 'hasil kali akar');
+contoh('XI-TL-2', 5, { r: [1, 2, 3], A: 1, jenis: 'ketiga' }, '3', 'akar ketiga');
+contoh('XI-TL-2', 6, { x0: 3, a: 1, b: 2, k: 0 }, '3', 'volume');
+contoh('XI-TL-3', 1, { op: '+', A: [[1, 2], [3, 4]], B: [[5, -1], [0, 2]], i: 1, j: 2 }, '1', 'A+B');
+contoh('XI-TL-3', 2, { jenis: 'skalar', A: [[1, 2], [3, 4]], B: [[0, 0], [0, 0]], k: -2, i: 2, j: 1 }, '-6', 'skalar');
+contoh('XI-TL-3', 2, { jenis: 'kali', A: [[1, 2], [3, 4]], B: [[2, 0], [1, 2]], k: 1, i: 2, j: 1 }, '10', 'AB');
+contoh('XI-TL-3', 3, { jenis: '2x2', M2: [[3, 2], [1, 4]], M3: [[1, 0, 0], [0, 1, 0], [0, 0, 1]] }, '10', 'det 2x2');
+contoh('XI-TL-3', 3, { jenis: '3x3', M2: [[1, 0], [0, 1]], M3: [[1, 2, 3], [0, 1, 4], [5, 6, 0]] }, '1', 'det 3x3');
+contoh('XI-TL-3', 4, { a: 2, b: 6, cc: 3, pos: 0 }, '4', 'singular');
+contoh('XI-TL-3', 5, { A: [[1, 1], [0, 1]], X: [[2, 3], [1, 4]], i: 1, j: 2 }, '3', 'AX=B');
+contoh('XI-TL-3', 6, { x: 2, y: 3, a1: 1, b1: 1, a2: 1, b2: -1, tanya: 'x', k: 0 }, '2', 'SPLDV matriks');
+contoh('XI-TL-4', 1, { k: 'rot90', sd: 1 }, '(0 −1 ; 1 0)', 'matriks rotasi 90');
+contoh('XI-TL-4', 2, { M: [[1, 2], [0, 1]], x: 1, y: 2, tanya: 'x' }, '5', 'bayangan');
+contoh('XI-TL-4', 3, { a: 'refx', b: 'refy', i: 1, j: 1 }, '-1', 'komposisi');
+contoh('XI-TL-4', 4, { M: [[1, 1], [0, 1]], x: 2, y: 3, tanya: 'x' }, '2', 'titik asal');
+contoh('XI-TL-4', 5, { M: [[2, 0], [0, 3]], p: 2, q: 4, a: 0, b: 0 }, '24', 'luas bayangan');
+contoh('XI-TL-4', 6, { M: [[1, 0], [0, 1]], x: 1, y: 1, tx: 2, ty: 3, tanya: 'y', k: 0 }, '4', 'matriks + translasi');
+contoh('XI-TL-5', 1, { a: 2, n: 3 }, '3', 'log 2 8');
+contoh('XI-TL-5', 2, { jenis: 'jumlah', a: 2, m: 1, n: 2, k: 2 }, '3', 'jumlah log');
+contoh('XI-TL-5', 2, { jenis: 'pangkat', a: 2, m: 3, n: 1, k: 2 }, '6', 'log pangkat');
+contoh('XI-TL-5', 3, { jenis: 'eksponen', a: 2, n: 5, p: 4, x: 0 }, '1', 'persamaan eksponen');
+contoh('XI-TL-5', 3, { jenis: 'logaritma', a: 2, n: 3, p: 2, x: 0 }, '6', 'persamaan logaritma');
+contoh('XI-TL-5', 4, { fn: 'sin', sdt: 150, sd: 1 }, '1 / 2', 'sin 150');
+contoh('XI-TL-5', 4, { fn: 'cos', sdt: 210, sd: 1 }, '−√3 / 2', 'cos 210');
+contoh('XI-TL-5', 5, { jenis: 'maksimum', a: 3, b: 2, cc: 1 }, '4', 'maksimum');
+contoh('XI-TL-5', 5, { jenis: 'periode', a: 3, b: 4, cc: 0 }, '90', 'periode');
+contoh('XI-TL-5', 6, { n0: 10, d: 3, k: 4, z: 0 }, '12', 'pertumbuhan');
+cek(['XI-TL-1', 'XI-TL-2', 'XI-TL-3', 'XI-TL-4', 'XI-TL-5'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tingkat Lanjut XI aktif');
 const BAB_SEGERA = CP.REG.filter((m) => m.status === 'segera');
 BAB_SEGERA.forEach((m) => { cek(typeof m.generator !== 'function', 'bab segera tidak boleh punya generator: ' + m.id); });
 cek(['VII-1', 'VII-2', 'VII-3', 'X-1', 'X-2', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 1 aktif');
-cek(CP.REG.filter((m) => m.status === 'aktif').length === 34, 'tepat 34 modul aktif (kelas VII-XII Umum)');
+cek(CP.REG.filter((m) => m.status === 'aktif').length === 39, 'tepat 39 modul aktif (VII-XII Umum + TL XI)');
 cek(['XII-1', 'XII-2', 'XII-3'].every((id) => CP.peta[id].status === 'aktif'), 'bab Kelas XII aktif');
 cek(['XI-1', 'XI-2', 'XI-3'].every((id) => CP.peta[id].status === 'aktif'), 'bab Kelas XI aktif');
 cek(['IX-1', 'IX-2', 'IX-3', 'IX-4'].every((id) => CP.peta[id].status === 'aktif'), 'bab Kelas IX aktif');
 cek(['VIII-1', 'VIII-2', 'VIII-3', 'VIII-4', 'VIII-5'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 3 aktif');
 cek(['VII-4', 'VII-5', 'VII-6', 'X-3', 'X-4', 'X-5', 'X-6', 'X-7'].every((id) => CP.peta[id].status === 'aktif'), 'bab Tahap 2 aktif');
 cek(CP.REG.filter((m) => m.status === 'aktif').every((m) => m.level.length === 6 || (m.id === 'H5' && m.level.length === 4)), 'level tiap modul');
-cek(CP.peta['XI-TL-1'].status === 'segera' && CP.peta['XI-TL-3'].judul === 'Matriks', 'bab segera terdaftar dengan judul');
+cek(CP.peta['XII-TL-1'].status === 'segera' && CP.peta['XI-TL-3'].judul === 'Matriks', 'bab segera terdaftar dengan judul');
 cek(CP.peta['XII-TL-2'].judul === 'Limit' && CP.peta['IX-2'].perluGambar === true, 'detail registri');
-try { CP.peta['XI-TL-1'].generator(1); cek(false, 'bab segera dapat dilatih'); } catch (e) { cek(true, ''); }
+try { CP.peta['XII-TL-1'].generator(1); cek(false, 'bab segera dapat dilatih'); } catch (e) { cek(true, ''); }
 cek(CP.targetModul(CP.peta.H1, 1) === 10 && CP.targetModul(CP.peta.H1, 6) === 30 && CP.targetModul(CP.peta['VII-1'], 1) === 30 && CP.targetModul(CP.peta['VII-1'], 6) === 90, 'target waktu awal');
 
 /* ---------- 6. Profil dan naik kelas ---------- */

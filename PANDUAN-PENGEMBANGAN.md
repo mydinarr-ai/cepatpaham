@@ -17,6 +17,7 @@ Dokumen ini untuk sesi Claude Code berikutnya. Baca juga `spesifikasi-aplikasi-h
 | `js/kelas9.js` | Kelas IX: IX-1 (SPLDV), IX-2 (bangun ruang), IX-3 (transformasi geometri), IX-4 (peluang dan sampel). Berisi penggambar bangun ruang dan bidang koordinat. |
 | `js/kelas11.js` | Kelas XI Umum: XI-1 (komposisi dan invers fungsi), XI-2 (lingkaran), XI-3 (statistika: pencar, regresi, korelasi). |
 | `js/kelas12.js` | Kelas XII Umum: XII-1 (transformasi fungsi), XII-2 (busur dan juring), XII-3 (kombinatorik). |
+| `js/kelas11tl.js` | Tingkat Lanjut XI (hanya SMA): XI-TL-1 bilangan kompleks, XI-TL-2 polinomial, XI-TL-3 matriks (gambar matriks), XI-TL-4 transformasi geometri dengan matriks, XI-TL-5 fungsi dan pemodelan (logaritma, trigonometri, grafik sinus). Dimuat sebelum `tka.js`. |
 | `js/tka.js` | Simulasi TKA SMP/SMA/SMK: konfigurasi (`CP.TKA`: jumlah soal, durasi, elemen dan modul sumber), pembuat soal (`CP.susunTKA`), pengubah soal angka ke pilihan ganda (`CP.jadikanPilihan`), penilaian (`CP.nilaiTKA`). UI-nya ada di `index.html` (fungsi `layarTKA*`). |
 | `js/gambar.js` | Penggambar SVG umum (`CP.gambarUmum`): persegi panjang, segitiga, parabola, diagram batang/lingkaran/kotak-garis dibuat dari daftar elemen (`CP.H`). Gambar balok H3 tetap di `cerita.js`. |
 | `js/hitung.js` | Hitung Cepat H1, H2, H4, H5, H6. |

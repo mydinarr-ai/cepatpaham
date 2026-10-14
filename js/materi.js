@@ -230,6 +230,51 @@
       contoh: { level: 3, seed: 5 }, cobaMaks: 3,
       kenapa: 'Garis regresi dipilih agar jumlah kuadrat jarak vertikal titik-titik ke garis sekecil mungkin, sehingga garis itu mewakili kecenderungan data.'
     },
+    'XI-TL-1': {
+      konsep: [
+        { judul: 'Satuan imajiner', teks: 'i adalah bilangan dengan i² = −1. Bilangan kompleks ditulis a + bi (a bagian real, b bagian imajiner).\nPangkat i berulang tiap 4: i¹ = i, i² = −1, i³ = −i, i⁴ = 1. Untuk pangkat besar, bagi dengan 4 dan lihat sisanya.' },
+        { judul: 'Operasi dasar', teks: 'Tambah/kurang: operasikan bagian real dengan real dan imajiner dengan imajiner.\nKali: (a + bi)(c + di) = (ac − bd) + (ad + bc)i, karena i² = −1.' },
+        { judul: 'Modulus, sekawan, dan pembagian', teks: 'Modulus |a + bi| = √(a² + b²). Sekawan dari a + bi adalah a − bi, dan hasil kali keduanya a² + b².\nPembagian: kalikan pembilang dan penyebut dengan sekawan penyebut agar penyebut menjadi bilangan real.\nPersamaan kuadrat dengan D < 0 memiliki dua akar kompleks sekawan.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Bilangan kompleks dibuat agar persamaan seperti x² + 1 = 0 punya akar. Dalam listrik arus bolak-balik, bagian imajiner dipakai untuk menggambarkan pergeseran fase.'
+    },
+    'XI-TL-2': {
+      konsep: [
+        { judul: 'Nilai suku banyak dan Horner', teks: 'Nilai P(a) bisa dihitung dengan substitusi, atau cara Horner: mulai dari koefisien pertama, lalu ulangi "kalikan a, tambah koefisien berikutnya".' },
+        { judul: 'Teorema sisa dan faktor', teks: 'Sisa pembagian P(x) oleh (x − a) adalah P(a).\nJika P(a) = 0 maka (x − a) adalah faktor P(x), dan sebaliknya.' },
+        { judul: 'Akar-akar suku banyak', teks: 'Untuk ax³ + bx² + cx + d = 0 dengan akar x₁, x₂, x₃: jumlah akar = −b/a, hasil kali akar = −d/a.\nJika dua akar sudah diketahui, akar ketiga dicari dari jumlah akar.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Teorema sisa menghemat kerja: tidak perlu membagi panjang, cukup menghitung satu nilai P(a) untuk tahu sisanya.'
+    },
+    'XI-TL-3': {
+      konsep: [
+        { judul: 'Operasi matriks', teks: 'Jumlah dan selisih: operasikan elemen yang seletak. Perkalian skalar: kalikan semua elemen.\nPerkalian AB: elemen baris i kolom j = baris ke-i dari A dikali kolom ke-j dari B, lalu dijumlahkan.' },
+        { judul: 'Determinan dan invers', teks: 'Matriks 2×2 (a b ; c d): determinan = ad − bc. Invers = (1/det) × (d −b ; −c a).\nMatriks 3×3: aturan Sarrus. Determinan 0 berarti matriks singular (tidak punya invers).' },
+        { judul: 'Persamaan matriks dan SPLDV', teks: 'AX = B → X = A⁻¹B.\nSPLDV: x = Dₓ/D dan y = Dᵧ/D, dengan D determinan koefisien. Dₓ mengganti kolom x dengan konstanta, Dᵧ mengganti kolom y.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Matriks merangkum banyak persamaan dalam satu bentuk. Determinan memberi tahu apakah sistem punya satu jawaban pasti (determinan tidak nol).'
+    },
+    'XI-TL-4': {
+      konsep: [
+        { judul: 'Matriks transformasi', teks: 'Kolom pertama matriks = bayangan (1, 0), kolom kedua = bayangan (0, 1).\nRotasi 90°: (0 −1 ; 1 0). Refleksi sumbu x: (1 0 ; 0 −1). Refleksi y = x: (0 1 ; 1 0). Dilatasi faktor k: (k 0 ; 0 k).' },
+        { judul: 'Bayangan dan komposisi', teks: "Bayangan titik: (x', y') = M(x, y). Jika T₁ dilanjutkan T₂, matriksnya M₂ × M₁ (transformasi pertama paling kanan).\nUntuk mencari titik asal, pakai invers: (x, y) = M⁻¹(x', y')." },
+        { judul: 'Luas bayangan', teks: 'Luas bayangan = |det M| × luas awal. Translasi hanya menggeser sehingga tidak mengubah luas.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Satu matriks cukup untuk memetakan semua titik sebuah bangun sekaligus. Itulah dasar grafik komputer saat memutar atau memperbesar gambar.'
+    },
+    'XI-TL-5': {
+      konsep: [
+        { judul: 'Logaritma', teks: 'ᵃlog b = n artinya aⁿ = b.\nSifat: log(pq) = log p + log q; log(p/q) = log p − log q; log pⁿ = n × log p.' },
+        { judul: 'Persamaan eksponen dan logaritma', teks: 'Eksponen: samakan basis di kedua ruas, lalu samakan pangkatnya.\nLogaritma: ubah ke bentuk pangkat, misalnya log₂ (x + 2) = 3 → x + 2 = 2³.' },
+        { judul: 'Trigonometri dan model', teks: 'Nilai sin dan cos di kuadran II–IV dicari dari sudut acuan lalu diberi tanda: sin positif di kuadran I dan II, cos positif di kuadran I dan IV.\nFungsi y = a sin(bx) + c: amplitudo |a|, periode 360°/b, maksimum a + c, minimum −a + c.\nPertumbuhan eksponen: N(t) = N₀ × 2^(t/d), menjadi dua kali setiap d satuan waktu.' }
+      ],
+      contoh: { level: 3, seed: 5 }, cobaMaks: 3,
+      kenapa: 'Logaritma adalah kebalikan pangkat: ia menjawab "dipangkatkan berapa?". Tanpa logaritma, kita sulit mencari waktu pada model pertumbuhan.'
+    },
     'XII-1': {
       konsep: [
         { judul: 'Translasi dan refleksi grafik', teks: 'Grafik y = f(x) digeser a ke kanan dan b ke atas menjadi y = f(x \u2212 a) + b.\nRefleksi terhadap sumbu x: y = \u2212f(x). Terhadap sumbu y: y = f(\u2212x).' },
